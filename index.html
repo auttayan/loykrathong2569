@@ -28,19 +28,14 @@
           },
           colors: {
             royal: {
-              950: '#0f0524',
-              900: '#1c0a3d',
-              800: '#2e1065',
+              950: '#0b031c',
+              900: '#180736',
+              800: '#2b0f5e',
               700: '#4c1d95',
               600: '#6d28d9',
               500: '#8b5cf6',
               400: '#a78bfa',
               300: '#c4b5fd'
-            },
-            gold: {
-              300: '#fde68a',
-              400: '#fbbf24',
-              500: '#f59e0b'
             }
           }
         }
@@ -55,151 +50,316 @@
     }
 
     body {
-      background: linear-gradient(180deg, #0d041f 0%, #1d0942 45%, #12062b 100%);
+      background: linear-gradient(180deg, #090216 0%, #170635 45%, #0e0424 100%);
       color: #f5f3ff;
       min-height: 100vh;
       overflow-x: hidden;
     }
 
-    /* Glassmorphism Cards */
+    /* Glassmorphism Panels */
     .glass-panel {
-      background: rgba(30, 12, 66, 0.72);
+      background: rgba(27, 10, 62, 0.74);
       backdrop-filter: blur(16px);
       -webkit-backdrop-filter: blur(16px);
-      border: 1px solid rgba(196, 181, 253, 0.2);
-      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.45);
+      border: 1px solid rgba(196, 181, 253, 0.22);
+      box-shadow: 0 14px 40px rgba(0, 0, 0, 0.5);
     }
 
     .glass-chip {
-      background: rgba(109, 40, 217, 0.25);
-      border: 1px solid rgba(196, 181, 253, 0.28);
+      background: rgba(109, 40, 217, 0.22);
+      border: 1px solid rgba(196, 181, 253, 0.26);
       transition: all 0.25s ease;
     }
 
     .glass-chip:hover {
-      background: rgba(139, 92, 246, 0.42);
+      background: rgba(139, 92, 246, 0.4);
       border-color: rgba(251, 191, 36, 0.65);
       transform: translateY(-2px);
     }
 
     .glass-chip.active {
-      background: linear-gradient(135deg, rgba(124, 58, 237, 0.85), rgba(168, 85, 247, 0.75));
+      background: linear-gradient(135deg, rgba(124, 58, 237, 0.88), rgba(168, 85, 247, 0.78));
       border-color: #fbbf24;
-      box-shadow: 0 0 18px rgba(251, 191, 36, 0.35);
+      box-shadow: 0 0 20px rgba(251, 191, 36, 0.38);
     }
 
-    /* Scene Stage */
+    /* =====================================================================
+       3D PERSPECTIVE WATERFRONT STAGE (ฉากด้านบน + ท่าน้ำด้านล่าง)
+       ===================================================================== */
     #river-stage {
       position: relative;
       width: 100%;
-      height: 460px;
+      height: 580px;
       overflow: hidden;
-      background: linear-gradient(180deg, #0b031d 0%, #1e0b45 36%, #3b1775 56%, #1f1047 58%, #100729 100%);
-      border-bottom: 1px solid rgba(196, 181, 253, 0.18);
+      background: radial-gradient(circle at 80% 18%, rgba(168, 85, 247, 0.36) 0%, transparent 45%),
+                  radial-gradient(circle at 32% 38%, rgba(251, 191, 36, 0.24) 0%, transparent 42%),
+                  linear-gradient(180deg, #070114 0%, #180638 22%, #2e1065 40%, #441982 47%, #1a0b3e 49%, #0e0526 100%);
+      border-bottom: 2px solid rgba(251, 191, 36, 0.35);
     }
 
-    @media (min-width: 1024px) {
+    @media (min-width: 768px) {
       #river-stage {
-        height: 520px;
+        height: 640px;
       }
     }
 
-    /* Twinkling Stars */
+    @media (min-width: 1280px) {
+      #river-stage {
+        height: 680px;
+      }
+    }
+
+    /* Stars */
     .star {
       position: absolute;
       background: #ffffff;
       border-radius: 50%;
       animation: twinkle var(--dur, 3s) ease-in-out infinite alternate;
-      opacity: 0.7;
+      opacity: 0.75;
     }
 
     @keyframes twinkle {
-      0% { opacity: 0.2; transform: scale(0.8); }
-      100% { opacity: 1; transform: scale(1.25); }
+      0% { opacity: 0.15; transform: scale(0.75); }
+      100% { opacity: 1; transform: scale(1.3); }
     }
 
-    /* Full Moon */
-    .full-moon {
+    /* Giant Luminous Full Moon */
+    .moon-wrapper {
       position: absolute;
-      top: 28px;
-      right: 10%;
-      width: 82px;
-      height: 82px;
+      top: 22px;
+      right: 6%;
+      width: 118px;
+      height: 118px;
+      z-index: 3;
+      pointer-events: none;
+    }
+
+    @media (min-width: 768px) {
+      .moon-wrapper {
+        top: 26px;
+        right: 10%;
+        width: 152px;
+        height: 152px;
+      }
+    }
+
+    .moon-aura {
+      position: absolute;
+      inset: -42px;
       border-radius: 50%;
-      background: radial-gradient(circle at 35% 35%, #fffbeb 0%, #fde68a 55%, #f59e0b 100%);
-      box-shadow: 0 0 40px rgba(253, 230, 138, 0.7), 0 0 90px rgba(167, 139, 250, 0.45);
-      z-index: 2;
+      background: radial-gradient(circle, rgba(254, 240, 138, 0.36) 0%, rgba(192, 132, 252, 0.18) 48%, transparent 74%);
+      animation: moonPulse 5s ease-in-out infinite alternate;
     }
 
-    .moon-reflection {
+    @keyframes moonPulse {
+      0% { transform: scale(0.95); opacity: 0.8; }
+      100% { transform: scale(1.08); opacity: 1; }
+    }
+
+    .moon-body {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      background: radial-gradient(circle at 34% 32%, #fffef5 0%, #fef3c7 35%, #fde047 68%, #f59e0b 100%);
+      box-shadow:
+        0 0 35px rgba(254, 240, 138, 0.9),
+        0 0 85px rgba(251, 191, 36, 0.55),
+        0 0 140px rgba(167, 139, 250, 0.45),
+        inset -16px -12px 26px rgba(180, 83, 9, 0.35);
+      overflow: hidden;
+    }
+
+    /* Subtle Lunar Mare Craters */
+    .moon-crater {
       position: absolute;
-      top: 58%;
-      right: calc(10% - 10px);
-      width: 100px;
-      height: 150px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(217, 119, 6, 0.18) 0%, rgba(180, 83, 9, 0.06) 70%, transparent 100%);
+    }
+
+    /* Soft Drifting Clouds near Moon */
+    .night-cloud {
+      position: absolute;
+      background: radial-gradient(ellipse at center, rgba(167, 139, 250, 0.18) 0%, rgba(91, 33, 182, 0.06) 55%, transparent 78%);
+      border-radius: 999px;
+      filter: blur(8px);
+      pointer-events: none;
+      z-index: 4;
+      animation: cloudFloat var(--cdur, 32s) linear infinite;
+    }
+
+    @keyframes cloudFloat {
+      0% { transform: translateX(-18%); }
+      50% { transform: translateX(18%); }
+      100% { transform: translateX(-18%); }
+    }
+
+    /* Phra That Landmark on Distant Riverbank */
+    .phra-that-backdrop {
+      position: absolute;
+      bottom: 51%;
+      left: 50%;
+      transform: translateX(-62%);
+      width: 240px;
+      height: 220px;
+      z-index: 5;
+      pointer-events: none;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+    }
+
+    @media (min-width: 768px) {
+      .phra-that-backdrop {
+        width: 340px;
+        height: 270px;
+        transform: translateX(-66%);
+      }
+    }
+
+    .phra-that-glow {
+      position: absolute;
+      bottom: -8px;
+      width: 115%;
+      height: 88%;
+      background: radial-gradient(ellipse at 50% 65%, rgba(251, 191, 36, 0.42) 0%, rgba(168, 85, 247, 0.25) 48%, transparent 76%);
+      filter: blur(18px);
+      z-index: 1;
+    }
+
+    .phra-that-img-wrap {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      z-index: 2;
+      -webkit-mask-image: radial-gradient(ellipse 68% 78% at 50% 60%, #000 44%, rgba(0,0,0,0.75) 66%, transparent 95%);
+      mask-image: radial-gradient(ellipse 68% 78% at 50% 60%, #000 44%, rgba(0,0,0,0.75) 66%, transparent 95%);
+    }
+
+    .phra-that-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center 45%;
+      filter: brightness(0.95) contrast(1.08) saturate(1.15) drop-shadow(0 0 22px rgba(251, 191, 36, 0.5));
+      opacity: 0.94;
+    }
+
+    /* Water Reflection of Phra That */
+    .phra-that-reflection {
+      position: absolute;
+      top: 49%;
+      left: 50%;
+      transform: translateX(-62%) scaleY(-1);
+      width: 220px;
+      height: 140px;
+      z-index: 7;
+      pointer-events: none;
+      opacity: 0.26;
+      filter: blur(3.5px) saturate(1.2);
+      -webkit-mask-image: linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.25) 55%, transparent 95%);
+      mask-image: linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.25) 55%, transparent 95%);
+      animation: waterReflectShimmer 4.5s ease-in-out infinite alternate;
+    }
+
+    @media (min-width: 768px) {
+      .phra-that-reflection {
+        width: 310px;
+        height: 170px;
+        transform: translateX(-66%) scaleY(-1);
+      }
+    }
+
+    @keyframes waterReflectShimmer {
+      0% { transform: translateX(-62%) scaleY(-1) skewX(-2deg); opacity: 0.22; }
+      100% { transform: translateX(-62%) scaleY(-1) skewX(2deg); opacity: 0.34; }
+    }
+
+    @media (min-width: 768px) {
+      @keyframes waterReflectShimmer {
+        0% { transform: translateX(-66%) scaleY(-1) skewX(-2deg); opacity: 0.22; }
+        100% { transform: translateX(-66%) scaleY(-1) skewX(2deg); opacity: 0.34; }
+      }
+    }
+
+    /* Moonlight Shimmer Path on River */
+    .moon-water-path {
+      position: absolute;
+      top: 49%;
+      right: 5%;
+      width: 140px;
+      height: 44%;
       background: repeating-linear-gradient(
         180deg,
-        rgba(253, 230, 138, 0.28) 0px,
-        rgba(253, 230, 138, 0.04) 6px,
-        transparent 12px
+        rgba(254, 240, 138, 0.34) 0px,
+        rgba(251, 191, 36, 0.08) 5px,
+        transparent 11px
       );
+      clip-path: polygon(35% 0%, 65% 0%, 100% 100%, 0% 100%);
       filter: blur(4px);
-      border-radius: 50%;
-      animation: shimmer 3.5s ease-in-out infinite alternate;
       pointer-events: none;
-      z-index: 2;
+      z-index: 7;
+      animation: moonPathGlow 3.6s ease-in-out infinite alternate;
     }
 
-    @keyframes shimmer {
-      0% { transform: scaleX(0.85); opacity: 0.55; }
-      100% { transform: scaleX(1.18); opacity: 0.9; }
+    @media (min-width: 768px) {
+      .moon-water-path {
+        right: 9%;
+        width: 210px;
+      }
+    }
+
+    @keyframes moonPathGlow {
+      0% { opacity: 0.5; transform: scaleX(0.92); }
+      100% { opacity: 0.9; transform: scaleX(1.08); }
     }
 
     /* Sky Lanterns */
     .sky-lantern {
       position: absolute;
-      bottom: 44%;
+      bottom: 50%;
       pointer-events: none;
-      z-index: 3;
+      z-index: 6;
       animation: lanternRise var(--rise-dur, 18s) linear infinite;
       opacity: 0;
     }
 
     @keyframes lanternRise {
-      0% {
-        transform: translateY(0) translateX(0) scale(0.6);
-        opacity: 0;
-      }
+      0% { transform: translateY(0) translateX(0) scale(0.5); opacity: 0; }
       12% { opacity: 0.9; }
-      50% {
-        transform: translateY(-140px) translateX(22px) scale(0.8);
-        opacity: 0.85;
-      }
-      100% {
-        transform: translateY(-300px) translateX(-14px) scale(0.45);
-        opacity: 0;
-      }
+      55% { transform: translateY(-160px) translateX(26px) scale(0.8); opacity: 0.85; }
+      100% { transform: translateY(-340px) translateX(-16px) scale(0.42); opacity: 0; }
     }
 
-    /* Water Waves */
+    /* Perspective River Water Surface */
     .water-surface {
       position: absolute;
-      top: 56%;
+      top: 48%;
       left: 0;
       width: 100%;
-      height: 44%;
-      background: linear-gradient(180deg, #271259 0%, #190a3d 45%, #0d0524 100%);
+      height: 52%;
+      background: linear-gradient(180deg, #32166c 0%, #210e4c 26%, #140733 65%, #09031a 100%);
       overflow: hidden;
-      z-index: 4;
+      z-index: 6;
+    }
+
+    .horizon-glow-line {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 14px;
+      background: linear-gradient(180deg, rgba(251, 191, 36, 0.3) 0%, rgba(167, 139, 250, 0.14) 55%, transparent 100%);
+      pointer-events: none;
     }
 
     .water-wave {
       position: absolute;
       width: 200%;
-      height: 18px;
+      height: 16px;
       left: 0;
-      background: radial-gradient(ellipse at center, rgba(167, 139, 250, 0.16) 0%, transparent 70%);
-      animation: waveDrift 9s linear infinite;
+      background: radial-gradient(ellipse at center, rgba(196, 181, 253, 0.18) 0%, transparent 72%);
+      animation: waveDrift 10s linear infinite;
       pointer-events: none;
     }
 
@@ -208,32 +368,60 @@
       100% { transform: translateX(-50%); }
     }
 
-    /* Pier (ท่าน้ำ) */
-    .pier-container {
+    /* =====================================================================
+       FOREGROUND BOTTOM PIER (ท่าน้ำด้านล่างแบบมีมิติ)
+       ===================================================================== */
+    .bottom-pier-scene {
       position: absolute;
-      bottom: 8px;
+      bottom: 0;
       left: 0;
-      z-index: 22;
+      width: 100%;
+      height: 195px;
+      z-index: 24;
       pointer-events: none;
       display: flex;
       flex-direction: column;
-      align-items: flex-start;
+      align-items: center;
+      justify-content: flex-end;
     }
 
-    /* Avatar Release Animation */
-    .avatar-group-stage {
-      transition: transform 0.7s cubic-bezier(0.34, 1.56, 0.64, 1);
+    .pier-deck-svg {
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100%;
+      max-width: 960px;
+      height: 92px;
+      z-index: 1;
+      filter: drop-shadow(0 -8px 20px rgba(0, 0, 0, 0.7));
     }
 
-    .avatar-releasing {
-      transform: translateY(14px) rotate(4deg) scale(1.03);
+    .pier-characters-stage {
+      position: relative;
+      z-index: 3;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-bottom: 14px;
+      transition: transform 0.75s cubic-bezier(0.34, 1.56, 0.64, 1);
     }
 
-    /* Floating Krathong on River */
+    .pier-characters-stage.releasing {
+      transform: translateY(-10px) scale(0.97);
+    }
+
+    .pier-krathong-holder {
+      margin-top: -26px;
+      z-index: 4;
+      filter: drop-shadow(0 0 18px rgba(251, 191, 36, 0.8));
+      transition: opacity 0.35s ease, transform 0.35s ease;
+    }
+
+    /* Floating Krathongs on River */
     .floating-krathong {
       position: absolute;
       cursor: pointer;
-      z-index: 15;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -242,8 +430,8 @@
     }
 
     .floating-krathong:hover {
-      filter: drop-shadow(0 0 14px rgba(251, 191, 36, 0.95));
-      z-index: 30 !important;
+      filter: drop-shadow(0 0 16px rgba(253, 224, 71, 0.95));
+      z-index: 35 !important;
     }
 
     .krathong-bob {
@@ -252,23 +440,23 @@
 
     @keyframes bobbing {
       0% { transform: translateY(0px) rotate(-2deg); }
-      100% { transform: translateY(-7px) rotate(2deg); }
+      100% { transform: translateY(-6px) rotate(2deg); }
     }
 
     .krathong-label {
-      background: rgba(15, 5, 36, 0.78);
+      background: rgba(11, 3, 28, 0.8);
       border: 1px solid rgba(196, 181, 253, 0.45);
       color: #fef3c7;
       font-size: 11px;
-      padding: 2px 8px;
+      padding: 2px 9px;
       border-radius: 999px;
       white-space: nowrap;
-      max-width: 145px;
+      max-width: 150px;
       overflow: hidden;
       text-overflow: ellipsis;
       margin-bottom: 2px;
       backdrop-filter: blur(4px);
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.45);
     }
 
     .krathong-mine .krathong-label {
@@ -276,70 +464,58 @@
       border-color: #fde68a;
       color: #ffffff;
       font-weight: 600;
-      box-shadow: 0 0 14px rgba(251, 191, 36, 0.8);
+      box-shadow: 0 0 16px rgba(251, 191, 36, 0.85);
     }
 
-    /* Candle Flame Flicker */
     .candle-flame {
       transform-origin: center bottom;
-      animation: flameFlicker 0.6s ease-in-out infinite alternate;
+      animation: flameFlicker 0.55s ease-in-out infinite alternate;
     }
 
     @keyframes flameFlicker {
       0% { transform: scaleY(0.92) skewX(-3deg); opacity: 0.9; }
-      100% { transform: scaleY(1.12) skewX(3deg); opacity: 1; }
+      100% { transform: scaleY(1.14) skewX(3deg); opacity: 1; }
     }
 
-    /* Water Ripple Effect when dropping */
+    /* Launching Krathong from Bottom Pier into River */
+    .launching-krathong {
+      position: absolute;
+      z-index: 30;
+      pointer-events: none;
+      transform: translate(-50%, -50%) scale(1.1);
+      transition: left 1.35s cubic-bezier(0.22, 1, 0.36, 1),
+                  top 1.35s cubic-bezier(0.22, 1, 0.36, 1),
+                  transform 1.35s ease;
+    }
+
     .water-ripple {
       position: absolute;
-      border: 2px solid rgba(253, 230, 138, 0.85);
+      border: 2px solid rgba(253, 230, 138, 0.9);
       border-radius: 50%;
       pointer-events: none;
-      z-index: 18;
-      animation: rippleExpand 1.6s ease-out forwards;
+      z-index: 19;
+      animation: rippleExpand 1.7s ease-out forwards;
     }
 
     @keyframes rippleExpand {
-      0% { width: 16px; height: 8px; opacity: 1; transform: translate(-50%, -50%) scale(0.5); }
-      100% { width: 140px; height: 46px; opacity: 0; transform: translate(-50%, -50%) scale(1.4); }
+      0% { width: 18px; height: 8px; opacity: 1; transform: translate(-50%, -50%) scale(0.5); }
+      100% { width: 165px; height: 50px; opacity: 0; transform: translate(-50%, -50%) scale(1.45); }
     }
 
-    /* Launching Krathong Arc */
-    .launching-krathong {
-      position: absolute;
-      z-index: 26;
-      pointer-events: none;
-      transition: left 1.3s cubic-bezier(0.22, 1, 0.36, 1), top 1.3s cubic-bezier(0.22, 1, 0.36, 1), transform 1.3s ease;
-    }
+    /* Scrollbar & SweetAlert2 Theme */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: rgba(11, 3, 28, 0.6); }
+    ::-webkit-scrollbar-thumb { background: rgba(139, 92, 246, 0.65); border-radius: 999px; }
 
-    /* Custom Scrollbar */
-    ::-webkit-scrollbar {
-      width: 6px;
-      height: 6px;
-    }
-    ::-webkit-scrollbar-track {
-      background: rgba(15, 5, 36, 0.6);
-    }
-    ::-webkit-scrollbar-thumb {
-      background: rgba(139, 92, 246, 0.6);
-      border-radius: 999px;
-    }
-
-    /* SweetAlert2 Custom Theme */
     .swal2-popup {
-      background: linear-gradient(145deg, #1e0b45, #2e1065) !important;
+      background: linear-gradient(145deg, #1b083f, #2d1064) !important;
       color: #f5f3ff !important;
-      border: 1px solid rgba(196, 181, 253, 0.35) !important;
+      border: 1px solid rgba(196, 181, 253, 0.38) !important;
       border-radius: 1.25rem !important;
       font-family: 'Prompt', sans-serif !important;
     }
-    .swal2-title {
-      color: #fde68a !important;
-    }
-    .swal2-html-container {
-      color: #e9d5ff !important;
-    }
+    .swal2-title { color: #fde68a !important; }
+    .swal2-html-container { color: #e9d5ff !important; }
   </style>
 </head>
 <body class="flex flex-col min-h-screen">
@@ -361,13 +537,13 @@
             ลอยกระทงไทยๆ ชุดไทยพระราชนิยม สำนักงานวัฒนธรรมจังหวัดมหาสารคาม
           </h1>
           <p class="text-[11px] sm:text-xs text-purple-200/80 truncate">
-            สืบสานประเพณีลอยกระทงรักษ์โลก แต่งชุดไทยพระราชนิยม 8 แบบ ริมท่าน้ำออนไลน์
+            สืบสานมรดกภูมิปัญญาชุดไทยพระราชนิยมทั้ง 8 แบบ และประเพณีลอยกระทงรักษ์โลก
           </p>
         </div>
       </div>
 
       <div class="flex items-center gap-2 flex-shrink-0">
-        <div class="px-3 py-1.5 rounded-full bg-purple-900/70 border border-amber-300/40 text-xs sm:text-sm flex items-center gap-1.5">
+        <div class="px-3 py-1.5 rounded-full bg-purple-900/75 border border-amber-300/45 text-xs sm:text-sm flex items-center gap-1.5">
           <i class="fa-solid fa-fire-flame-curved text-amber-400"></i>
           <span class="hidden sm:inline text-purple-200">ลอยแล้ว</span>
           <span id="total-count" class="font-bold text-amber-300">0</span>
@@ -376,17 +552,17 @@
 
         <button
           onclick="openDressGuide()"
-          class="px-3 py-1.5 rounded-full bg-purple-700/70 hover:bg-purple-600 border border-purple-300/30 text-xs sm:text-sm font-medium transition flex items-center gap-1.5"
+          class="px-3 py-1.5 rounded-full bg-purple-700/75 hover:bg-purple-600 border border-purple-300/30 text-xs sm:text-sm font-medium transition flex items-center gap-1.5"
           title="ความรู้ชุดไทยพระราชนิยม 8 แบบ"
         >
-          <i class="fa-solid fa-book-open text-amber-300"></i>
-          <span class="hidden md:inline">ชุดไทย 8 แบบ</span>
+          <i class="fa-solid fa-crown text-amber-300"></i>
+          <span class="hidden md:inline">ความรู้ชุดไทย 8 แบบ</span>
         </button>
 
         <button
           id="sound-toggle-btn"
           onclick="toggleSound()"
-          class="w-9 h-9 rounded-full bg-purple-800/70 hover:bg-purple-700 border border-purple-300/30 flex items-center justify-center transition"
+          class="w-9 h-9 rounded-full bg-purple-800/75 hover:bg-purple-700 border border-purple-300/30 flex items-center justify-center transition"
           title="เปิด/ปิดเสียงเอฟเฟกต์"
         >
           <i id="sound-icon" class="fa-solid fa-volume-high text-amber-300 text-sm"></i>
@@ -395,7 +571,7 @@
     </div>
   </header>
 
-  <!-- Main Interactive Waterfront Stage (ท่าน้ำ) -->
+  <!-- 3D Perspective Waterfront Stage (ฉากพระจันทร์-พระธาตุอยู่ด้านบน ท่าน้ำอยู่ด้านล่าง) -->
   <section id="river-stage">
     <!-- Fireworks Canvas -->
     <canvas id="fireworks-canvas" class="absolute inset-0 w-full h-full pointer-events-none z-20"></canvas>
@@ -403,88 +579,151 @@
     <!-- Stars Layer -->
     <div id="stars-layer" class="absolute inset-0 pointer-events-none z-1"></div>
 
-    <!-- Full Moon & Reflection -->
-    <div class="full-moon"></div>
-    <div class="moon-reflection"></div>
+    <!-- Soft Night Clouds -->
+    <div class="night-cloud" style="top: 64px; left: 10%; width: 220px; height: 42px; --cdur: 36s;"></div>
+    <div class="night-cloud" style="top: 112px; right: 16%; width: 260px; height: 48px; --cdur: 42s; animation-direction: reverse;"></div>
 
-    <!-- Sky Lanterns Layer -->
-    <div id="lanterns-layer" class="absolute inset-0 pointer-events-none z-3"></div>
-
-    <!-- Distant Thai Temple / Riverbank Silhouette -->
-    <svg class="absolute top-[37%] left-0 w-full h-[20%] z-3 pointer-events-none opacity-70" viewBox="0 0 1440 200" preserveAspectRatio="none">
-      <path d="M0,200 L0,145 Q120,120 260,140 L310,140 L330,85 L340,42 L350,85 L370,140 L450,142 Q600,115 760,145 L840,145 L860,110 L890,95 L920,110 L940,145 L1080,138 L1100,78 L1112,28 L1124,78 L1144,138 Q1290,120 1440,145 L1440,200 Z" fill="#170833"/>
-      <!-- Warm Temple Lights -->
-      <circle cx="340" cy="115" r="3" fill="#fbbf24" opacity="0.8"/>
-      <circle cx="890" cy="128" r="3" fill="#fbbf24" opacity="0.7"/>
-      <circle cx="1112" cy="108" r="3.5" fill="#fbbf24" opacity="0.85"/>
-    </svg>
-
-    <!-- Water Surface & Floating Krathongs Layer -->
-    <div id="water-surface" class="water-surface">
-      <div class="water-wave" style="top: 16%; animation-duration: 11s;"></div>
-      <div class="water-wave" style="top: 44%; animation-duration: 8s; animation-direction: reverse;"></div>
-      <div class="water-wave" style="top: 74%; animation-duration: 13s;"></div>
-      <div id="krathongs-river-layer" class="absolute inset-0"></div>
+    <!-- Giant Luminous Full Moon -->
+    <div class="moon-wrapper">
+      <div class="moon-aura"></div>
+      <div class="moon-body">
+        <div class="moon-crater" style="top:18%;left:22%;width:28%;height:26%;"></div>
+        <div class="moon-crater" style="top:46%;left:54%;width:32%;height:30%;"></div>
+        <div class="moon-crater" style="top:58%;left:20%;width:20%;height:18%;"></div>
+        <div class="moon-crater" style="top:24%;left:60%;width:18%;height:16%;"></div>
+      </div>
     </div>
 
-    <!-- Thai Wooden Pier & Live Dressed Characters (ท่าน้ำ) -->
-    <div class="pier-container">
-      <!-- Hanging Pier Pavilion Lanterns -->
-      <div class="relative ml-2 sm:ml-6 mb-[-10px] flex items-end gap-2">
-        <!-- Thai Wooden Pole & Lantern -->
-        <svg class="w-10 h-28 sm:w-12 sm:h-32 -mr-3 drop-shadow-lg" viewBox="0 0 60 150">
-          <rect x="8" y="15" width="7" height="135" fill="#3b1d14" />
-          <path d="M12,24 Q35,18 44,32" stroke="#5c2d1e" stroke-width="4" fill="none" />
-          <line x1="42" y1="32" x2="42" y2="44" stroke="#fbbf24" stroke-width="2" />
-          <ellipse cx="42" cy="58" rx="11" ry="15" fill="url(#pierLanternGrad)" />
-          <rect x="36" y="42" width="12" height="4" rx="1" fill="#78350f" />
-          <rect x="36" y="72" width="12" height="4" rx="1" fill="#78350f" />
-          <line x1="42" y1="76" x2="42" y2="88" stroke="#f59e0b" stroke-width="2" />
-          <defs>
-            <radialGradient id="pierLanternGrad" cx="50%" cy="45%" r="55%">
-              <stop offset="0%" stop-color="#fef9c3" />
-              <stop offset="60%" stop-color="#f59e0b" />
-              <stop offset="100%" stop-color="#b45309" />
-            </radialGradient>
-          </defs>
-        </svg>
+    <!-- Sky Lanterns Layer -->
+    <div id="lanterns-layer" class="absolute inset-0 pointer-events-none z-6"></div>
 
-        <!-- Dressed Characters Standing on Pier -->
-        <div id="pier-avatars" class="avatar-group-stage flex items-end -space-x-4 sm:-space-x-3 pb-1">
+    <!-- Phra That Landmark (พระธาตุประกอบฉากริมฝั่งน้ำ) -->
+    <div class="phra-that-backdrop">
+      <div class="phra-that-glow"></div>
+      <div class="phra-that-img-wrap">
+        <img
+          src="https://i.postimg.cc/TP0LMfJL/Gemini-Generated-Image-v5p0o9v5p0o9v5p0.jpg"
+          alt="พระธาตุประกอบฉากลอยกระทง"
+          class="phra-that-img"
+        />
+      </div>
+    </div>
+
+    <!-- Distant Riverbank Treeline Silhouette framing the Phra That -->
+    <svg class="absolute top-[37%] left-0 w-full h-[13%] z-6 pointer-events-none" viewBox="0 0 1440 160" preserveAspectRatio="none">
+      <path d="M0,160 L0,95 Q90,70 185,92 Q270,76 355,105 Q460,122 570,128 Q700,132 840,120 Q950,95 1060,104 Q1180,76 1300,98 Q1380,82 1440,94 L1440,160 Z" fill="#13062b" opacity="0.92"/>
+      <!-- Distant riverside golden lights -->
+      <circle cx="145" cy="128" r="2.6" fill="#fbbf24" opacity="0.85"/>
+      <circle cx="290" cy="134" r="2.2" fill="#fde047" opacity="0.75"/>
+      <circle cx="520" cy="144" r="3" fill="#fbbf24" opacity="0.9"/>
+      <circle cx="640" cy="146" r="2.8" fill="#fde047" opacity="0.85"/>
+      <circle cx="1010" cy="135" r="2.5" fill="#fbbf24" opacity="0.8"/>
+      <circle cx="1220" cy="130" r="2.8" fill="#fde047" opacity="0.8"/>
+    </svg>
+
+    <!-- Phra That Shimmering Reflection on Water -->
+    <div class="phra-that-reflection">
+      <img
+        src="https://i.postimg.cc/TP0LMfJL/Gemini-Generated-Image-v5p0o9v5p0o9v5p0.jpg"
+        alt=""
+        class="w-full h-full object-cover object-center"
+      />
+    </div>
+
+    <!-- Moonlight Reflection Path on Water -->
+    <div class="moon-water-path"></div>
+
+    <!-- Perspective River Surface & Floating Krathongs -->
+    <div id="water-surface" class="water-surface">
+      <div class="horizon-glow-line"></div>
+      <div class="water-wave" style="top: 12%; animation-duration: 12s; opacity: 0.7;"></div>
+      <div class="water-wave" style="top: 32%; animation-duration: 9s; animation-direction: reverse;"></div>
+      <div class="water-wave" style="top: 56%; animation-duration: 14s;"></div>
+      <div class="water-wave" style="top: 76%; animation-duration: 11s; animation-direction: reverse;"></div>
+      <div id="krathongs-river-layer" class="absolute inset-0 z-10"></div>
+    </div>
+
+    <!-- Foreground Bottom Pier (ท่าน้ำด้านล่างตรงกลาง พร้อมตัวละครและกระทง) -->
+    <div class="bottom-pier-scene">
+      <!-- Left & Right Thai Wooden Lantern Posts framing the Pier -->
+      <svg class="hidden sm:block absolute bottom-2 left-[4%] lg:left-[12%] w-16 h-44 z-20 drop-shadow-xl" viewBox="0 0 70 180">
+        <rect x="14" y="18" width="9" height="162" fill="#3a1c13" />
+        <path d="M18,28 Q45,18 55,36" stroke="#5c2d1e" stroke-width="5" fill="none" />
+        <line x1="53" y1="36" x2="53" y2="50" stroke="#fbbf24" stroke-width="2" />
+        <ellipse cx="53" cy="68" rx="13" ry="18" fill="url(#pierLanternL)" />
+        <rect x="46" y="48" width="14" height="4.5" rx="1" fill="#78350f" />
+        <rect x="46" y="85" width="14" height="4.5" rx="1" fill="#78350f" />
+        <line x1="53" y1="90" x2="53" y2="106" stroke="#f59e0b" stroke-width="2" />
+        <defs>
+          <radialGradient id="pierLanternL" cx="50%" cy="45%" r="55%">
+            <stop offset="0%" stop-color="#fffbeb" />
+            <stop offset="55%" stop-color="#fbbf24" />
+            <stop offset="100%" stop-color="#b45309" />
+          </radialGradient>
+        </defs>
+      </svg>
+
+      <svg class="hidden sm:block absolute bottom-2 right-[4%] lg:right-[12%] w-16 h-44 z-20 drop-shadow-xl" viewBox="0 0 70 180">
+        <rect x="47" y="18" width="9" height="162" fill="#3a1c13" />
+        <path d="M52,28 Q25,18 15,36" stroke="#5c2d1e" stroke-width="5" fill="none" />
+        <line x1="17" y1="36" x2="17" y2="50" stroke="#fbbf24" stroke-width="2" />
+        <ellipse cx="17" cy="68" rx="13" ry="18" fill="url(#pierLanternR)" />
+        <rect x="10" y="48" width="14" height="4.5" rx="1" fill="#78350f" />
+        <rect x="10" y="85" width="14" height="4.5" rx="1" fill="#78350f" />
+        <line x1="17" y1="90" x2="17" y2="106" stroke="#f59e0b" stroke-width="2" />
+        <defs>
+          <radialGradient id="pierLanternR" cx="50%" cy="45%" r="55%">
+            <stop offset="0%" stop-color="#fffbeb" />
+            <stop offset="55%" stop-color="#fbbf24" />
+            <stop offset="100%" stop-color="#b45309" />
+          </radialGradient>
+        </defs>
+      </svg>
+
+      <!-- Live Characters & Held Krathong at Pier Center -->
+      <div id="pier-characters-stage" class="pier-characters-stage">
+        <div id="pier-avatars" class="flex items-end justify-center -space-x-3 sm:-space-x-2">
           <!-- Rendered dynamically by JS -->
         </div>
-
-        <!-- Krathong Preview Held/Placed at Pier Edge -->
-        <div id="pier-krathong-preview" class="w-16 h-16 sm:w-20 sm:h-20 -ml-3 mb-0.5 drop-shadow-[0_0_12px_rgba(251,191,36,0.65)] transition-all duration-500">
+        <div id="pier-krathong-preview" class="pier-krathong-holder w-20 h-18 sm:w-24 sm:h-22">
           <!-- Rendered dynamically by JS -->
         </div>
       </div>
 
-      <!-- Wooden Pier Deck -->
-      <div class="relative w-[260px] sm:w-[370px] h-14 sm:h-16">
-        <svg class="w-full h-full" viewBox="0 0 380 75" preserveAspectRatio="none">
-          <!-- Pier Support Pilings -->
-          <rect x="28" y="28" width="16" height="47" fill="#29120c" />
-          <rect x="135" y="28" width="16" height="47" fill="#29120c" />
-          <rect x="245" y="28" width="16" height="47" fill="#29120c" />
-          <rect x="330" y="28" width="14" height="47" fill="#29120c" />
-          <!-- Top Planks -->
-          <polygon points="0,8 355,8 378,24 0,24" fill="#5e3023" stroke="#3b1d14" stroke-width="1.5"/>
-          <polygon points="0,24 378,24 378,36 0,36" fill="#3f1e15" />
-          <!-- Plank lines -->
-          <line x1="60" y1="8" x2="65" y2="24" stroke="#3b1d14" stroke-width="1.5" />
-          <line x1="120" y1="8" x2="128" y2="24" stroke="#3b1d14" stroke-width="1.5" />
-          <line x1="185" y1="8" x2="195" y2="24" stroke="#3b1d14" stroke-width="1.5" />
-          <line x1="250" y1="8" x2="263" y2="24" stroke="#3b1d14" stroke-width="1.5" />
-          <line x1="310" y1="8" x2="326" y2="24" stroke="#3b1d14" stroke-width="1.5" />
-          <!-- Gold Thai Ornament Trim -->
-          <line x1="0" y1="25" x2="378" y2="25" stroke="#d97706" stroke-width="1.5" opacity="0.65"/>
-        </svg>
-      </div>
+      <!-- 3D Perspective Wooden Pier Deck -->
+      <svg class="pier-deck-svg" viewBox="0 0 960 110" preserveAspectRatio="none">
+        <!-- Deep Shadow on Water under Pier -->
+        <ellipse cx="480" cy="40" rx="340" ry="18" fill="#050110" opacity="0.7" />
+        <!-- Trapezoid Perspective Pier Top -->
+        <polygon points="155,22 805,22 955,110 5,110" fill="url(#pierWoodTop)" stroke="#2b120b" stroke-width="2" />
+        <!-- Front/Upper Edge Lip -->
+        <rect x="155" y="18" width="650" height="8" rx="2" fill="#7c3f2c" stroke="#3b1a10" stroke-width="1.5" />
+        <!-- Gold Thai Decorative Trim along Pier Edge -->
+        <line x1="160" y1="22" x2="800" y2="22" stroke="#fbbf24" stroke-width="2" opacity="0.7" />
+        <!-- Perspective Horizontal Plank Lines -->
+        <line x1="125" y1="40" x2="835" y2="40" stroke="#2d130b" stroke-width="2" opacity="0.8" />
+        <line x1="88" y1="62" x2="872" y2="62" stroke="#2d130b" stroke-width="2.2" opacity="0.85" />
+        <line x1="45" y1="86" x2="915" y2="86" stroke="#2d130b" stroke-width="2.5" opacity="0.9" />
+        <!-- Perspective Vertical Plank Joints -->
+        <line x1="280" y1="26" x2="215" y2="110" stroke="#2d130b" stroke-width="1.8" opacity="0.7" />
+        <line x1="415" y1="26" x2="395" y2="110" stroke="#2d130b" stroke-width="1.8" opacity="0.7" />
+        <line x1="545" y1="26" x2="565" y2="110" stroke="#2d130b" stroke-width="1.8" opacity="0.7" />
+        <line x1="680" y1="26" x2="745" y2="110" stroke="#2d130b" stroke-width="1.8" opacity="0.7" />
+        <!-- Wooden Pier Corner Posts -->
+        <rect x="148" y="4" width="22" height="32" rx="4" fill="#4a2115" stroke="#d97706" stroke-width="1.5" />
+        <rect x="790" y="4" width="22" height="32" rx="4" fill="#4a2115" stroke="#d97706" stroke-width="1.5" />
+        <defs>
+          <linearGradient id="pierWoodTop" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#693424" />
+            <stop offset="45%" stop-color="#4e2418" />
+            <stop offset="100%" stop-color="#2c120b" />
+          </linearGradient>
+        </defs>
+      </svg>
     </div>
 
     <!-- Floating Hint Badge -->
-    <div class="absolute top-3 left-3 z-25 bg-purple-950/70 backdrop-blur-md border border-purple-300/30 rounded-full px-3 py-1 text-[11px] sm:text-xs text-purple-100 flex items-center gap-1.5">
+    <div class="absolute top-3 left-3 z-30 bg-purple-950/75 backdrop-blur-md border border-purple-300/30 rounded-full px-3 py-1 text-[11px] sm:text-xs text-purple-100 flex items-center gap-1.5">
       <i class="fa-solid fa-hand-pointer text-amber-300"></i>
       <span>แตะที่กระทงในแม่น้ำเพื่ออ่านคำอธิษฐาน</span>
     </div>
@@ -492,7 +731,7 @@
     <!-- Refresh River Button -->
     <button
       onclick="loadKrathongsFromGAS(true)"
-      class="absolute bottom-3 right-3 z-25 bg-purple-900/80 hover:bg-purple-700 backdrop-blur-md border border-purple-300/35 rounded-full px-3 py-1.5 text-xs text-purple-100 flex items-center gap-1.5 shadow-lg transition"
+      class="absolute bottom-3 right-3 z-30 bg-purple-900/85 hover:bg-purple-700 backdrop-blur-md border border-purple-300/40 rounded-full px-3.5 py-1.5 text-xs text-purple-100 flex items-center gap-1.5 shadow-lg transition"
     >
       <i id="refresh-icon" class="fa-solid fa-rotate text-amber-300"></i>
       <span>อัปเดตสายน้ำ</span>
@@ -503,7 +742,7 @@
   <main class="flex-1 max-w-7xl w-full mx-auto px-3 sm:px-6 py-6">
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
 
-      <!-- Left/Top: Step 1 & 2 (Mode + Dress Customization) -->
+      <!-- Left/Top: Step 1 & 2 (Mode + Accurate 8 Royal Thai Dresses) -->
       <div class="lg:col-span-7 space-y-5">
 
         <!-- Step 1: Select Floating Mode -->
@@ -538,7 +777,7 @@
             </button>
           </div>
 
-          <!-- Group Count Selector (Only visible in Group mode) -->
+          <!-- Group Count Selector -->
           <div id="group-count-box" class="hidden mt-3 pt-3 border-t border-purple-400/20 flex items-center justify-between">
             <span class="text-xs sm:text-sm text-purple-200">จำนวนสมาชิกในกลุ่ม:</span>
             <div class="flex gap-2">
@@ -548,43 +787,37 @@
           </div>
         </div>
 
-        <!-- Step 2: Dress Up with 8 Royal Thai Dresses -->
+        <!-- Step 2: Dress Up with Accurate 8 Royal Thai Dresses -->
         <div class="glass-panel rounded-2xl p-4 sm:p-5">
           <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
             <h2 class="text-base sm:text-lg font-semibold text-amber-300 flex items-center gap-2">
               <span class="w-6 h-6 rounded-full bg-purple-600 text-white text-xs flex items-center justify-center font-bold">2</span>
-              แต่งกายชุดไทยพระราชนิยม 8 แบบ
+              แต่งกายชุดไทยพระราชนิยมทั้ง 8 แบบ
             </h2>
             <span class="text-xs text-purple-200/80">แสดงผลทันทีที่ท่าน้ำด้านบน</span>
           </div>
 
-          <!-- Character Slot Tabs (when > 1 person) -->
-          <div id="character-tabs" class="flex flex-wrap gap-2 mb-4">
-            <!-- Rendered by JS -->
-          </div>
+          <!-- Character Slot Tabs -->
+          <div id="character-tabs" class="flex flex-wrap gap-2 mb-4"></div>
 
           <!-- Fabric Color Palette -->
           <div class="mb-4">
             <label class="block text-xs text-purple-200 mb-2">เลือกโทนสีผ้าไหมไทย:</label>
-            <div id="color-palette" class="flex flex-wrap gap-2">
-              <!-- Rendered by JS -->
-            </div>
+            <div id="color-palette" class="flex flex-wrap gap-2"></div>
           </div>
 
-          <!-- 8 Royal Thai Dresses Grid (+ Optional Male Royal Attire) -->
-          <div id="outfit-grid" class="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
-            <!-- Rendered by JS -->
-          </div>
+          <!-- 8 Royal Thai Dresses + Male Royal Attire Grid -->
+          <div id="outfit-grid" class="grid grid-cols-2 sm:grid-cols-3 gap-2.5"></div>
 
-          <!-- Active Outfit Cultural Note -->
-          <div id="outfit-info-banner" class="mt-4 p-3 rounded-xl bg-purple-950/70 border border-amber-300/30 text-xs text-purple-100 leading-relaxed flex items-start gap-2.5">
-            <i class="fa-solid fa-crown text-amber-300 mt-0.5"></i>
+          <!-- Active Outfit Accurate Cultural Note -->
+          <div id="outfit-info-banner" class="mt-4 p-3.5 rounded-xl bg-purple-950/75 border border-amber-300/35 text-xs text-purple-100 leading-relaxed flex items-start gap-2.5">
+            <i class="fa-solid fa-crown text-amber-300 mt-0.5 text-sm"></i>
             <div id="outfit-info-text"></div>
           </div>
         </div>
       </div>
 
-      <!-- Right/Bottom: Step 3 & 4 (Krathong Selection + Wish Form + Launch) -->
+      <!-- Right/Bottom: Step 3 & 4 (Krathong Selection + Wish Form + Recent Feed) -->
       <div class="lg:col-span-5 space-y-5">
 
         <!-- Step 3: Krathong Style -->
@@ -593,9 +826,7 @@
             <span class="w-6 h-6 rounded-full bg-purple-600 text-white text-xs flex items-center justify-center font-bold">3</span>
             เลือกแบบกระทงรักษ์โลก
           </h2>
-          <div id="krathong-grid" class="grid grid-cols-3 gap-2.5">
-            <!-- Rendered by JS -->
-          </div>
+          <div id="krathong-grid" class="grid grid-cols-3 gap-2.5"></div>
         </div>
 
         <!-- Step 4: Name & Wish Form -->
@@ -644,7 +875,7 @@
             <button
               type="submit"
               id="btn-launch"
-              class="w-full py-3.5 px-6 rounded-xl font-bold text-base text-purple-950 bg-gradient-to-r from-amber-300 via-yellow-400 to-amber-500 hover:from-amber-200 hover:to-amber-400 shadow-lg shadow-amber-500/30 active:scale-[0.98] transition flex items-center justify-center gap-2"
+              class="w-full py-3.5 px-6 rounded-xl font-bold text-base text-purple-950 bg-gradient-to-r from-amber-300 via-yellow-400 to-amber-500 hover:from-amber-200 hover:to-amber-400 shadow-lg shadow-amber-500/35 active:scale-[0.98] transition flex items-center justify-center gap-2"
             >
               <i class="fa-solid fa-sparkles"></i>
               <span>จุดธูปเทียนและปล่อยกระทงลงน้ำ</span>
@@ -684,105 +915,116 @@
 
   <script>
     /*************************************************************************
-     * การตั้งค่าเชื่อมต่อ Google Apps Script Web App
-     * ให้นำ URL ที่ได้จากการ Deploy Google Apps Script (Web App) มาวางด้านล่าง
+     * เชื่อมต่อ Google Apps Script Web App URL (ตั้งค่าให้เรียบร้อยแล้ว)
      *************************************************************************/
-    const GAS_WEB_APP_URL = 'YOUR_GAS_WEB_APP_URL_HERE';
+    const GAS_WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbx6nBIhPUcM2LcUlaceITNBkwf6z_xGADg4ZgPf8lBt-hSdM1Nx_mrT10W8P1EAY8Rsbg/exec';
 
-    // ชุดไทยพระราชนิยม 8 แบบ + ชุดไทยพระราชทาน (ชาย) สำหรับโหมดคู่/กลุ่ม
+    /*************************************************************************
+     * ข้อมูลชุดไทยพระราชนิยม 8 แบบ (ถูกต้องตามกรมส่งเสริมวัฒนธรรมและพิพิธภัณฑ์ผ้าฯ)
+     * + เสื้อไทยพระราชทาน (ชาย) สำหรับร่วมลอยคู่/กลุ่ม
+     *************************************************************************/
     const OUTFITS = [
       {
         id: 'rueanton',
         name: 'ชุดไทยเรือนต้น',
         short: 'เรือนต้น',
-        badge: 'แบบที่ 1',
+        badge: 'แบบที่ 1 • ลำลอง',
+        origin: 'ตั้งชื่อตามพระตำหนักเรือนต้น ในพระราชวังดุสิต',
         type: 'female',
-        desc: 'ชุดไทยลำลอง เสื้อแขนกระบอก คอกลมตื้น ไม่มีปก ผ่าอก นุ่งคู่กับผ้าซิ่นป้ายลายขวาง เหมาะสำหรับงานบุญและงานเทศกาล'
+        desc: 'เสื้อคอกลมตื้นไม่มีขอบ แขนกระบอกสามส่วน ผ่าอกติดกระดุม 5 เม็ด แยกชิ้นกับผ้าซิ่น นุ่งซิ่นป้ายข้างลายขวางหรือมีเชิง (ไม่คาดเข็มขัด) เหมาะสำหรับงานบุญ งานเทศกาล และโอกาสลำลอง'
       },
       {
         id: 'chitralada',
         name: 'ชุดไทยจิตรลดา',
         short: 'จิตรลดา',
-        badge: 'แบบที่ 2',
+        badge: 'แบบที่ 2 • พิธีกลางวัน',
+        origin: 'ตั้งชื่อตามพระตำหนักจิตรลดารโหฐาน',
         type: 'female',
-        desc: 'ชุดไทยพิธีกลางวัน เสื้อแขนยาว คอตั้ง ผ่าอกติดกระดุม 5 เม็ด นุ่งคู่กับผ้าซิ่นป้ายมีเชิง สุภาพสง่างาม'
+        desc: 'เสื้อคอกลมมีขอบตั้งประมาณ 2.5 ซม. แขนกระบอกยาวจรดข้อมือ ผ่าหน้าติดกระดุม 5 เม็ด แยกชิ้นกับผ้าซิ่นป้ายข้างมีเชิง (ไม่คาดเข็มขัด) สุภาพสง่างาม เหมาะสำหรับงานพิธีกลางวัน'
       },
       {
         id: 'amarin',
         name: 'ชุดไทยอมรินทร์',
         short: 'อมรินทร์',
-        badge: 'แบบที่ 3',
+        badge: 'แบบที่ 3 • พิธีค่ำ',
+        origin: 'ตั้งชื่อตามพระที่นั่งอมรินทรวินิจฉัยมไหสูรยพิมาน',
         type: 'female',
-        desc: 'รูปแบบคล้ายชุดไทยจิตรลดา แต่ตัดเย็บด้วยผ้าไหมยกทองทั้งองค์ ประดับเครื่องประดับหรูหราสำหรับงานพิธีช่วงค่ำ'
+        desc: 'รูปแบบตัดเย็บเหมือนชุดไทยจิตรลดา (แยกชิ้น คอตั้ง แขนยาว ผ่าหน้า 5 กระดุม ซิ่นป้ายข้าง ไม่คาดเข็มขัด) แต่ใช้ผ้าไหมยกทองทั้งองค์ ประดับเครื่องประดับหรูหราสำหรับงานพิธีกลางคืน'
       },
       {
         id: 'boromphiman',
         name: 'ชุดไทยบรมพิมาน',
         short: 'บรมพิมาน',
-        badge: 'แบบที่ 4',
+        badge: 'แบบที่ 4 • ทางการสูง',
+        origin: 'ตั้งชื่อตามพระที่นั่งบรมพิมาน ในพระบรมมหาราชวัง',
         type: 'female',
-        desc: 'เสื้อแขนยาวคอตั้ง ผ่าหลัง เย็บติดผ้าซิ่นจีบหน้านางมีชายพก คาดเข็มขัดไทย เหมาะสำหรับงานพิธีเต็มยศ'
+        desc: 'เสื้อคอกลมมีขอบตั้ง แขนกระบอกยาวจรดข้อมือ ผ่าหลังติดซิป (ด้านหน้าเรียบไม่มีกระดุม) เย็บติดกับผ้าซิ่นยกทองจีบหน้านางมีชายพก คาดเข็มขัดไทย เหมาะสำหรับงานพิธีทางการและงานราตรีสโมสร'
       },
       {
         id: 'chakri',
         name: 'ชุดไทยจักรี',
         short: 'จักรี',
-        badge: 'แบบที่ 5',
+        badge: 'แบบที่ 5 • พิธีค่ำ',
+        origin: 'ตั้งชื่อตามพระที่นั่งจักรีมหาปราสาท',
         type: 'female',
-        desc: 'ห่มสไบเฉียงเปิดไหล่ข้างหนึ่ง นุ่งผ้าซิ่นจีบหน้านางผ้ายกทอง ประดับสร้อยสังวาลและเข็มขัดไทย อ่อนช้อยงดงาม'
+        desc: 'ท่อนบนเปิดไหล่ขวา ห่มสไบเฉียงพาดไหล่ซ้าย 1 ชั้น ทิ้งชายสไบยาวด้านหลัง ผ้าซิ่นยกดิ้นทอง/เงิน จีบหน้านางมีชายพก คาดเข็มขัดไทย อ่อนช้อยงดงามสำหรับงานพิธีกลางคืน'
       },
       {
         id: 'dusit',
         name: 'ชุดไทยดุสิต',
         short: 'ดุสิต',
-        badge: 'แบบที่ 6',
+        badge: 'แบบที่ 6 • ราตรีเต็มยศ',
+        origin: 'ตั้งชื่อตามพระที่นั่งดุสิตมหาปราสาท',
         type: 'female',
-        desc: 'เสื้อคอกว้างไม่มีแขน ปักดิ้นเลื่อมประณีต นุ่งผ้าซิ่นจีบหน้านาง สำหรับงานราตรีสโมสรแบบสากล'
-      },
-      {
-        id: 'chakkraphat',
-        name: 'ชุดไทยจักรพรรดิ',
-        short: 'จักรพรรดิ',
-        badge: 'แบบที่ 7',
-        type: 'female',
-        desc: 'ห่มสไบสองชั้น (สไบอัดพลีทด้านใน ทับด้วยสไบปักดิ้นทองด้านนอก) นุ่งผ้ายกทองจีบหน้านาง สง่างามเต็มยศ'
+        desc: 'เสื้อแขนกุด คอกลมคว้านกว้าง ผ่าหลัง ปักลวดลายประณีตด้วยดิ้นเงิน ดิ้นทอง ลูกปัด หรือเลื่อม สวมคู่ผ้าซิ่นยกทองจีบหน้านางมีชายพก คาดเข็มขัดไทย ใช้แทนชุดราตรีเต็มยศตอนค่ำ'
       },
       {
         id: 'siwalai',
         name: 'ชุดไทยศิวาลัย',
         short: 'ศิวาลัย',
-        badge: 'แบบที่ 8',
+        badge: 'แบบที่ 7 • เต็มยศ',
+        origin: 'ตั้งชื่อตามพระที่นั่งศิวาลัยมหาปราสาท',
         type: 'female',
-        desc: 'เสื้อแขนยาวคอตั้งเย็บติดผ้าซิ่นจีบหน้านาง ห่มสไบทับบ่าซ้ายทิ้งชายยาว หรูหราภูมิฐานเหมาะกับงานราตรีอากาศเย็น'
+        desc: 'ตัวเสื้อและผ้าซิ่นเหมือนชุดไทยบรมพิมาน (แขนยาวคอตั้ง ผ่าหลัง ซิ่นยกทองจีบหน้านาง) แต่ห่มสะพัก/สไบปักลายไทยทับบ่าซ้ายอีก 1 ชั้น โดยไม่ต้องมีแพรจีบรองพื้น คาดเข็มขัดไทย'
+      },
+      {
+        id: 'chakkraphat',
+        name: 'ชุดไทยจักรพรรดิ',
+        short: 'จักรพรรดิ',
+        badge: 'แบบที่ 8 • เต็มยศสูงสุด',
+        origin: 'ตั้งชื่อตามพระที่นั่งจักรพรรดิพิมาน',
+        type: 'female',
+        desc: 'ท่อนบนเปิดไหล่ขวา ห่มสไบ 2 ชั้น (ชั้นในสไบอัดจีบรองพื้น ชั้นนอกห่มสะพักปักดิ้นทองทับ) นุ่งซิ่นยกทองจีบหน้านาง คาดเข็มขัดไทย ประดับเครื่องประดับเต็มยศครบสำรับสำหรับพระราชพิธีสำคัญ'
       },
       {
         id: 'male_royal',
-        name: 'ชุดไทยพระราชทาน (ชาย)',
+        name: 'เสื้อไทยพระราชทาน (ชาย)',
         short: 'ชายพระราชทาน',
-        badge: 'ร่วมลอยคู่/กลุ่ม',
+        badge: 'เสริม • ฝ่ายชาย',
+        origin: 'เครื่องแต่งกายประจำชาติสุภาพบุรุษไทย (แบบแขนยาวคาดเอว)',
         type: 'male',
-        desc: 'เสื้อไทยพระราชทานแขนยาวคอตั้งผ้าไหมไทยสุภาพ นุ่งคู่กับโจงกระเบนหรือกางเกงสากล สำหรับผู้ร่วมลอยคู่หรือกลุ่ม'
+        desc: 'เสื้อคอตั้งสูง ผ่าอกติดกระดุม 5 เม็ด แขนยาว พร้อมผ้าคาดเอวผูกเงื่อนทางซ้ายมือ นุ่งคู่กางเกงสุภาพหรือโจงกระเบน สำหรับผู้ร่วมลอยกระทงเป็นคู่หรือเป็นกลุ่ม'
       }
     ];
 
     // โทนสีผ้าไหมไทย
     const FABRIC_COLORS = [
-      { id: 'purple', name: 'ม่วงเม็ดมะปราง', main: '#7c3aed', dark: '#4c1d95', accent: '#fbbf24' },
-      { id: 'pink', name: 'ชมพูกลีบบัว', main: '#db2777', dark: '#831843', accent: '#fde68a' },
-      { id: 'gold', name: 'ทองอำพัน', main: '#d97706', dark: '#78350f', accent: '#fef08a' },
-      { id: 'blue', name: 'ฟ้าครามอีสาน', main: '#2563eb', dark: '#1e3a8a', accent: '#fcd34d' },
-      { id: 'emerald', name: 'เขียวมรกต', main: '#059669', dark: '#064e3b', accent: '#fde047' },
-      { id: 'crimson', name: 'แดงทับทิม', main: '#dc2626', dark: '#7f1d1d', accent: '#fbbf24' }
+      { id: 'purple', name: 'ม่วงเม็ดมะปราง', main: '#7c3aed', dark: '#4c1d95', light: '#c4b5fd', accent: '#fbbf24' },
+      { id: 'pink', name: 'ชมพูกลีบบัว', main: '#db2777', dark: '#831843', light: '#fbcfe8', accent: '#fde68a' },
+      { id: 'gold', name: 'ทองอำพัน', main: '#d97706', dark: '#78350f', light: '#fef08a', accent: '#fffbeb' },
+      { id: 'blue', name: 'ฟ้าครามอีสาน', main: '#2563eb', dark: '#1e3a8a', light: '#bfdbfe', accent: '#fcd34d' },
+      { id: 'emerald', name: 'เขียวมรกต', main: '#059669', dark: '#064e3b', light: '#a7f3d0', accent: '#fde047' },
+      { id: 'crimson', name: 'แดงทับทิม', main: '#dc2626', dark: '#7f1d1d', light: '#fecaca', accent: '#fbbf24' }
     ];
 
-    // แบบกระทง 6 สไตล์
+    // แบบกระทงรักษ์โลก 6 สไตล์
     const KRATHONGS = [
-      { id: 'banana_leaf', name: 'ใบตองดั้งเดิม', desc: 'กลีบใบตองประณีตดอกดาวเรือง' },
-      { id: 'lotus', name: 'บัวหลวงสีชมพู', desc: 'กลีบบัวซ้อนอ่อนหวาน' },
-      { id: 'royal_purple', name: 'กระทงม่วงวิจิตร', desc: 'โทนม่วงทองร่วมสมัย' },
-      { id: 'bread', name: 'ขนมปังรักษ์โลก', desc: 'เป็นมิตรต่อปลาและสายน้ำ' },
-      { id: 'coconut', name: 'กะลามะพร้าว', desc: 'ภูมิปัญญาท้องถิ่นยั่งยืน' },
-      { id: 'golden_naga', name: 'สุวรรณนาคา', desc: 'กระทงทองคำลวดลายอีสาน' }
+      { id: 'banana_leaf', name: 'ใบตองดั้งเดิม' },
+      { id: 'lotus', name: 'บัวหลวงสีชมพู' },
+      { id: 'royal_purple', name: 'กระทงม่วงวิจิตร' },
+      { id: 'bread', name: 'ขนมปังรักษ์โลก' },
+      { id: 'coconut', name: 'กะลามะพร้าว' },
+      { id: 'golden_naga', name: 'สุวรรณนาคา' }
     ];
 
     const SAMPLE_WISHES = [
@@ -792,9 +1034,9 @@
       'ขอให้สมหวังในสิ่งที่ปรารถนา ชีวิตราบรื่นดั่งสายน้ำใสเย็น เปี่ยมด้วยรอยยิ้ม'
     ];
 
-    // State Management
+    // Application State
     const state = {
-      mode: 'solo', // solo | couple | group
+      mode: 'solo',
       groupSize: 3,
       activeCharIndex: 0,
       characters: [
@@ -806,21 +1048,18 @@
       selectedKrathong: 'royal_purple',
       soundEnabled: true,
       riverItems: [],
-      totalCount: 0,
-      isUsingDemo: false
+      totalCount: 0
     };
 
-    // Audio Context (Web Audio API - ไม่ต้องพึ่งไฟล์ภายนอก)
+    // Web Audio Chime Sound
     let audioCtx = null;
     function playChimeSound() {
       if (!state.soundEnabled) return;
       try {
-        if (!audioCtx) {
-          audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        }
+        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         if (audioCtx.state === 'suspended') audioCtx.resume();
         const now = audioCtx.currentTime;
-        const notes = [523.25, 659.25, 783.99, 1046.5]; // C5, E5, G5, C6
+        const notes = [523.25, 659.25, 783.99, 1046.5];
         notes.forEach((freq, idx) => {
           const osc = audioCtx.createOscillator();
           const gain = audioCtx.createGain();
@@ -839,8 +1078,7 @@
 
     function toggleSound() {
       state.soundEnabled = !state.soundEnabled;
-      const icon = document.getElementById('sound-icon');
-      icon.className = state.soundEnabled
+      document.getElementById('sound-icon').className = state.soundEnabled
         ? 'fa-solid fa-volume-high text-amber-300 text-sm'
         : 'fa-solid fa-volume-xmark text-purple-300/60 text-sm';
     }
@@ -864,199 +1102,300 @@
     }
 
     /*************************************************************************
-     * SVG RENDERER: ชุดไทยพระราชนิยมทั้ง 8 แบบ + ชุดไทยพระราชทาน (ชาย)
+     * SVG RENDERER: ชุดไทยพระราชนิยมทั้ง 8 แบบ (ถูกต้องตามรายละเอียดทุกชุด)
      *************************************************************************/
-    function renderAvatarSVG(outfitId, colorId, sizeClass = 'w-16 h-28 sm:w-20 sm:h-36') {
+    function renderAvatarSVG(outfitId, colorId, sizeClass = 'w-20 h-32') {
       const col = FABRIC_COLORS.find(c => c.id === colorId) || FABRIC_COLORS[0];
       const isMale = outfitId === 'male_royal';
 
-      // Hair & Head
+      // Hair & Face
+      const isFormalCrown = ['chakkraphat', 'siwalai', 'chakri'].includes(outfitId);
       const headSVG = isMale
         ? `
-          <!-- Male Hair & Face -->
-          <circle cx="50" cy="28" r="14" fill="#f3c5a2" />
-          <path d="M36,26 Q36,12 50,12 Q64,12 64,26 Q60,19 50,19 Q40,19 36,26 Z" fill="#1e1b2e" />
-          <circle cx="45" cy="28" r="1.5" fill="#1f162e" />
-          <circle cx="55" cy="28" r="1.5" fill="#1f162e" />
-          <path d="M46,34 Q50,37 54,34" stroke="#9d4edd" stroke-width="1.3" fill="none" stroke-linecap="round" />
+          <circle cx="50" cy="27" r="13.5" fill="#f3c5a2" />
+          <path d="M36.5,25 Q36.5,11 50,11 Q63.5,11 63.5,25 Q59,18 50,18 Q41,18 36.5,25 Z" fill="#1e1b2e" />
+          <circle cx="45" cy="27" r="1.4" fill="#1f162e" />
+          <circle cx="55" cy="27" r="1.4" fill="#1f162e" />
+          <path d="M46,33 Q50,36 54,33" stroke="#9d4edd" stroke-width="1.3" fill="none" stroke-linecap="round" />
         `
         : `
-          <!-- Female Thai Bun Hair & Face -->
-          <circle cx="50" cy="12" r="7.5" fill="#1e1b2e" />
-          <path d="M44,12 Q50,7 56,12" stroke="${col.accent}" stroke-width="1.8" fill="none" />
-          <circle cx="50" cy="27" r="13.5" fill="#f5ccb0" />
-          <path d="M36,27 Q36,13 50,13 Q64,13 64,27 Q59,20 50,20 Q41,20 36,27 Z" fill="#1e1b2e" />
-          <!-- Thai Jasmine Garland Hairpin -->
-          <circle cx="57" cy="14" r="2.2" fill="#fef3c7" />
-          <circle cx="59.5" cy="17" r="1.8" fill="#fde68a" />
-          <!-- Eyes & Smile -->
-          <circle cx="45" cy="27.5" r="1.4" fill="#1f162e" />
-          <circle cx="55" cy="27.5" r="1.4" fill="#1f162e" />
-          <circle cx="42" cy="30.5" r="2.2" fill="#f472b6" opacity="0.35" />
-          <circle cx="58" cy="30.5" r="2.2" fill="#f472b6" opacity="0.35" />
-          <path d="M46.5,33.5 Q50,36.5 53.5,33.5" stroke="#be185d" stroke-width="1.4" fill="none" stroke-linecap="round" />
+          <!-- Thai Bun (เกล้ามวย) -->
+          <circle cx="50" cy="11.5" r="7.5" fill="#1e1b2e" />
+          ${isFormalCrown
+            ? `<path d="M43,12 Q50,5 57,12" stroke="#fde047" stroke-width="2.2" fill="none" />
+               <circle cx="50" cy="6.5" r="1.8" fill="#fbbf24" />`
+            : `<path d="M44,12 Q50,7.5 56,12" stroke="${col.accent}" stroke-width="1.6" fill="none" />`
+          }
+          <circle cx="50" cy="26.5" r="13" fill="#f5ccb0" />
+          <path d="M37,26.5 Q37,13 50,13 Q63,13 63,26.5 Q58.5,19.5 50,19.5 Q41.5,19.5 37,26.5 Z" fill="#1e1b2e" />
+          <!-- Thai Earrings -->
+          <circle cx="36.5" cy="30" r="1.4" fill="${col.accent}" />
+          <circle cx="63.5" cy="30" r="1.4" fill="${col.accent}" />
+          <!-- Eyes, Blush & Smile -->
+          <circle cx="45" cy="27" r="1.4" fill="#1f162e" />
+          <circle cx="55" cy="27" r="1.4" fill="#1f162e" />
+          <circle cx="42" cy="30" r="2.2" fill="#f472b6" opacity="0.35" />
+          <circle cx="58" cy="30" r="2.2" fill="#f472b6" opacity="0.35" />
+          <path d="M46.5,33 Q50,36 53.5,33" stroke="#be185d" stroke-width="1.4" fill="none" stroke-linecap="round" />
         `;
 
       let bodySVG = '';
 
       if (isMale) {
-        // ชุดไทยพระราชทาน (ชาย)
+        // เสื้อไทยพระราชทาน (ชาย) แขนยาวคอตั้ง กระดุม 5 เม็ด + ผ้าคาดเอวผูกเงื่อนทางซ้าย
         bodySVG = `
-          <!-- Trousers / Chong Kraben -->
-          <path d="M34,88 L66,88 L63,144 L52,144 L50,115 L48,144 L37,144 Z" fill="${col.dark}" />
-          <!-- Royal Thai Silk Shirt -->
-          <path d="M32,46 Q50,41 68,46 L72,88 L63,90 L61,62 L62,92 L38,92 L39,62 L37,90 L28,88 Z" fill="${col.main}" />
-          <!-- Standing Collar -->
-          <rect x="44" y="40" width="12" height="7" rx="2" fill="${col.main}" stroke="${col.accent}" stroke-width="1" />
-          <!-- 5 Gold Buttons -->
-          <circle cx="50" cy="52" r="1.3" fill="${col.accent}" />
-          <circle cx="50" cy="60" r="1.3" fill="${col.accent}" />
-          <circle cx="50" cy="68" r="1.3" fill="${col.accent}" />
-          <circle cx="50" cy="76" r="1.3" fill="${col.accent}" />
-          <circle cx="50" cy="84" r="1.3" fill="${col.accent}" />
-          <!-- Waist Sash -->
-          <rect x="37" y="85" width="26" height="6" rx="2" fill="${col.accent}" />
+          <!-- Trousers -->
+          <path d="M35,88 L65,88 L63,146 L52,146 L50,116 L48,146 L37,146 Z" fill="${col.dark}" />
+          <!-- Long Sleeve Royal Shirt -->
+          <path d="M32,45 Q50,40 68,45 L74,86 L66,87 L62,60 L63,91 L37,91 L38,60 L34,87 L26,86 Z" fill="${col.main}" />
+          <!-- Mandarin Standing Collar -->
+          <rect x="44" y="38.5" width="12" height="7" rx="2" fill="${col.main}" stroke="${col.accent}" stroke-width="1.1" />
+          <!-- 5 Buttons -->
+          <circle cx="50" cy="50" r="1.3" fill="${col.accent}" />
+          <circle cx="50" cy="57.5" r="1.3" fill="${col.accent}" />
+          <circle cx="50" cy="65" r="1.3" fill="${col.accent}" />
+          <circle cx="50" cy="72.5" r="1.3" fill="${col.accent}" />
+          <circle cx="50" cy="80" r="1.3" fill="${col.accent}" />
+          <!-- Waist Sash with knot on wearer's left (viewer's right) -->
+          <rect x="36.5" y="83" width="27" height="6" rx="1.5" fill="${col.accent}" />
+          <path d="M60,86 L66,104 L60,104 L57,89 Z" fill="${col.accent}" />
           <!-- Hands -->
-          <circle cx="31" cy="91" r="4" fill="#f3c5a2" />
-          <circle cx="69" cy="91" r="4" fill="#f3c5a2" />
+          <circle cx="30" cy="89" r="3.8" fill="#f3c5a2" />
+          <circle cx="70" cy="89" r="3.8" fill="#f3c5a2" />
         `;
       } else {
-        // Base Sinh Skirt (ผ้าซิ่น)
-        const hasPleat = ['boromphiman', 'chakri', 'dusit', 'chakkraphat', 'siwalai'].includes(outfitId);
-        const isStriped = outfitId === 'rueanton';
-        const isGoldBrocade = ['amarin', 'chakkraphat'].includes(outfitId);
+        // แยกกลุ่มโครงสร้างผ้าซิ่นตามหลักชุดไทยพระราชนิยม 8 แบบ
+        // ซิ่นป้ายข้าง (ไม่คาดเข็มขัด): เรือนต้น, จิตรลดา, อมรินทร์
+        // ซิ่นจีบหน้านางมีชายพก (คาดเข็มขัดไทย): บรมพิมาน, จักรี, ดุสิต, ศิวาลัย, จักรพรรดิ
+        const isWrapSinh = ['rueanton', 'chitralada', 'amarin'].includes(outfitId);
+        const isGoldBrocade = ['amarin', 'boromphiman', 'chakri', 'dusit', 'siwalai', 'chakkraphat'].includes(outfitId);
 
-        let skirtSVG = `
-          <path d="M36,80 L64,80 L69,144 L31,144 Z" fill="${col.dark}" />
-          <rect x="32" y="132" width="36" height="12" fill="${col.accent}" opacity="0.85" />
-          <line x1="33" y1="136" x2="67" y2="136" stroke="${col.dark}" stroke-width="1.5" />
-        `;
-
-        if (isStriped) {
-          skirtSVG += `
-            <line x1="35" y1="92" x2="65" y2="92" stroke="${col.accent}" stroke-width="2" opacity="0.7" />
-            <line x1="34" y1="104" x2="66" y2="104" stroke="${col.main}" stroke-width="3" opacity="0.8" />
-            <line x1="33" y1="116" x2="67" y2="116" stroke="${col.accent}" stroke-width="2" opacity="0.7" />
+        let skirtSVG = '';
+        if (isWrapSinh) {
+          // ผ้าซิ่นป้ายข้างยาวกรอมข้อเท้า + เชิงผ้าซิ่น
+          skirtSVG = `
+            <path d="M36,80 L64,80 L68,146 L32,146 Z" fill="${col.dark}" />
+            <!-- Wrap-over diagonal seam (ซิ่นป้ายข้าง) -->
+            <line x1="42" y1="80" x2="40" y2="146" stroke="${col.main}" stroke-width="1.6" opacity="0.85" />
+            <!-- Hem border (เชิงผ้าซิ่น) -->
+            <rect x="32.5" y="133" width="35" height="13" fill="${col.accent}" opacity="0.88" />
+            <line x1="33" y1="137" x2="67" y2="137" stroke="${col.dark}" stroke-width="1.3" />
+            <line x1="32.5" y1="142" x2="67.5" y2="142" stroke="${col.dark}" stroke-width="1" />
+          `;
+          if (outfitId === 'rueanton') {
+            // ลายริ้วตามขวางเอกลักษณ์ชุดไทยเรือนต้น
+            skirtSVG += `
+              <line x1="35" y1="91" x2="65" y2="91" stroke="${col.light}" stroke-width="2.2" opacity="0.8" />
+              <line x1="34.5" y1="101" x2="65.5" y2="101" stroke="${col.accent}" stroke-width="1.6" opacity="0.75" />
+              <line x1="34" y1="111" x2="66" y2="111" stroke="${col.main}" stroke-width="2.8" opacity="0.85" />
+              <line x1="33.5" y1="121" x2="66.5" y2="121" stroke="${col.light}" stroke-width="2" opacity="0.8" />
+            `;
+          } else if (outfitId === 'amarin') {
+            // ผ้ายกทองทั้งองค์สำหรับชุดไทยอมรินทร์
+            skirtSVG += `
+              <path d="M36,92 L64,92 M35,104 L65,104 M34,116 L66,116 M34,126 L66,126" stroke="#fde047" stroke-width="1.6" stroke-dasharray="3 3" opacity="0.9" />
+            `;
+          }
+        } else {
+          // ผ้าซิ่นจีบหน้านาง มีชายพก ยาวกรอมข้อเท้า
+          skirtSVG = `
+            <path d="M36,79 L64,79 L69,146 L31,146 Z" fill="${col.dark}" />
+            ${isGoldBrocade ? `<path d="M36,94 L64,94 M35,108 L65,108 M34,122 L66,122" stroke="${col.accent}" stroke-width="1.3" stroke-dasharray="2.5 3" opacity="0.8" />` : ''}
+            <!-- Hem border -->
+            <rect x="31.5" y="135" width="37" height="11" fill="${col.accent}" opacity="0.9" />
+            <!-- จีบหน้านาง (Center Pleats) -->
+            <polygon points="44.5,80 55.5,80 57.5,146 42.5,146" fill="${col.main}" />
+            <line x1="47.2" y1="80" x2="46.2" y2="146" stroke="${col.accent}" stroke-width="1" />
+            <line x1="50" y1="80" x2="50" y2="146" stroke="#fef08a" stroke-width="1.2" />
+            <line x1="52.8" y1="80" x2="53.8" y2="146" stroke="${col.accent}" stroke-width="1" />
+            <!-- ชายพก (Waist Fold) -->
+            <polygon points="45,78 55,78 53,89 47,89" fill="${col.light}" opacity="0.85" />
           `;
         }
 
-        if (hasPleat) {
-          // จีบหน้านาง
-          skirtSVG += `
-            <polygon points="44,80 56,80 58,144 42,144" fill="${col.main}" opacity="0.9" />
-            <line x1="47" y1="80" x2="46" y2="144" stroke="${col.accent}" stroke-width="1" />
-            <line x1="50" y1="80" x2="50" y2="144" stroke="${col.accent}" stroke-width="1.2" />
-            <line x1="53" y1="80" x2="54" y2="144" stroke="${col.accent}" stroke-width="1" />
-          `;
-        }
-
-        if (isGoldBrocade) {
-          skirtSVG += `
-            <path d="M37,96 L63,96 M35,112 L65,112 M34,126 L66,126" stroke="${col.accent}" stroke-width="1.5" stroke-dasharray="3 3" />
-          `;
-        }
-
-        // Top / Blouse according to the 8 Official Styles
+        // ท่อนบนตามแบบมาตรฐานทั้ง 8 แบบ
         let topSVG = '';
+        let armsSVG = '';
+
         if (outfitId === 'rueanton') {
-          // เรือนต้น: คอกลม แขนกระบอก 3 ส่วน
-          topSVG = `
-            <path d="M35,45 Q50,51 65,45 L72,74 L64,76 L61,58 L63,82 L37,82 L39,58 L36,76 L28,74 Z" fill="${col.main}" />
-            <circle cx="50" cy="54" r="1.2" fill="${col.accent}" />
-            <circle cx="50" cy="63" r="1.2" fill="${col.accent}" />
-            <circle cx="50" cy="72" r="1.2" fill="${col.accent}" />
+          // 1. เรือนต้น: คอกลมตื้นไม่มีขอบตั้ง แขนกระบอกสามส่วน (เห็นข้อมือ) ผ่าหน้า 5 กระดุม ชายเสื้อแยกชิ้นคลุมเอว ไม่มีเข็มขัด
+          armsSVG = `
+            <path d="M31,70 L28,83 L34,84 L36,72 Z" fill="#f5ccb0" />
+            <path d="M69,70 L72,83 L66,84 L64,72 Z" fill="#f5ccb0" />
+            <circle cx="30.5" cy="84.5" r="3.4" fill="#f5ccb0" />
+            <circle cx="69.5" cy="84.5" r="3.4" fill="#f5ccb0" />
           `;
-        } else if (outfitId === 'chitralada' || outfitId === 'amarin') {
-          // จิตรลดา & อมรินทร์: คอตั้ง แขนยาว กระดุม 5 เม็ด
           topSVG = `
-            <path d="M34,44 Q50,40 66,44 L73,82 L65,83 L61,58 L63,83 L37,83 L39,58 L35,83 L27,82 Z" fill="${col.main}" />
-            <rect x="44.5" y="39" width="11" height="6.5" rx="2" fill="${col.main}" stroke="${col.accent}" stroke-width="1" />
-            <circle cx="50" cy="50" r="1.2" fill="${col.accent}" />
-            <circle cx="50" cy="57" r="1.2" fill="${col.accent}" />
-            <circle cx="50" cy="64" r="1.2" fill="${col.accent}" />
-            <circle cx="50" cy="71" r="1.2" fill="${col.accent}" />
-            <circle cx="50" cy="78" r="1.2" fill="${col.accent}" />
-            ${outfitId === 'amarin' ? `<path d="M40,46 Q50,54 60,46" stroke="#fef08a" stroke-width="2.2" fill="none" />` : ''}
+            <path d="M35,44 Q50,51 65,44 L71,71 L63.5,73 L61,57 L64,86 L36,86 L39,57 L36.5,73 L29,71 Z" fill="${col.main}" />
+            <!-- คอกลมตื้น ไม่มีขอบตั้ง -->
+            <path d="M42,44 Q50,50 58,44" stroke="${col.light}" stroke-width="1.2" fill="none" />
+            <!-- ผ่าหน้า 5 กระดุม -->
+            <circle cx="50" cy="52" r="1.2" fill="${col.accent}" />
+            <circle cx="50" cy="59" r="1.2" fill="${col.accent}" />
+            <circle cx="50" cy="66" r="1.2" fill="${col.accent}" />
+            <circle cx="50" cy="73" r="1.2" fill="${col.accent}" />
+            <circle cx="50" cy="80" r="1.2" fill="${col.accent}" />
+          `;
+        } else if (outfitId === 'chitralada') {
+          // 2. จิตรลดา: คอกลมมีขอบตั้ง แขนกระบอกยาวจรดข้อมือ ผ่าหน้า 5 กระดุม ชายเสื้อคลุมขอบซิ่น ไม่มีเข็มขัด
+          armsSVG = `
+            <circle cx="30" cy="85" r="3.4" fill="#f5ccb0" />
+            <circle cx="70" cy="85" r="3.4" fill="#f5ccb0" />
+          `;
+          topSVG = `
+            <path d="M34,44 Q50,40 66,44 L73,83 L66,84 L61,57 L64,87 L36,87 L39,57 L34,84 L27,83 Z" fill="${col.main}" />
+            <!-- คอตั้ง 2.5 ซม. -->
+            <rect x="44.5" y="38.5" width="11" height="6" rx="1.8" fill="${col.main}" stroke="${col.light}" stroke-width="0.9" />
+            <!-- สร้อยมุกสุภาพ -->
+            <path d="M43,45 Q50,50 57,45" stroke="#fffbeb" stroke-width="1.4" stroke-dasharray="1.8 1.6" fill="none" />
+            <!-- ผ่าหน้า 5 กระดุม -->
+            <circle cx="50" cy="51" r="1.2" fill="${col.accent}" />
+            <circle cx="50" cy="58.5" r="1.2" fill="${col.accent}" />
+            <circle cx="50" cy="66" r="1.2" fill="${col.accent}" />
+            <circle cx="50" cy="73.5" r="1.2" fill="${col.accent}" />
+            <circle cx="50" cy="81" r="1.2" fill="${col.accent}" />
+          `;
+        } else if (outfitId === 'amarin') {
+          // 3. อมรินทร์: ทรงเดียวกับจิตรลดา (แยกชิ้น ไม่คาดเข็มขัด) แต่ผ้ายกทองทั้งองค์ + เครื่องประดับหรูหรา
+          armsSVG = `
+            <circle cx="30" cy="85" r="3.4" fill="#f5ccb0" />
+            <circle cx="70" cy="85" r="3.4" fill="#f5ccb0" />
+          `;
+          topSVG = `
+            <path d="M34,44 Q50,40 66,44 L73,83 L66,84 L61,57 L64,87 L36,87 L39,57 L34,84 L27,83 Z" fill="${col.main}" stroke="#fde047" stroke-width="0.8" />
+            <!-- ลายยกทองทั่วเสื้อ -->
+            <path d="M39,56 L61,56 M38,67 L62,67 M37,78 L63,78" stroke="#fde047" stroke-width="1.2" stroke-dasharray="2.5 2.5" opacity="0.85" />
+            <!-- คอตั้งขลิบทอง -->
+            <rect x="44.5" y="38.5" width="11" height="6" rx="1.8" fill="${col.main}" stroke="#fde047" stroke-width="1.2" />
+            <!-- เครื่องประดับสร้อยคอหรูหรา + แพรแถบ -->
+            <path d="M41,45 Q50,53 59,45" stroke="#fef08a" stroke-width="2.2" fill="none" />
+            <circle cx="50" cy="50" r="2.2" fill="#f59e0b" stroke="#fffbeb" stroke-width="0.7" />
+            <!-- ผ่าหน้า 5 กระดุมทอง -->
+            <circle cx="50" cy="55" r="1.3" fill="#fef08a" />
+            <circle cx="50" cy="62" r="1.3" fill="#fef08a" />
+            <circle cx="50" cy="69" r="1.3" fill="#fef08a" />
+            <circle cx="50" cy="76" r="1.3" fill="#fef08a" />
+            <circle cx="50" cy="83" r="1.3" fill="#fef08a" />
           `;
         } else if (outfitId === 'boromphiman') {
-          // บรมพิมาน: คอตั้ง แขนยาว ผ่าหลัง คาดเข็มขัดไทย
+          // 4. บรมพิมาน: เสื้อคอตั้งแขนยาว ผ่าหลัง (ด้านหน้าเรียบไม่มีกระดุม) เย็บติดผ้าซิ่นจีบหน้านาง + เข็มขัดไทย
+          armsSVG = `
+            <circle cx="30" cy="85" r="3.4" fill="#f5ccb0" />
+            <circle cx="70" cy="85" r="3.4" fill="#f5ccb0" />
+          `;
           topSVG = `
-            <path d="M34,44 Q50,40 66,44 L73,82 L65,83 L61,58 L63,82 L37,82 L39,58 L35,83 L27,82 Z" fill="${col.main}" />
-            <rect x="44.5" y="39" width="11" height="6.5" rx="2" fill="${col.main}" stroke="${col.accent}" stroke-width="1" />
-            <rect x="36" y="77" width="28" height="5" rx="2" fill="${col.accent}" />
-            <circle cx="50" cy="79.5" r="2.8" fill="#fef08a" stroke="#92400e" stroke-width="0.8" />
+            <path d="M34,44 Q50,40 66,44 L73,83 L66,84 L61,57 L63,80 L37,80 L39,57 L34,84 L27,83 Z" fill="${col.main}" />
+            <rect x="44.5" y="38.5" width="11" height="6" rx="1.8" fill="${col.main}" stroke="${col.accent}" stroke-width="1.1" />
+            <!-- ด้านหน้าเรียบไม่มีกระดุม (ผ่าหลัง) + สร้อยคอ -->
+            <path d="M42,45 Q50,51 58,45" stroke="#fde047" stroke-width="1.7" fill="none" />
+            <!-- เข็มขัดไทยคาดทับเอว -->
+            <rect x="35.5" y="76.5" width="29" height="5" rx="2" fill="#fbbf24" stroke="#92400e" stroke-width="0.7" />
+            <circle cx="50" cy="79" r="3" fill="#fef08a" stroke="#b45309" stroke-width="0.9" />
           `;
         } else if (outfitId === 'chakri') {
-          // จักรี: เปิดไหล่ขวา ห่มสไบเฉียงซ้าย + เข็มขัด
+          // 5. จักรี: เปิดไหล่ขวา ห่มสไบเฉียงพาดไหล่ซ้าย 1 ชั้น ทิ้งชายยาวด้านหลัง + ซิ่นจีบหน้านาง + เข็มขัดไทย
+          armsSVG = `
+            <path d="M36,46 L29,82 L35,83 L40,56 Z" fill="#f5ccb0" />
+            <path d="M64,46 L71,82 L65,83 L60,56 Z" fill="#f5ccb0" />
+            <circle cx="31.5" cy="84" r="3.4" fill="#f5ccb0" />
+            <circle cx="68.5" cy="84" r="3.4" fill="#f5ccb0" />
+          `;
           topSVG = `
-            <!-- Bare shoulders & arms -->
-            <path d="M35,46 L29,82 L36,83 L40,56 Z" fill="#f5ccb0" />
-            <path d="M65,46 L71,82 L64,83 L60,56 Z" fill="#f5ccb0" />
-            <rect x="38" y="45" width="24" height="35" fill="#f5ccb0" />
-            <!-- Sabai Diagonal -->
-            <polygon points="36,44 48,44 64,80 37,80" fill="${col.main}" />
-            <polygon points="37,44 45,44 64,80 56,80" fill="${col.accent}" opacity="0.55" />
-            <!-- Long Sabai Tail behind left shoulder -->
-            <path d="M36,44 L26,95 L34,98 L40,52 Z" fill="${col.main}" opacity="0.9" />
-            <!-- Thai Necklace & Belt -->
-            <path d="M41,44 Q50,51 59,44" stroke="${col.accent}" stroke-width="2" fill="none" />
-            <rect x="36" y="77" width="28" height="5" rx="2" fill="${col.accent}" />
+            <!-- เปิดไหล่ขวา (viewer left = wearer right, or wearer left shoulder draped) -->
+            <rect x="38" y="45" width="24" height="34" fill="#f5ccb0" />
+            <!-- ชายสไบด้านหลังทิ้งยาวจากบ่าซ้าย -->
+            <path d="M58,44 L73,128 L63,130 L54,54 Z" fill="${col.main}" opacity="0.9" />
+            <!-- สไบเฉียงพาดบ่าซ้ายลงใต้รักแร้ขวา -->
+            <polygon points="63,43 50,43 37,79 63,79" fill="${col.main}" />
+            <polygon points="62,43 53,43 37,79 45,79" fill="${col.accent}" opacity="0.55" />
+            <line x1="58" y1="43" x2="41" y2="79" stroke="#fef08a" stroke-width="1.2" />
+            <!-- สร้อยคอ & เข็มขัดไทย -->
+            <path d="M41,44 Q50,51 59,44" stroke="#fde047" stroke-width="2" fill="none" />
+            <rect x="35.5" y="76.5" width="29" height="5" rx="2" fill="#fbbf24" stroke="#92400e" stroke-width="0.7" />
+            <circle cx="50" cy="79" r="3" fill="#fef08a" stroke="#b45309" stroke-width="0.9" />
           `;
         } else if (outfitId === 'dusit') {
-          // ดุสิต: คอกว้าง แขนกุด ปักดิ้นเลื่อม
-          topSVG = `
-            <path d="M35,46 L29,82 L36,83 L40,56 Z" fill="#f5ccb0" />
-            <path d="M65,46 L71,82 L64,83 L60,56 Z" fill="#f5ccb0" />
-            <path d="M37,44 L43,44 Q50,53 57,44 L63,44 L63,80 L37,80 Z" fill="${col.main}" />
-            <!-- Sequined Pattern -->
-            <circle cx="44" cy="57" r="1.3" fill="#fef08a" />
-            <circle cx="50" cy="60" r="1.5" fill="#fef08a" />
-            <circle cx="56" cy="57" r="1.3" fill="#fef08a" />
-            <circle cx="47" cy="68" r="1.3" fill="#fef08a" />
-            <circle cx="53" cy="68" r="1.3" fill="#fef08a" />
-            <rect x="36" y="77" width="28" height="5" rx="2" fill="${col.accent}" />
+          // 6. ดุสิต: เสื้อแขนกุด คอกลมคว้านกว้าง ผ่าหลัง ปักดิ้นเงินดิ้นทอง/ลูกปัด/เลื่อม + ซิ่นจีบหน้านาง + เข็มขัดไทย
+          armsSVG = `
+            <path d="M36,46 L29,82 L35,83 L40,56 Z" fill="#f5ccb0" />
+            <path d="M64,46 L71,82 L65,83 L60,56 Z" fill="#f5ccb0" />
+            <circle cx="31.5" cy="84" r="3.4" fill="#f5ccb0" />
+            <circle cx="68.5" cy="84" r="3.4" fill="#f5ccb0" />
           `;
-        } else if (outfitId === 'chakkraphat') {
-          // จักรพรรดิ: สไบสองชั้น อัดพลีท + ปักดิ้นทอง + เครื่องประดับเต็มยศ
           topSVG = `
-            <path d="M35,46 L29,82 L36,83 L40,56 Z" fill="#f5ccb0" />
-            <path d="M65,46 L71,82 L64,83 L60,56 Z" fill="#f5ccb0" />
-            <rect x="38" y="45" width="24" height="35" fill="#f5ccb0" />
-            <!-- Inner Pleated Sabai -->
-            <polygon points="36,44 50,44 64,80 37,80" fill="${col.accent}" opacity="0.85" />
-            <!-- Outer Gold Embroidered Sabai -->
-            <polygon points="36,44 46,44 63,80 51,80" fill="${col.main}" stroke="#fef08a" stroke-width="1" />
-            <path d="M36,44 L24,104 L35,108 L42,50 Z" fill="${col.main}" stroke="#fef08a" stroke-width="0.8" />
-            <!-- Royal Sangwan & Necklace -->
-            <path d="M40,44 Q50,53 60,44" stroke="#fef08a" stroke-width="2.5" fill="none" />
-            <circle cx="50" cy="51" r="2.2" fill="#f59e0b" />
-            <rect x="36" y="77" width="28" height="5.5" rx="2" fill="#fbbf24" />
+            <rect x="38" y="44" width="24" height="14" fill="#f5ccb0" />
+            <!-- เสื้อแขนกุดคอกลมคว้านกว้าง -->
+            <path d="M37,44 L42,44 Q50,56 58,44 L63,44 L63,79 L37,79 Z" fill="${col.main}" />
+            <!-- ลวดลายปักดิ้น/มุก/เลื่อมทั่วตัวเสื้อ -->
+            <path d="M41,45 Q50,57 59,45" stroke="#fef08a" stroke-width="1.8" fill="none" />
+            <circle cx="43" cy="57" r="1.4" fill="#fef08a" />
+            <circle cx="50" cy="59" r="1.6" fill="#ffffff" />
+            <circle cx="57" cy="57" r="1.4" fill="#fef08a" />
+            <circle cx="45" cy="65" r="1.4" fill="#ffffff" />
+            <circle cx="50" cy="68" r="1.6" fill="#fef08a" />
+            <circle cx="55" cy="65" r="1.4" fill="#ffffff" />
+            <circle cx="42" cy="72" r="1.3" fill="#fef08a" />
+            <circle cx="58" cy="72" r="1.3" fill="#fef08a" />
+            <!-- เข็มขัดไทย -->
+            <rect x="35.5" y="76.5" width="29" height="5" rx="2" fill="#fbbf24" stroke="#92400e" stroke-width="0.7" />
+            <circle cx="50" cy="79" r="3" fill="#fef08a" stroke="#b45309" stroke-width="0.9" />
           `;
         } else if (outfitId === 'siwalai') {
-          // ศิวาลัย: เสื้อแขนยาวคอตั้ง + ห่มสไบทับบ่าซ้าย
+          // 7. ศิวาลัย: เสื้อแขนยาวคอตั้งผ่าหลังติดซิ่นแบบบรมพิมาน + ห่มสะพัก/สไบปักทับบ่าซ้าย 1 ชั้น ทิ้งชายยาว
+          armsSVG = `
+            <circle cx="30" cy="85" r="3.4" fill="#f5ccb0" />
+            <circle cx="70" cy="85" r="3.4" fill="#f5ccb0" />
+          `;
           topSVG = `
-            <path d="M34,44 Q50,40 66,44 L73,82 L65,83 L61,58 L63,82 L37,82 L39,58 L35,83 L27,82 Z" fill="${col.main}" />
-            <rect x="44.5" y="39" width="11" height="6.5" rx="2" fill="${col.main}" stroke="${col.accent}" stroke-width="1" />
-            <!-- Over-shoulder Sabai -->
-            <polygon points="36,42 45,42 63,82 54,82" fill="${col.accent}" opacity="0.88" />
-            <path d="M36,42 L25,102 L34,105 L41,50 Z" fill="${col.accent}" opacity="0.85" />
-            <rect x="36" y="77" width="28" height="5" rx="2" fill="#fbbf24" />
+            <!-- ตัวเสื้อแขนยาวคอตั้งแบบบรมพิมาน -->
+            <path d="M34,44 Q50,40 66,44 L73,83 L66,84 L61,57 L63,80 L37,80 L39,57 L34,84 L27,83 Z" fill="${col.main}" />
+            <rect x="44.5" y="38.5" width="11" height="6" rx="1.8" fill="${col.main}" stroke="#fde047" stroke-width="1.1" />
+            <!-- สะพัก/สไบปักดิ้นทองทับบ่าซ้าย 1 ชั้น ทิ้งชายยาวจรดชายซิ่น -->
+            <path d="M58,42 L74,138 L64,140 L54,52 Z" fill="#fde047" opacity="0.88" stroke="#b45309" stroke-width="0.7" />
+            <polygon points="63,42 53,42 37,80 47,80" fill="#fde047" opacity="0.92" stroke="#b45309" stroke-width="0.7" />
+            <line x1="58" y1="42" x2="42" y2="80" stroke="${col.main}" stroke-width="1.2" stroke-dasharray="2.5 2.5" />
+            <!-- เข็มขัดไทย -->
+            <rect x="35.5" y="76.5" width="29" height="5" rx="2" fill="#fbbf24" stroke="#92400e" stroke-width="0.7" />
+            <circle cx="50" cy="79" r="3" fill="#fef08a" stroke="#b45309" stroke-width="0.9" />
+          `;
+        } else if (outfitId === 'chakkraphat') {
+          // 8. จักรพรรดิ: เปิดไหล่ขวา ห่มสไบ 2 ชั้น (ชั้นในสไบอัดจีบรองพื้น + ชั้นนอกสะพักปักดิ้นทองทับ) + เครื่องประดับเต็มยศครบสำรับ
+          armsSVG = `
+            <path d="M36,46 L29,82 L35,83 L40,56 Z" fill="#f5ccb0" />
+            <path d="M64,46 L71,82 L65,83 L60,56 Z" fill="#f5ccb0" />
+            <!-- รัดแขน / พาหุรัด (Armbands) -->
+            <rect x="32.5" y="57" width="6.5" height="2.6" rx="1" fill="#fde047" />
+            <rect x="61" y="57" width="6.5" height="2.6" rx="1" fill="#fde047" />
+            <circle cx="31.5" cy="84" r="3.4" fill="#f5ccb0" />
+            <circle cx="68.5" cy="84" r="3.4" fill="#f5ccb0" />
+          `;
+          topSVG = `
+            <rect x="38" y="45" width="24" height="34" fill="#f5ccb0" />
+            <!-- สไบชั้นที่ 1: แพรจีบอัดพลีทรองพื้น (Inner Pleated Sabai) -->
+            <polygon points="63,43 46,43 36,79 63,79" fill="${col.light}" />
+            <line x1="50" y1="43" x2="39" y2="79" stroke="${col.main}" stroke-width="0.8" opacity="0.7" />
+            <line x1="54" y1="43" x2="43" y2="79" stroke="${col.main}" stroke-width="0.8" opacity="0.7" />
+            <line x1="58" y1="43" x2="47" y2="79" stroke="${col.main}" stroke-width="0.8" opacity="0.7" />
+            <!-- สไบชั้นที่ 2: สะพักปักดิ้นทองลายไทยทับด้านนอก (Outer Embroidered Sabai) -->
+            <path d="M58,43 L75,140 L63,142 L53,52 Z" fill="${col.main}" stroke="#fde047" stroke-width="1" />
+            <polygon points="63,43 52,43 38,79 50,79" fill="${col.main}" stroke="#fde047" stroke-width="1.1" />
+            <line x1="57.5" y1="44" x2="44" y2="78" stroke="#fef08a" stroke-width="1.6" stroke-dasharray="2.2 2.2" />
+            <!-- เครื่องประดับเต็มยศ: สร้อยคอทับทรวง + สายสังวาล -->
+            <path d="M40,44 Q50,53 60,44" stroke="#fef08a" stroke-width="2.4" fill="none" />
+            <polygon points="50,48 53,52 50,56 47,52" fill="#f59e0b" stroke="#fffbeb" stroke-width="0.7" />
+            <line x1="41" y1="46" x2="61" y2="76" stroke="#fde047" stroke-width="1.5" stroke-dasharray="2 1.5" />
+            <!-- เข็มขัดไทยหัวประดับเพชร -->
+            <rect x="35.5" y="76" width="29" height="5.5" rx="2" fill="#fbbf24" stroke="#92400e" stroke-width="0.8" />
+            <circle cx="50" cy="78.8" r="3.3" fill="#fef08a" stroke="#b45309" stroke-width="0.9" />
           `;
         }
 
-        bodySVG = `
-          ${skirtSVG}
-          ${topSVG}
-          <!-- Hands -->
-          <circle cx="31" cy="83" r="3.6" fill="#f5ccb0" />
-          <circle cx="69" cy="83" r="3.6" fill="#f5ccb0" />
-        `;
+        bodySVG = `${skirtSVG}${armsSVG}${topSVG}`;
       }
 
       return `
-        <svg class="${sizeClass} drop-shadow-[0_6px_10px_rgba(0,0,0,0.55)]" viewBox="0 0 100 150">
-          <!-- Neck -->
-          <rect x="46" y="36" width="8" height="9" fill="#f3c5a2" />
+        <svg class="${sizeClass} drop-shadow-[0_8px_12px_rgba(0,0,0,0.65)]" viewBox="0 0 100 152">
+          <rect x="46" y="35" width="8" height="9" fill="#f3c5a2" />
           ${bodySVG}
           ${headSVG}
         </svg>
@@ -1064,7 +1403,7 @@
     }
 
     /*************************************************************************
-     * SVG RENDERER: กระทง 6 สไตล์ พร้อมเปลวเทียนพริ้วไหว
+     * SVG RENDERER: กระทง 6 สไตล์ พร้อมแสงเทียนและเงาสะท้อนน้ำ
      *************************************************************************/
     function renderKrathongSVG(typeId, sizeClass = 'w-16 h-16') {
       const palettes = {
@@ -1078,22 +1417,21 @@
       const p = palettes[typeId] || palettes.royal_purple;
 
       return `
-        <svg class="${sizeClass}" viewBox="0 0 120 110">
-          <!-- Candle Glow Halo -->
-          <circle cx="60" cy="30" r="22" fill="#fde047" opacity="0.22" />
+        <svg class="${sizeClass}" viewBox="0 0 120 112">
+          <!-- Candle Warm Glow Halo -->
+          <circle cx="60" cy="30" r="25" fill="#fde047" opacity="0.26" />
           <!-- Incense Sticks (ธูป 3 ดอก) -->
-          <line x1="51" y1="62" x2="46" y2="26" stroke="#a16207" stroke-width="2" />
-          <line x1="60" y1="62" x2="60" y2="22" stroke="#a16207" stroke-width="2" />
-          <line x1="69" y1="62" x2="74" y2="26" stroke="#a16207" stroke-width="2" />
-          <circle cx="46" cy="26" r="1.8" fill="#fb7185" />
-          <circle cx="60" cy="22" r="1.8" fill="#fb7185" />
-          <circle cx="74" cy="26" r="1.8" fill="#fb7185" />
+          <line x1="51" y1="62" x2="46" y2="25" stroke="#a16207" stroke-width="2" />
+          <line x1="60" y1="62" x2="60" y2="21" stroke="#a16207" stroke-width="2" />
+          <line x1="69" y1="62" x2="74" y2="25" stroke="#a16207" stroke-width="2" />
+          <circle cx="46" cy="25" r="1.9" fill="#fb7185" />
+          <circle cx="60" cy="21" r="1.9" fill="#fb7185" />
+          <circle cx="74" cy="25" r="1.9" fill="#fb7185" />
 
-          <!-- Candle (เทียน) -->
+          <!-- Candle -->
           <rect x="56.5" y="34" width="7" height="30" rx="2" fill="#fef08a" stroke="#d97706" stroke-width="0.8" />
-          <!-- Flickering Flame -->
           <g class="candle-flame">
-            <path d="M60,15 Q67,25 60,34 Q53,25 60,15 Z" fill="#f97316" />
+            <path d="M60,14 Q67,25 60,34 Q53,25 60,14 Z" fill="#f97316" />
             <path d="M60,20 Q64,27 60,33 Q56,27 60,20 Z" fill="#fef9c3" />
           </g>
 
@@ -1105,26 +1443,25 @@
           <circle cx="60" cy="68" r="8" fill="${p.flower}" />
           <circle cx="60" cy="68" r="3.5" fill="${p.center}" />
 
-          <!-- Back Petals -->
+          <!-- Petals -->
           <polygon points="24,74 36,52 48,74" fill="${p.petal2}" />
           <polygon points="48,74 60,50 72,74" fill="${p.petal2}" />
           <polygon points="72,74 84,52 96,74" fill="${p.petal2}" />
 
-          <!-- Front Petals -->
           <polygon points="14,76 28,55 42,76" fill="${p.petal1}" stroke="${p.base}" stroke-width="1" />
           <polygon points="34,78 48,56 62,78" fill="${p.petal1}" stroke="${p.base}" stroke-width="1" />
           <polygon points="58,78 72,56 86,78" fill="${p.petal1}" stroke="${p.base}" stroke-width="1" />
           <polygon points="78,76 92,55 106,76" fill="${p.petal1}" stroke="${p.base}" stroke-width="1" />
 
-          <!-- Krathong Base -->
+          <!-- Base & Golden Water Shimmer Reflection -->
           <path d="M18,76 Q60,96 102,76 L94,90 Q60,104 26,90 Z" fill="${p.base}" />
-          <ellipse cx="60" cy="94" rx="34" ry="5" fill="#c4b5fd" opacity="0.22" />
+          <ellipse cx="60" cy="99" rx="36" ry="6" fill="#fde68a" opacity="0.22" />
         </svg>
       `;
     }
 
     /*************************************************************************
-     * UI RENDERING FUNCTIONS
+     * UI INTERACTIONS & RENDERING
      *************************************************************************/
     function setMode(mode) {
       state.mode = mode;
@@ -1134,11 +1471,8 @@
         document.getElementById(`btn-mode-${m}`).classList.toggle('active', m === mode);
       });
 
-      const groupBox = document.getElementById('group-count-box');
-      groupBox.classList.toggle('hidden', mode !== 'group');
-
-      const count = getActiveCharacterCount();
-      document.getElementById('mode-summary-badge').textContent = `${count} ท่าน`;
+      document.getElementById('group-count-box').classList.toggle('hidden', mode !== 'group');
+      document.getElementById('mode-summary-badge').textContent = `${getActiveCharacterCount()} ท่าน`;
 
       renderCharacterTabs();
       renderOutfitGrid();
@@ -1219,14 +1553,13 @@
 
     function renderColorPalette() {
       const currentColor = state.characters[state.activeCharIndex].colorId;
-      const container = document.getElementById('color-palette');
-      container.innerHTML = FABRIC_COLORS.map(c => `
+      document.getElementById('color-palette').innerHTML = FABRIC_COLORS.map(c => `
         <button
           type="button"
           onclick="selectColor('${c.id}')"
           class="flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] border transition ${
             currentColor === c.id
-              ? 'border-amber-300 bg-purple-700/80 text-white shadow'
+              ? 'border-amber-300 bg-purple-700/85 text-white shadow'
               : 'border-purple-400/30 bg-purple-950/60 text-purple-200 hover:bg-purple-800/60'
           }"
         >
@@ -1238,21 +1571,19 @@
 
     function renderOutfitGrid() {
       const activeChar = state.characters[state.activeCharIndex];
-      const container = document.getElementById('outfit-grid');
-
-      container.innerHTML = OUTFITS.map(o => {
+      document.getElementById('outfit-grid').innerHTML = OUTFITS.map(o => {
         const isSelected = activeChar.outfitId === o.id;
         return `
           <button
             type="button"
             onclick="selectOutfit('${o.id}')"
-            class="glass-chip ${isSelected ? 'active' : ''} rounded-xl p-2.5 text-left flex items-center gap-2"
+            class="glass-chip ${isSelected ? 'active' : ''} rounded-xl p-2 text-left flex items-center gap-2"
           >
-            <div class="w-11 h-16 flex-shrink-0 flex items-center justify-center bg-purple-950/60 rounded-lg overflow-hidden">
-              ${renderAvatarSVG(o.id, activeChar.colorId, 'w-10 h-14')}
+            <div class="w-11 h-16 flex-shrink-0 flex items-center justify-center bg-purple-950/65 rounded-lg overflow-hidden">
+              ${renderAvatarSVG(o.id, activeChar.colorId, 'w-10 h-15')}
             </div>
             <div class="min-w-0">
-              <span class="inline-block text-[9px] px-1.5 py-0.5 rounded bg-amber-400/20 text-amber-200 border border-amber-300/30 mb-0.5">
+              <span class="inline-block text-[9px] px-1.5 py-0.5 rounded bg-amber-400/20 text-amber-200 border border-amber-300/30 mb-0.5 truncate max-w-full">
                 ${o.badge}
               </span>
               <div class="text-xs font-semibold text-white leading-tight truncate">${o.name}</div>
@@ -1263,7 +1594,8 @@
 
       const activeOutfit = OUTFITS.find(o => o.id === activeChar.outfitId) || OUTFITS[0];
       document.getElementById('outfit-info-text').innerHTML = `
-        <strong class="text-amber-300">${activeOutfit.name}:</strong> ${activeOutfit.desc}
+        <div class="font-semibold text-amber-300">${activeOutfit.name} <span class="text-purple-300 font-normal">(${activeOutfit.origin})</span></div>
+        <div class="mt-0.5 text-purple-100/95">${activeOutfit.desc}</div>
       `;
     }
 
@@ -1274,54 +1606,48 @@
     }
 
     function renderKrathongGrid() {
-      const container = document.getElementById('krathong-grid');
-      container.innerHTML = KRATHONGS.map(k => {
-        const isSelected = state.selectedKrathong === k.id;
-        return `
-          <button
-            type="button"
-            onclick="selectKrathong('${k.id}')"
-            class="glass-chip ${isSelected ? 'active' : ''} rounded-xl p-2 text-center flex flex-col items-center"
-          >
-            ${renderKrathongSVG(k.id, 'w-14 h-12')}
-            <span class="text-[11px] font-semibold text-white mt-1 leading-tight">${k.name}</span>
-          </button>
-        `;
-      }).join('');
+      document.getElementById('krathong-grid').innerHTML = KRATHONGS.map(k => `
+        <button
+          type="button"
+          onclick="selectKrathong('${k.id}')"
+          class="glass-chip ${state.selectedKrathong === k.id ? 'active' : ''} rounded-xl p-2 text-center flex flex-col items-center"
+        >
+          ${renderKrathongSVG(k.id, 'w-14 h-12')}
+          <span class="text-[11px] font-semibold text-white mt-1 leading-tight">${k.name}</span>
+        </button>
+      `).join('');
     }
 
     function renderPierPreview() {
       const count = getActiveCharacterCount();
-      const avatarsEl = document.getElementById('pier-avatars');
       let html = '';
       for (let i = 0; i < count; i++) {
         const ch = state.characters[i];
         const sizeClass = count >= 3
-          ? 'w-14 h-24 sm:w-16 sm:h-28'
-          : 'w-16 h-28 sm:w-20 sm:h-34';
+          ? 'w-16 h-26 sm:w-20 sm:h-32'
+          : 'w-20 h-32 sm:w-24 sm:h-36';
         html += `<div class="transition-all duration-300">${renderAvatarSVG(ch.outfitId, ch.colorId, sizeClass)}</div>`;
       }
-      avatarsEl.innerHTML = html;
-
+      document.getElementById('pier-avatars').innerHTML = html;
       document.getElementById('pier-krathong-preview').innerHTML =
         renderKrathongSVG(state.selectedKrathong, 'w-full h-full');
     }
 
     function fillSampleWish() {
-      const random = SAMPLE_WISHES[Math.floor(Math.random() * SAMPLE_WISHES.length)];
-      document.getElementById('input-wish').value = random;
+      document.getElementById('input-wish').value =
+        SAMPLE_WISHES[Math.floor(Math.random() * SAMPLE_WISHES.length)];
     }
 
     /*************************************************************************
-     * SCENIC BACKGROUND: STARS, SKY LANTERNS & FIREWORKS CANVAS
+     * SCENIC SKY & FIREWORKS ENGINE
      *************************************************************************/
     function initSkyEffects() {
       const starsLayer = document.getElementById('stars-layer');
       let starsHtml = '';
-      for (let i = 0; i < 48; i++) {
+      for (let i = 0; i < 65; i++) {
         const left = Math.random() * 100;
-        const top = Math.random() * 48;
-        const size = 1.5 + Math.random() * 2.5;
+        const top = Math.random() * 44;
+        const size = 1.4 + Math.random() * 2.4;
         const dur = 2 + Math.random() * 4;
         starsHtml += `<div class="star" style="left:${left}%;top:${top}%;width:${size}px;height:${size}px;--dur:${dur}s;animation-delay:${Math.random() * 3}s"></div>`;
       }
@@ -1329,9 +1655,9 @@
 
       const lanternsLayer = document.getElementById('lanterns-layer');
       let lanternsHtml = '';
-      for (let i = 0; i < 8; i++) {
-        const left = 8 + Math.random() * 82;
-        const dur = 15 + Math.random() * 14;
+      for (let i = 0; i < 9; i++) {
+        const left = 6 + Math.random() * 86;
+        const dur = 16 + Math.random() * 14;
         const delay = Math.random() * 14;
         lanternsHtml += `
           <div class="sky-lantern" style="left:${left}%;--rise-dur:${dur}s;animation-delay:-${delay}s">
@@ -1340,8 +1666,8 @@
               <circle cx="12" cy="24" r="3" fill="#fef08a" />
               <defs>
                 <radialGradient id="skyLGrad" cx="50%" cy="60%" r="55%">
-                  <stop offset="0%" stop-color="#fef9c3" />
-                  <stop offset="65%" stop-color="#f59e0b" />
+                  <stop offset="0%" stop-color="#fffbeb" />
+                  <stop offset="60%" stop-color="#f59e0b" />
                   <stop offset="100%" stop-color="#c2410c" />
                 </radialGradient>
               </defs>
@@ -1352,7 +1678,6 @@
       lanternsLayer.innerHTML = lanternsHtml;
     }
 
-    // Fireworks Canvas Engine
     const fwCanvas = document.getElementById('fireworks-canvas');
     const fwCtx = fwCanvas.getContext('2d');
     let fwParticles = [];
@@ -1363,16 +1688,16 @@
       fwCanvas.height = stage.clientHeight;
     }
 
-    function triggerFireworksBurst(burstCount = 4) {
+    function triggerFireworksBurst(burstCount = 5) {
       const colors = ['#fde047', '#f472b6', '#c084fc', '#38bdf8', '#fb923c', '#ffffff'];
       for (let b = 0; b < burstCount; b++) {
         setTimeout(() => {
-          const cx = fwCanvas.width * (0.25 + Math.random() * 0.6);
-          const cy = fwCanvas.height * (0.12 + Math.random() * 0.28);
+          const cx = fwCanvas.width * (0.15 + Math.random() * 0.7);
+          const cy = fwCanvas.height * (0.08 + Math.random() * 0.28);
           const color = colors[Math.floor(Math.random() * colors.length)];
-          for (let i = 0; i < 36; i++) {
-            const angle = (Math.PI * 2 * i) / 36 + Math.random() * 0.15;
-            const speed = 1.5 + Math.random() * 3.8;
+          for (let i = 0; i < 40; i++) {
+            const angle = (Math.PI * 2 * i) / 40 + Math.random() * 0.14;
+            const speed = 1.6 + Math.random() * 4;
             fwParticles.push({
               x: cx,
               y: cy,
@@ -1380,10 +1705,10 @@
               vy: Math.sin(angle) * speed,
               alpha: 1,
               color: color,
-              radius: 1.8 + Math.random() * 1.8
+              radius: 1.8 + Math.random() * 2
             });
           }
-        }, b * 320);
+        }, b * 300);
       }
     }
 
@@ -1393,8 +1718,8 @@
         const p = fwParticles[i];
         p.x += p.vx;
         p.y += p.vy;
-        p.vy += 0.045; // gravity
-        p.alpha -= 0.016;
+        p.vy += 0.045;
+        p.alpha -= 0.015;
         if (p.alpha <= 0) {
           fwParticles.splice(i, 1);
           continue;
@@ -1410,51 +1735,45 @@
     }
 
     /*************************************************************************
-     * FLOATING KRATHONGS ANIMATION ENGINE
+     * 3D PERSPECTIVE FLOATING KRATHONGS ENGINE
      *************************************************************************/
     const activeFloaters = [];
 
-    function spawnFloatingKrathong(item, startFromPier = false, isMine = false) {
+    function spawnFloatingKrathong(item, startFromCenter = false, isMine = false) {
       const layer = document.getElementById('krathongs-river-layer');
-      const stageWidth = layer.clientWidth || 800;
+      const stageWidth = layer.clientWidth || 900;
 
-      // 3 Depth Lanes (perspective scaling)
-      const lane = startFromPier ? 2 : Math.floor(Math.random() * 3);
-      const topPercent = lane === 0 ? 12 + Math.random() * 14
-        : lane === 1 ? 34 + Math.random() * 16
-        : 58 + Math.random() * 16;
-      const scale = lane === 0 ? 0.65 : lane === 1 ? 0.85 : 1.05;
-      const speed = (lane === 0 ? 0.22 : lane === 1 ? 0.36 : 0.5) + Math.random() * 0.16;
+      // 3 Perspective Lanes (ด้านบนไกลจะเล็กและลอยช้า ด้านล่างใกล้ท่าน้ำจะใหญ่และลอยเร็ว)
+      const lane = startFromCenter ? 2 : Math.floor(Math.random() * 3);
+      const topPercent = lane === 0 ? 8 + Math.random() * 14
+        : lane === 1 ? 26 + Math.random() * 16
+        : 46 + Math.random() * 14;
+      const scale = lane === 0 ? 0.56 : lane === 1 ? 0.78 : 0.98;
+      const speed = (lane === 0 ? 0.18 : lane === 1 ? 0.32 : 0.46) + Math.random() * 0.14;
 
-      const xStart = startFromPier
-        ? Math.min(290, stageWidth * 0.34)
+      const xStart = startFromCenter
+        ? (stageWidth / 2) - 42
         : Math.random() * (stageWidth - 90);
 
       const el = document.createElement('div');
       el.className = `floating-krathong ${isMine ? 'krathong-mine' : ''}`;
       el.style.top = `${topPercent}%`;
       el.style.left = `${xStart}px`;
-      el.style.zIndex = isMine ? 25 : 10 + lane * 3;
+      el.style.zIndex = isMine ? 22 : 8 + lane * 4;
       el.style.transform = `scale(${scale})`;
       el.innerHTML = `
         <div class="krathong-bob flex flex-col items-center" style="--bob-dur:${2.6 + Math.random() * 1.5}s">
           <div class="krathong-label">${escapeHtml(item.name)}</div>
-          ${renderKrathongSVG(item.krathongType, 'w-16 h-14')}
+          ${renderKrathongSVG(item.krathongType, 'w-16 h-15')}
         </div>
       `;
 
       el.addEventListener('click', () => showWishModal(item));
       layer.appendChild(el);
 
-      activeFloaters.push({
-        el,
-        x: xStart,
-        speed,
-        scale
-      });
+      activeFloaters.push({ el, x: xStart, speed, scale });
 
-      // จำกัดจำนวนโหนดบนสายน้ำไม่ให้เครื่องช้า
-      if (activeFloaters.length > 26) {
+      if (activeFloaters.length > 28) {
         const oldest = activeFloaters.shift();
         if (oldest && oldest.el && oldest.el.parentNode) {
           oldest.el.parentNode.removeChild(oldest.el);
@@ -1469,9 +1788,7 @@
       for (let i = 0; i < activeFloaters.length; i++) {
         const f = activeFloaters[i];
         f.x += f.speed;
-        if (f.x > maxWidth) {
-          f.x = -100;
-        }
+        if (f.x > maxWidth) f.x = -110;
         f.el.style.left = `${f.x}px`;
       }
       requestAnimationFrame(animateRiverLoop);
@@ -1479,42 +1796,41 @@
 
     function createWaterRipple(x, y) {
       const stage = document.getElementById('river-stage');
-      for (let i = 0; i < 2; i++) {
+      for (let i = 0; i < 3; i++) {
         setTimeout(() => {
           const r = document.createElement('div');
           r.className = 'water-ripple';
           r.style.left = `${x}px`;
           r.style.top = `${y}px`;
           stage.appendChild(r);
-          setTimeout(() => r.remove(), 1700);
-        }, i * 300);
+          setTimeout(() => r.remove(), 1800);
+        }, i * 280);
       }
     }
 
+    /**
+     * แอนิเมชันปล่อยกระทงจากท่าน้ำด้านล่างลอยพุ่งออกไปสู่แม่น้ำด้านหน้า
+     */
     function playPierReleaseAnimation(newItem) {
       const stage = document.getElementById('river-stage');
-      const pierAvatars = document.getElementById('pier-avatars');
+      const charStage = document.getElementById('pier-characters-stage');
       const pierKrathong = document.getElementById('pier-krathong-preview');
 
-      // เลื่อนหน้าจอขึ้นไปชมฉากท่าน้ำ
       stage.scrollIntoView({ behavior: 'smooth', block: 'center' });
 
-      // แอนิเมชันตัวละครโน้มตัวปล่อยกระทง
-      pierAvatars.classList.add('avatar-releasing');
+      charStage.classList.add('releasing');
       pierKrathong.style.opacity = '0';
 
-      const stageRect = stage.getBoundingClientRect();
-      const kRect = pierKrathong.getBoundingClientRect();
-      const startX = Math.max(120, kRect.left - stageRect.left);
-      const startY = Math.max(stage.clientHeight * 0.62, kRect.top - stageRect.top);
-      const targetX = Math.min(stage.clientWidth * 0.42, startX + 115);
-      const targetY = stage.clientHeight * 0.78;
+      const startX = stage.clientWidth / 2;
+      const startY = stage.clientHeight - 62;
+      const targetX = stage.clientWidth / 2;
+      const targetY = stage.clientHeight * 0.72;
 
       const flying = document.createElement('div');
       flying.className = 'launching-krathong';
       flying.style.left = `${startX}px`;
       flying.style.top = `${startY}px`;
-      flying.innerHTML = renderKrathongSVG(newItem.krathongType, 'w-20 h-18');
+      flying.innerHTML = renderKrathongSVG(newItem.krathongType, 'w-24 h-22');
       stage.appendChild(flying);
 
       playChimeSound();
@@ -1522,24 +1838,24 @@
       requestAnimationFrame(() => {
         flying.style.left = `${targetX}px`;
         flying.style.top = `${targetY}px`;
-        flying.style.transform = 'scale(1.08)';
+        flying.style.transform = 'translate(-50%, -50%) scale(0.76)';
       });
 
       setTimeout(() => {
-        createWaterRipple(targetX + 40, targetY + 55);
-        triggerFireworksBurst(5);
-      }, 950);
+        createWaterRipple(targetX, targetY + 18);
+        triggerFireworksBurst(6);
+      }, 980);
 
       setTimeout(() => {
         flying.remove();
-        pierAvatars.classList.remove('avatar-releasing');
+        charStage.classList.remove('releasing');
         pierKrathong.style.opacity = '1';
         spawnFloatingKrathong(newItem, true, true);
-      }, 1350);
+      }, 1400);
     }
 
     /*************************************************************************
-     * MODALS: VIEW WISH & 8 ROYAL THAI DRESSES GUIDE
+     * MODALS: VIEW WISH & KNOWLEDGE GUIDE FOR 8 ROYAL THAI DRESSES
      *************************************************************************/
     function showWishModal(item) {
       const krathongObj = KRATHONGS.find(k => k.id === item.krathongType) || KRATHONGS[0];
@@ -1549,7 +1865,7 @@
           <div class="flex flex-col items-center">
             <div class="mb-2">${renderKrathongSVG(item.krathongType, 'w-24 h-22')}</div>
             <div class="flex flex-wrap justify-center gap-1.5 mb-3">
-              <span class="text-xs px-2.5 py-1 rounded-full bg-purple-700/70 border border-purple-300/30 text-purple-100">
+              <span class="text-xs px-2.5 py-1 rounded-full bg-purple-700/75 border border-purple-300/30 text-purple-100">
                 ${escapeHtml(item.mode)}
               </span>
               <span class="text-xs px-2.5 py-1 rounded-full bg-amber-500/20 border border-amber-300/40 text-amber-200">
@@ -1557,7 +1873,7 @@
               </span>
             </div>
             <p class="text-xs text-purple-300 mb-3">
-              <i class="fa-solid fa-vest-patches text-amber-300 mr-1"></i>
+              <i class="fa-solid fa-crown text-amber-300 mr-1"></i>
               การแต่งกาย: <strong class="text-white">${escapeHtml(item.outfits)}</strong>
             </p>
             <div class="w-full p-3.5 rounded-xl bg-purple-950/80 border border-amber-300/30 text-sm text-amber-100 leading-relaxed">
@@ -1575,70 +1891,37 @@
 
     function openDressGuide() {
       const listHtml = OUTFITS.slice(0, 8).map((o, idx) => `
-        <div class="flex items-start gap-3 p-2.5 rounded-xl bg-purple-950/70 border border-purple-400/25 text-left">
-          <div class="w-11 h-16 flex-shrink-0 flex items-center justify-center bg-purple-900/50 rounded-lg">
-            ${renderAvatarSVG(o.id, FABRIC_COLORS[idx % FABRIC_COLORS.length].id, 'w-10 h-14')}
+        <div class="flex items-start gap-3 p-3 rounded-xl bg-purple-950/75 border border-purple-400/25 text-left">
+          <div class="w-12 h-18 flex-shrink-0 flex items-center justify-center bg-purple-900/50 rounded-lg">
+            ${renderAvatarSVG(o.id, FABRIC_COLORS[idx % FABRIC_COLORS.length].id, 'w-11 h-16')}
           </div>
           <div>
             <div class="text-xs font-bold text-amber-300">${idx + 1}. ${o.name}</div>
-            <p class="text-[11px] text-purple-200 leading-relaxed mt-0.5">${o.desc}</p>
+            <div class="text-[10px] text-purple-300 mb-1">${o.origin}</div>
+            <p class="text-[11px] text-purple-100 leading-relaxed">${o.desc}</p>
           </div>
         </div>
       `).join('');
 
       Swal.fire({
         title: 'ชุดไทยพระราชนิยม 8 แบบ',
-        width: 680,
+        width: 740,
         html: `
           <p class="text-xs text-purple-200 mb-3">
-            ชุดประจำชาติสตรีไทยตามพระราชดำริในสมเด็จพระนางเจ้าสิริกิติ์ พระบรมราชินีนาถ พระบรมราชชนนีพันปีหลวง
+            มรดกภูมิปัญญาทางวัฒนธรรมของชาติ (ขึ้นทะเบียน พ.ศ. 2566) ตามพระราชดำริในสมเด็จพระนางเจ้าสิริกิติ์ พระบรมราชินีนาถ พระบรมราชชนนีพันปีหลวง
           </p>
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 max-h-[55vh] overflow-y-auto pr-1">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 max-h-[58vh] overflow-y-auto pr-1">
             ${listHtml}
           </div>
         `,
-        confirmButtonText: 'เข้าใจแล้ว',
+        confirmButtonText: 'ปิดหน้าต่าง',
         confirmButtonColor: '#7c3aed'
       });
     }
 
     /*************************************************************************
-     * DATA LAYER: GOOGLE APPS SCRIPT API + DEMO FALLBACK
+     * DATA LAYER: GOOGLE APPS SCRIPT API
      *************************************************************************/
-    const DEMO_STORAGE_KEY = 'msk_loykrathong_demo_v1';
-
-    function getDefaultDemoData() {
-      return [
-        {
-          id: 'DEMO1',
-          timestamp: 'วันนี้ 19:15',
-          name: 'สำนักงานวัฒนธรรมจังหวัดมหาสารคาม',
-          mode: 'ลอยเป็นกลุ่ม (4 ท่าน)',
-          outfits: 'ชุดไทยจักรี, ชุดไทยจักรพรรดิ, ชุดไทยศิวาลัย, ชุดไทยบรมพิมาน',
-          krathongType: 'royal_purple',
-          wish: 'ขอสืบสานประเพณีลอยกระทงและอนุรักษ์ชุดไทยพระราชนิยมให้คงอยู่คู่ชาวมหาสารคามสืบไป'
-        },
-        {
-          id: 'DEMO2',
-          timestamp: 'วันนี้ 19:22',
-          name: 'น้องแพรวา & คุณธนพล',
-          mode: 'ลอยเป็นคู่',
-          outfits: 'ชุดไทยจิตรลดา, ชุดไทยพระราชทาน (ชาย)',
-          krathongType: 'lotus',
-          wish: 'ขอขมาพระแม่คงคา ขอให้ความรักและครอบครัวมีความสุขร่มเย็นดั่งสายน้ำ'
-        },
-        {
-          id: 'DEMO3',
-          timestamp: 'วันนี้ 19:30',
-          name: 'คุณมณีรัตน์ ชาวสารคาม',
-          mode: 'ลอยคนเดียว',
-          outfits: 'ชุดไทยอมรินทร์',
-          krathongType: 'golden_naga',
-          wish: 'ขอให้สุขภาพแข็งแรง การงานราบรื่น ประสบความสำเร็จในทุกด้าน'
-        }
-      ];
-    }
-
     function updateRecentWishesUI(items) {
       const list = document.getElementById('recent-wishes-list');
       if (!items || items.length === 0) {
@@ -1673,8 +1956,7 @@
       layer.innerHTML = '';
       activeFloaters.length = 0;
 
-      const displayItems = items.slice(0, 20);
-      displayItems.forEach(item => spawnFloatingKrathong(item, false, false));
+      items.slice(0, 22).forEach(item => spawnFloatingKrathong(item, false, false));
     }
 
     async function loadKrathongsFromGAS(showToast = false) {
@@ -1682,27 +1964,10 @@
       const badge = document.getElementById('connection-badge');
       if (refreshIcon) refreshIcon.classList.add('fa-spin');
 
-      const isConfigured = GAS_WEB_APP_URL && !GAS_WEB_APP_URL.includes('https://script.google.com/macros/s/AKfycbx6nBIhPUcM2LcUlaceITNBkwf6z_xGADg4ZgPf8lBt-hSdM1Nx_mrT10W8P1EAY8Rsbg/exec');
-
-      if (!isConfigured) {
-        state.isUsingDemo = true;
-        const saved = JSON.parse(localStorage.getItem(DEMO_STORAGE_KEY) || 'null') || getDefaultDemoData();
-        state.riverItems = saved;
-        state.totalCount = saved.length;
-        document.getElementById('total-count').textContent = state.totalCount.toLocaleString();
-        badge.textContent = 'โหมดทดสอบ (ยังไม่ใส่ URL GAS)';
-        badge.className = 'text-[10px] px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-200 border border-amber-300/30';
-        renderRiverFromData(saved);
-        updateRecentWishesUI(saved);
-        if (refreshIcon) refreshIcon.classList.remove('fa-spin');
-        return;
-      }
-
       try {
         const res = await fetch(`${GAS_WEB_APP_URL}?t=${Date.now()}`);
         const json = await res.json();
         if (json.status === 'success') {
-          state.isUsingDemo = false;
           state.riverItems = json.data || [];
           state.totalCount = json.total || state.riverItems.length;
           document.getElementById('total-count').textContent = state.totalCount.toLocaleString();
@@ -1717,7 +1982,7 @@
               toast: true,
               position: 'top-end',
               icon: 'success',
-              title: 'อัปเดตกระทงบนสายน้ำแล้ว',
+              title: 'อัปเดตสายน้ำเรียบร้อยแล้ว',
               showConfirmButton: false,
               timer: 1800
             });
@@ -1726,14 +1991,9 @@
           throw new Error(json.message || 'ไม่สามารถโหลดข้อมูลได้');
         }
       } catch (err) {
-        badge.textContent = 'เชื่อมต่อไม่สำเร็จ (ใช้โหมดสำรอง)';
+        badge.textContent = 'กำลังรอการเชื่อมต่อ GAS';
         badge.className = 'text-[10px] px-2 py-0.5 rounded-full bg-rose-500/20 text-rose-200 border border-rose-400/30';
-        const fallback = JSON.parse(localStorage.getItem(DEMO_STORAGE_KEY) || 'null') || getDefaultDemoData();
-        state.riverItems = fallback;
-        state.totalCount = fallback.length;
-        document.getElementById('total-count').textContent = state.totalCount.toLocaleString();
-        renderRiverFromData(fallback);
-        updateRecentWishesUI(fallback);
+        updateRecentWishesUI(state.riverItems);
       } finally {
         if (refreshIcon) refreshIcon.classList.remove('fa-spin');
       }
@@ -1773,51 +2033,29 @@
       btn.disabled = true;
       btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> <span>กำลังจุดธูปเทียนและบันทึกข้อมูล...</span>';
 
-      const nowStr = new Date().toLocaleString('th-TH', {
-        day: '2-digit', month: '2-digit', year: 'numeric',
-        hour: '2-digit', minute: '2-digit'
-      });
-
-      let savedItem = {
-        id: 'LK' + Date.now(),
-        timestamp: nowStr,
-        ...payload
-      };
-
       try {
-        if (!state.isUsingDemo && GAS_WEB_APP_URL && !GAS_WEB_APP_URL.includes('YOUR_GAS_WEB_APP_URL_HERE')) {
-          const response = await fetch(GAS_WEB_APP_URL, {
-            method: 'POST',
-            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-            body: JSON.stringify(payload)
-          });
-          const result = await response.json();
-          if (result.status === 'success' && result.item) {
-            savedItem = result.item;
-            state.totalCount = result.total || (state.totalCount + 1);
-          } else {
-            throw new Error(result.message || 'บันทึกข้อมูลไม่สำเร็จ');
-          }
-        } else {
-          // โหมดทดสอบ LocalStorage
-          const existing = JSON.parse(localStorage.getItem(DEMO_STORAGE_KEY) || 'null') || getDefaultDemoData();
-          existing.unshift(savedItem);
-          localStorage.setItem(DEMO_STORAGE_KEY, JSON.stringify(existing.slice(0, 50)));
-          state.totalCount = existing.length;
+        const response = await fetch(GAS_WEB_APP_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify(payload)
+        });
+        const result = await response.json();
+
+        if (result.status !== 'success' || !result.item) {
+          throw new Error(result.message || 'บันทึกข้อมูลไม่สำเร็จ');
         }
 
-        // อัปเดต State & UI
+        const savedItem = result.item;
+        state.totalCount = result.total || (state.totalCount + 1);
         state.riverItems.unshift(savedItem);
+
         document.getElementById('total-count').textContent = state.totalCount.toLocaleString();
         updateRecentWishesUI(state.riverItems);
 
-        // เล่นแอนิเมชันปล่อยกระทงจากท่าน้ำ + พลุ
+        // เล่นแอนิเมชันปล่อยกระทงจากท่าน้ำด้านล่างพุ่งลงแม่น้ำ + พลุเหนือพระธาตุ
         playPierReleaseAnimation(savedItem);
-
-        // เคลียร์ฟอร์ม
         document.getElementById('input-wish').value = '';
 
-        // แสดง SweetAlert2 หลังกระทงลงน้ำเรียบร้อย
         setTimeout(() => {
           Swal.fire({
             title: 'ลอยกระทงสำเร็จแล้ว!',
@@ -1830,20 +2068,20 @@
                   “${escapeHtml(savedItem.wish)}”
                 </div>
                 <p class="text-[11px] text-purple-300 mt-3">
-                  กระทงของคุณกำลังล่องลอยอยู่ในสายน้ำด้านบน สามารถแตะที่กระทงเพื่ออ่านคำอธิษฐานได้ตลอดเวลา
+                  กระทงของคุณกำลังล่องลอยอยู่หน้าพระธาตุใต้แสงจันทร์แล้ว แตะที่กระทงเพื่ออ่านคำอธิษฐานได้ตลอดเวลา
                 </p>
               </div>
             `,
             confirmButtonText: 'ชมกระทงในสายน้ำ',
             confirmButtonColor: '#7c3aed'
           });
-        }, 1650);
+        }, 1700);
 
       } catch (err) {
         Swal.fire({
           icon: 'error',
           title: 'เกิดข้อผิดพลาดในการบันทึก',
-          text: err.message || 'กรุณาตรวจสอบการ Deploy ของ Google Apps Script',
+          text: err.message || 'กรุณาตรวจสอบสิทธิ์การเข้าถึง (Anyone) ของ Google Apps Script Web App',
           confirmButtonColor: '#7c3aed'
         });
       } finally {

@@ -617,6 +617,81 @@
       transform: translateY(0) scale(1);
       pointer-events: auto;
     }
+
+    /* === [เพิ่มใหม่] เรือไฟเรืองแสง 3 มิติล่องบนผิวน้ำ === */
+    .fireboat-cruise-wrap {
+      position: absolute;
+      top: 39%;
+      left: 0;
+      width: 260px;
+      z-index: 10; /* อยู่เหนือผิวน้ำ (7) แต่ด้านหลังกระทง (12) และท่าน้ำ (24) เพื่อมิติความลึก */
+      pointer-events: none;
+      will-change: transform;
+      animation: fireboatCruise 62s linear infinite;
+      animation-delay: -18s; /* ให้เรือไฟปรากฏกลางสายน้ำทันทีเมื่อเปิดหน้าเว็บ */
+    }
+
+    @media (min-width: 768px) {
+      .fireboat-cruise-wrap {
+        top: 35%;
+        width: 370px;
+      }
+    }
+
+    @media (min-width: 1280px) {
+      .fireboat-cruise-wrap {
+        top: 33%;
+        width: 430px;
+      }
+    }
+
+    @keyframes fireboatCruise {
+      0% { transform: translateX(-460px); }
+      100% { transform: translateX(calc(100vw + 80px)); }
+    }
+
+    .fireboat-bob-inner {
+      width: 100%;
+      animation: fireboatBob 4.2s ease-in-out infinite alternate;
+      filter: drop-shadow(0 0 18px rgba(251, 191, 36, 0.45));
+    }
+
+    @keyframes fireboatBob {
+      0% { transform: translateY(0px) rotate(-0.8deg); }
+      100% { transform: translateY(-5px) rotate(0.8deg); }
+    }
+
+    .fireboat-bulb {
+      animation: fireboatTwinkle var(--f-dur, 1.4s) ease-in-out infinite alternate;
+      animation-delay: var(--f-delay, 0s);
+    }
+
+    @keyframes fireboatTwinkle {
+      0% { opacity: 0.48; transform: scale(0.82); }
+      100% { opacity: 1; transform: scale(1.18); }
+    }
+
+    .fireboat-reflect-group {
+      transform-origin: 210px 152px;
+      animation: fireboatReflectSway 3.2s ease-in-out infinite alternate;
+    }
+
+    @keyframes fireboatReflectSway {
+      0% { transform: skewX(-4deg) scaleX(0.96); opacity: 0.52; }
+      100% { transform: skewX(4deg) scaleX(1.04); opacity: 0.78; }
+    }
+
+    .fireboat-ember {
+      animation: emberRise var(--e-dur, 3.6s) ease-out infinite;
+      animation-delay: var(--e-delay, 0s);
+      opacity: 0;
+    }
+
+    @keyframes emberRise {
+      0% { transform: translate(0, 0) scale(1); opacity: 0; }
+      20% { opacity: 0.95; }
+      100% { transform: translate(var(--e-dx, -14px), -44px) scale(0.2); opacity: 0; }
+    }
   </style>
 </head>
 <body class="flex flex-col min-h-screen">
@@ -736,6 +811,113 @@
       <div class="river-wave-ribbon" style="top:80%;--wdur:9s;--wop:0.22;"></div>
     </div>
 
+<!-- เรือไฟประเพณีเรืองแสง 1 ลำ ล่องบนผิวน้ำอย่างมีมิติ -->
+    <div id="illuminated-fireboat" class="fireboat-cruise-wrap" aria-hidden="true">
+      <div class="fireboat-bob-inner">
+        <svg viewBox="0 0 420 220" class="w-full h-auto overflow-visible">
+          <defs>
+            <!-- แสงเรืองรองอุ่นรอบลำเรือ -->
+            <radialGradient id="fb_aura" cx="50%" cy="54%" r="48%">
+              <stop offset="0%" stop-color="#fde047" stop-opacity="0.48" />
+              <stop offset="48%" stop-color="#f97316" stop-opacity="0.22" />
+              <stop offset="100%" stop-color="#f97316" stop-opacity="0" />
+            </radialGradient>
+            <!-- สีทองมีมิติสำหรับโครงไฟและยอดพระธาตุ -->
+            <linearGradient id="fb_gold" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stop-color="#fffef0" />
+              <stop offset="35%" stop-color="#fde047" />
+              <stop offset="75%" stop-color="#f59e0b" />
+              <stop offset="100%" stop-color="#b45309" />
+            </linearGradient>
+            <!-- ลำเรือไม้สักเข้มไล่แสงเงา -->
+            <linearGradient id="fb_hull" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stop-color="#7c3a1d" />
+              <stop offset="42%" stop-color="#471d0e" />
+              <stop offset="100%" stop-color="#1c0905" />
+            </linearGradient>
+            <!-- เงาสะท้อนสีทองบนผิวน้ำ -->
+            <linearGradient id="fb_reflect" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stop-color="#fde047" stop-opacity="0.58" />
+              <stop offset="45%" stop-color="#f97316" stop-opacity="0.26" />
+              <stop offset="100%" stop-color="#f97316" stop-opacity="0" />
+            </linearGradient>
+            <filter id="fb_soft_blur" x="-20%" y="-20%" width="140%" height="140%">
+              <feGaussianBlur stdDeviation="2.6" />
+            </filter>
+          </defs>
+
+          <!-- 1. รัศมีแสงไฟส่องสว่างรอบโครงเรือไฟ -->
+          <ellipse cx="210" cy="108" rx="192" ry="76" fill="url(#fb_aura)" />
+
+          <!-- 2. เงาสะท้อนพริ้วไหวบนผิวน้ำใต้ลำเรือ -->
+          <g class="fireboat-reflect-group" filter="url(#fb_soft_blur)">
+            <ellipse cx="210" cy="162" rx="148" ry="12" fill="url(#fb_reflect)" />
+            <ellipse cx="210" cy="175" rx="112" ry="11" fill="url(#fb_reflect)" opacity="0.82" />
+            <ellipse cx="210" cy="189" rx="74" ry="9" fill="url(#fb_reflect)" opacity="0.65" />
+            <ellipse cx="210" cy="202" rx="42" ry="7" fill="url(#fb_reflect)" opacity="0.45" />
+            <!-- แนวแสงสะท้อนยอดพระธาตุลงน้ำ -->
+            <polygon points="184,152 236,152 218,210 202,210" fill="url(#fb_reflect)" opacity="0.55" />
+          </g>
+
+          <!-- 3. โครงไม้ไผ่ด้านหลัง (สร้างมิติความลึก) -->
+          <g stroke="#451a03" stroke-width="1.4" opacity="0.55">
+            <line x1="88" y1="126" x2="88" y2="88" />
+            <line x1="138" y1="126" x2="138" y2="66" />
+            <line x1="210" y1="126" x2="210" y2="26" />
+            <line x1="282" y1="126" x2="282" y2="66" />
+            <line x1="332" y1="126" x2="332" y2="88" />
+            <line x1="72" y1="108" x2="348" y2="108" />
+            <line x1="126" y1="84" x2="294" y2="84" />
+          </g>
+
+          <!-- 4. โครงไฟประเพณี: ทรงพระธาตุ-ปราสาทกลางเรือ ขนาบซุ้มพญานาคคู่ -->
+          <g fill="none" stroke="url(#fb_gold)" stroke-linecap="round" stroke-linejoin="round">
+            <!-- ยอดพระธาตุ/ปราสาทกลางเรือ 3 ชั้น -->
+            <path d="M210,16 L216,44 L224,52 L220,56 L232,74 L226,78 L244,102 L248,125 L172,125 L176,102 L194,78 L188,74 L200,56 L196,52 L204,44 Z"
+                  fill="rgba(245, 158, 11, 0.16)" stroke-width="2.4" />
+            <!-- ซุ้มเรือนแก้วภายในองค์พระธาตุ -->
+            <path d="M196,124 L196,98 Q210,80 224,98 L224,124" stroke-width="1.8" fill="rgba(254, 240, 138, 0.18)" />
+            <line x1="210" y1="16" x2="210" y2="44" stroke="#fffef0" stroke-width="2.2" />
+
+            <!-- ซุ้มพญานาค-ลายกนกด้านซ้าย -->
+            <path d="M174,124 L174,88 Q154,62 128,74 Q108,84 94,106 L82,124" fill="rgba(251, 146, 60, 0.14)" stroke-width="2.2" />
+            <path d="M160,124 Q148,88 122,94 Q106,98 96,124" stroke-width="1.5" opacity="0.85" />
+            <!-- เศียรพญานาคหงอนไฟฝั่งซ้าย -->
+            <path d="M74,120 C56,106 54,82 70,70 C78,64 84,72 78,79 C71,82 70,92 80,104" stroke-width="2.3" />
+
+            <!-- ซุ้มพญานาค-ลายกนกด้านขวา -->
+            <path d="M246,124 L246,88 Q266,62 292,74 Q312,84 326,106 L338,124" fill="rgba(251, 146, 60, 0.14)" stroke-width="2.2" />
+            <path d="M260,124 Q272,88 298,94 Q314,98 324,124" stroke-width="1.5" opacity="0.85" />
+            <!-- เศียรพญานาคหงอนไฟฝั่งขวา -->
+            <path d="M346,120 C364,106 366,82 350,70 C342,64 336,72 342,79 C349,82 350,92 340,104" stroke-width="2.3" />
+
+            <!-- สายไฟระย้าโยงจากยอดกลางสู่หัวเรือ-ท้ายเรือ -->
+            <path d="M210,36 Q135,78 46,108" stroke-width="1.3" stroke-dasharray="3 4" opacity="0.85" />
+            <path d="M210,36 Q285,78 374,108" stroke-width="1.3" stroke-dasharray="3 4" opacity="0.85" />
+          </g>
+
+          <!-- 5. ตัวเรือยาวไม้สักทรงไทย (หัว-ท้ายโค้งงอน) -->
+          <path d="M18,104 C28,118 46,124 68,125 L352,125 C374,124 392,118 402,104 C394,128 374,145 344,148 L76,148 C46,145 26,128 18,104 Z"
+                fill="url(#fb_hull)" stroke="#fbbf24" stroke-width="1.5" />
+          <!-- เส้นคาดลายทองข้างกราบเรือ -->
+          <path d="M40,126 Q210,136 380,126" fill="none" stroke="url(#fb_gold)" stroke-width="2" opacity="0.9" />
+          <path d="M54,136 Q210,144 366,136" fill="none" stroke="#f97316" stroke-width="1.2" opacity="0.7" />
+          <!-- พู่โคมไฟประดับหัวเรือ-ท้ายเรือ -->
+          <circle cx="24" cy="108" r="3.5" fill="#fef08a" />
+          <circle cx="396" cy="108" r="3.5" fill="#fef08a" />
+
+          <!-- 6. ระลอกคลื่นสีทองโอบใต้ท้องเรือ -->
+          <path d="M44,149 Q125,155 210,150 Q295,155 376,149" fill="none" stroke="#fef08a" stroke-width="1.5" opacity="0.65" />
+          <path d="M14,154 Q85,158 160,154" fill="none" stroke="#c4b5fd" stroke-width="1.2" opacity="0.4" />
+
+          <!-- 7. กลุ่มดวงไฟตะเกียงกระพริบ + สะเก็ดไฟ (สร้างอัตโนมัติด้วย JS) -->
+          <g id="fireboat-bulbs"></g>
+          <g id="fireboat-embers"></g>
+        </svg>
+      </div>
+    </div>
+
+    
     <!-- Fireworks Canvas -->
     <canvas id="fireworks-canvas" class="absolute inset-0 w-full h-full pointer-events-none z-20"></canvas>
 
@@ -3397,6 +3579,79 @@ function createFloaterNode(item, xStart, isMine = false, forcedLane = null) {
       }
     }
 
+/*************************************************************************
+     * สร้างดวงไฟตะเกียงกระพริบและสะเก็ดไฟให้เรือไฟดูมีชีวิตชีวา
+     *************************************************************************/
+    function initIlluminatedFireboat() {
+      const bulbsGroup = document.getElementById('fireboat-bulbs');
+      const embersGroup = document.getElementById('fireboat-embers');
+      if (!bulbsGroup || !embersGroup) return;
+
+      const svgNS = 'http://www.w3.org/2000/svg';
+      bulbsGroup.innerHTML = '';
+      embersGroup.innerHTML = '';
+
+      // พิกัดดวงไฟตะเกียงตามแนวโครงพระธาตุ ซุ้มพญานาค สายไฟระย้า และกราบเรือ
+      const bulbPoints = [
+        // ยอดพระธาตุกลาง
+        [210,16],[205,34],[215,34],[200,52],[210,48],[220,52],
+        [192,70],[204,68],[216,68],[228,70],[182,92],[196,88],[210,84],[224,88],[238,92],
+        [176,112],[196,112],[210,104],[224,112],[244,112],
+        // ซุ้มพญานาคซ้าย-ขวา
+        [152,72],[134,74],[116,84],[102,98],[90,114],[68,72],[64,92],[74,108],
+        [268,72],[286,74],[304,84],[318,98],[330,114],[352,72],[356,92],[346,108],
+        // สายไฟระย้า
+        [168,58],[128,76],[88,92],[54,106],
+        [252,58],[292,76],[332,92],[366,106]
+      ];
+
+      // แนวดวงไฟตลอดความยาวกราบเรือ
+      for (let x = 52; x <= 368; x += 22) {
+        bulbPoints.push([x, 128 + Math.sin(((x - 52) / 316) * Math.PI) * 5]);
+      }
+
+      bulbPoints.forEach(([x, y], idx) => {
+        const g = document.createElementNS(svgNS, 'g');
+        g.setAttribute('class', 'fireboat-bulb');
+        g.style.transformOrigin = `${x}px ${y}px`;
+        g.style.setProperty('--f-dur', `${(0.9 + (idx % 7) * 0.22).toFixed(2)}s`);
+        g.style.setProperty('--f-delay', `${((idx * 0.17) % 1.8).toFixed(2)}s`);
+
+        const halo = document.createElementNS(svgNS, 'circle');
+        halo.setAttribute('cx', x);
+        halo.setAttribute('cy', y);
+        halo.setAttribute('r', idx === 0 ? '6.5' : '4.2');
+        halo.setAttribute('fill', idx % 3 === 0 ? '#fb923c' : '#facc15');
+        halo.setAttribute('opacity', '0.42');
+
+        const core = document.createElementNS(svgNS, 'circle');
+        core.setAttribute('cx', x);
+        core.setAttribute('cy', y);
+        core.setAttribute('r', idx === 0 ? '2.6' : '1.7');
+        core.setAttribute('fill', '#fffef5');
+
+        g.appendChild(halo);
+        g.appendChild(core);
+        bulbsGroup.appendChild(g);
+      });
+
+      // สะเก็ดไฟสีทองลอยขึ้นอ่อนๆ จากลำเรือไฟ
+      for (let i = 0; i < 14; i++) {
+        const cx = 75 + Math.random() * 270;
+        const cy = 50 + Math.random() * 65;
+        const ember = document.createElementNS(svgNS, 'circle');
+        ember.setAttribute('cx', cx.toFixed(1));
+        ember.setAttribute('cy', cy.toFixed(1));
+        ember.setAttribute('r', (1 + Math.random() * 1.2).toFixed(1));
+        ember.setAttribute('fill', i % 2 === 0 ? '#fef08a' : '#fb923c');
+        ember.setAttribute('class', 'fireboat-ember');
+        ember.style.setProperty('--e-dur', `${(2.8 + Math.random() * 2.4).toFixed(2)}s`);
+        ember.style.setProperty('--e-delay', `${(Math.random() * 3.5).toFixed(2)}s`);
+        ember.style.setProperty('--e-dx', `${(-22 + Math.random() * 16).toFixed(1)}px`);
+        embersGroup.appendChild(ember);
+      }
+    }
+    
     /*************************************************************************
      * INITIALIZATION
      *************************************************************************/
@@ -3405,6 +3660,7 @@ function createFloaterNode(item, xStart, isMine = false, forcedLane = null) {
       initSkyEffects();
       resizeAllCanvases();
       animateRiverWater();
+      initIlluminatedFireboat();
       animateFireworks();
       startAmbientWaterFireworks();
       animateRiverLoop();

@@ -2554,169 +2554,249 @@ function createFloaterNode(item, xStart, isMine = false, forcedLane = null) {
       ctx.closePath();
     }
 
-    async function generateMemoryCardDataURL(item, customCharacters = null) {
+    // ท่าโพสต์สนุกๆ/อ่อนช้อยสำหรับสุ่มบนการ์ดความทรงจำ
+    const CARD_POSES = [
+      { id: 'wai',        label: 'ท่าไหว้ขอขมาอ่อนช้อย',    tilt: 0,    yOff: 0,   badge: '🙏 ขอขมาพระแม่คงคา', deco: 'lotus' },
+      { id: 'peace',      label: 'ท่าชูสองนิ้วสดใส',         tilt: -4,   yOff: -10, badge: '✌️ ลอยกระทงสุขสันต์', deco: 'stars' },
+      { id: 'mini_heart', label: 'ท่ามินิฮาร์ทคืนวันเพ็ญ',    tilt: 3.5,  yOff: -6,  badge: '🫰 ส่งรักคืนวันเพ็ญ', deco: 'hearts' },
+      { id: 'ram_thai',   label: 'ท่าฟ้อนรำไทยอ่อนช้อย',     tilt: -3,   yOff: -12, badge: '✨ งดงามอย่างไทย',    deco: 'petals' },
+      { id: 'embrace',    label: 'ท่าประคองกระทงเคียงคู่',   tilt: 2,    yOff: 6,   badge: '🪷 สืบสานประเพณีไทย', deco: 'glow' }
+    ];
+
+    function pickRandomPose(excludeId = null) {
+      const pool = CARD_POSES.filter(p => p.id !== excludeId);
+      return pool[Math.floor(Math.random() * pool.length)] || CARD_POSES[0];
+    }
+
+    function drawPoseAccentOnCard(ctx, pose, centerX, centerY) {
+      ctx.save();
+      if (pose.deco === 'hearts') {
+        const hearts = [
+          { x: centerX - 185, y: centerY - 120, s: 28, c: '#f472b6' },
+          { x: centerX + 180, y: centerY - 140, s: 34, c: '#fb7185' },
+          { x: centerX + 210, y: centerY - 30,  s: 22, c: '#fde047' },
+          { x: centerX - 210, y: centerY - 15,  s: 24, c: '#f9a8d4' }
+        ];
+        hearts.forEach(h => {
+          ctx.fillStyle = h.c;
+          ctx.font = `${h.s}px Prompt, sans-serif`;
+          ctx.textAlign = 'center';
+          ctx.fillText('♥', h.x, h.y);
+        });
+      } else if (pose.deco === 'stars') {
+        const stars = [
+          { x: centerX - 195, y: centerY - 135, s: 32 },
+          { x: centerX + 195, y: centerY - 115, s: 28 },
+          { x: centerX - 215, y: centerY + 10,  s: 22 },
+          { x: centerX + 215, y: centerY + 25,  s: 26 }
+        ];
+        ctx.fillStyle = '#fde047';
+        stars.forEach(st => {
+          ctx.font = `${st.s}px Prompt, sans-serif`;
+          ctx.textAlign = 'center';
+          ctx.fillText('✦', st.x, st.y);
+        });
+      } else if (pose.deco === 'petals') {
+        const petals = [
+          { x: centerX - 185, y: centerY - 110, r: -0.5, c: '#fbcfe8' },
+          { x: centerX + 185, y: centerY - 125, r: 0.6,  c: '#fde68a' },
+          { x: centerX - 210, y: centerY + 20,  r: 0.4,  c: '#c4b5fd' },
+          { x: centerX + 205, y: centerY + 10,  r: -0.6, c: '#f9a8d4' }
+        ];
+        petals.forEach(pt => {
+          ctx.save();
+          ctx.translate(pt.x, pt.y);
+          ctx.rotate(pt.r);
+          ctx.fillStyle = pt.c;
+          ctx.beginPath();
+          ctx.ellipse(0, 0, 14, 7, 0, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.restore();
+        });
+      } else {
+        // รัศมีแสงทองอุ่นละมุนสำหรับท่าไหว้ / ประคองกระทง
+        const aura = ctx.createRadialGradient(centerX, centerY, 40, centerX, centerY, 265);
+        aura.addColorStop(0, 'rgba(254, 240, 138, 0.25)');
+        aura.addColorStop(1, 'rgba(254, 240, 138, 0)');
+        ctx.fillStyle = aura;
+        ctx.beginPath();
+        ctx.arc(centerX, centerY, 265, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      ctx.restore();
+    }
+
+    /**
+     * ออกแบบการ์ดความทรงจำใหม่หมด (กราฟิกเทศกาลคืนวันเพ็ญร่วมสมัย + สุ่มท่าโพสต์ + โลโก้ขนาดพอดี)
+     */
+    async function generateMemoryCardDataURL(item, customCharacters = null, forcedPose = null) {
       if (document.fonts && document.fonts.ready) {
         await document.fonts.ready;
       }
 
+      const pose = forcedPose || pickRandomPose();
       const canvas = document.getElementById('memory-card-canvas');
       const ctx = canvas.getContext('2d');
       const W = 1080;
       const H = 1350;
-      const SKY_H = 620;
       canvas.width = W;
       canvas.height = H;
 
-      // 1. Base Sky + Flowing River Gradient
-      const baseGrad = ctx.createLinearGradient(0, 0, 0, H);
-      baseGrad.addColorStop(0, '#0a021a');
-      baseGrad.addColorStop(0.45, '#250c54');
-      baseGrad.addColorStop(0.46, '#230d52');
-      baseGrad.addColorStop(0.75, '#130630');
-      baseGrad.addColorStop(1, '#080217');
-      ctx.fillStyle = baseGrad;
+      // 1. ฉากกราฟิกออกแบบใหม่: คืนวันเพ็ญโทนม่วงคราม-ทองหรูหรา
+      const bgGrad = ctx.createLinearGradient(0, 0, 0, H);
+      bgGrad.addColorStop(0, '#0d0424');
+      bgGrad.addColorStop(0.32, '#240b54');
+      bgGrad.addColorStop(0.56, '#3b1578');
+      bgGrad.addColorStop(0.62, '#1d0a44');
+      bgGrad.addColorStop(1, '#090218');
+      ctx.fillStyle = bgGrad;
       ctx.fillRect(0, 0, W, H);
 
-      // 2. Sky Photo strictly clipped to Upper Sky Zone (0..SKY_H)
-      const bgImg = await loadImageSafe(SKY_BG_URL);
-      if (bgImg) {
-        ctx.save();
-        ctx.beginPath();
-        ctx.rect(0, 0, W, SKY_H);
-        ctx.clip();
-
-        const imgAspect = bgImg.width / bgImg.height;
-        const drawW = Math.max(W, SKY_H * imgAspect);
-        const drawH = drawW / imgAspect;
-        ctx.globalAlpha = 0.88;
-        ctx.drawImage(bgImg, (W - drawW) / 2, -drawH * 0.08, drawW, drawH);
-
-        // Soft fade into horizon line
-        const skyFade = ctx.createLinearGradient(0, 0, 0, SKY_H);
-        skyFade.addColorStop(0, 'rgba(10, 3, 28, 0.68)');
-        skyFade.addColorStop(0.4, 'rgba(20, 7, 48, 0.18)');
-        skyFade.addColorStop(0.84, 'rgba(24, 9, 58, 0.45)');
-        skyFade.addColorStop(1, 'rgba(30, 11, 69, 1)');
-        ctx.globalAlpha = 1;
-        ctx.fillStyle = skyFade;
-        ctx.fillRect(0, 0, W, SKY_H);
-        ctx.restore();
-      }
-
-      // 3. Animated-style River Surface & Moonlight Ripples in Lower Half
-      ctx.save();
-      const riverGlow = ctx.createLinearGradient(0, SKY_H, 0, SKY_H + 55);
-      riverGlow.addColorStop(0, 'rgba(251, 191, 36, 0.32)');
-      riverGlow.addColorStop(1, 'rgba(251, 191, 36, 0)');
-      ctx.fillStyle = riverGlow;
-      ctx.fillRect(0, SKY_H, W, 55);
-
-      // Flowing water current streaks
-      for (let i = 0; i < 24; i++) {
-        const y = SKY_H + 22 + i * 18;
-        const x = (i * 173) % (W - 200);
-        const len = 140 + (i % 5) * 45;
-        const g = ctx.createLinearGradient(x, y, x + len, y);
-        g.addColorStop(0, 'rgba(196, 181, 253, 0)');
-        g.addColorStop(0.5, 'rgba(196, 181, 253, 0.22)');
-        g.addColorStop(1, 'rgba(196, 181, 253, 0)');
-        ctx.fillStyle = g;
-        ctx.fillRect(x, y, len, 2.5);
-      }
-
-      // Moonlight reflection ripples on river
-      for (let i = 0; i < 14; i++) {
-        const y = SKY_H + 16 + i * 17;
-        const rw = 60 + i * 10;
-        ctx.fillStyle = `rgba(254, 240, 138, ${(0.28 - i * 0.015).toFixed(3)})`;
-        ctx.fillRect(890 - rw / 2 + Math.sin(i) * 14, y, rw, 3.2);
-      }
-      ctx.restore();
-
-      // 4. Moon & Stars in Upper Sky
-      ctx.save();
-      for (let i = 0; i < 45; i++) {
-        ctx.fillStyle = `rgba(255,255,255,${0.25 + (i % 5) * 0.14})`;
-        const sx = (i * 197) % W;
-        const sy = 50 + ((i * 89) % 340);
-        ctx.beginPath();
-        ctx.arc(sx, sy, 1.5 + (i % 3), 0, Math.PI * 2);
-        ctx.fill();
-      }
-      const moonHalo = ctx.createRadialGradient(890, 210, 25, 890, 210, 145);
-      moonHalo.addColorStop(0, 'rgba(254, 240, 138, 0.78)');
-      moonHalo.addColorStop(0.45, 'rgba(251, 191, 36, 0.25)');
-      moonHalo.addColorStop(1, 'rgba(251, 191, 36, 0)');
+      // 2. พระจันทร์เต็มดวงกลางฉากหลัง + ดวงดาว + โคมลอย + พลุเหนือน้ำ
+      const moonY = 475;
+      const moonHalo = ctx.createRadialGradient(W / 2, moonY, 60, W / 2, moonY, 340);
+      moonHalo.addColorStop(0, 'rgba(254, 243, 199, 0.45)');
+      moonHalo.addColorStop(0.45, 'rgba(251, 191, 36, 0.16)');
+      moonHalo.addColorStop(1, 'rgba(139, 92, 246, 0)');
       ctx.fillStyle = moonHalo;
       ctx.beginPath();
-      ctx.arc(890, 210, 145, 0, Math.PI * 2);
+      ctx.arc(W / 2, moonY, 340, 0, Math.PI * 2);
       ctx.fill();
 
-      const moonGrad = ctx.createRadialGradient(872, 192, 10, 890, 210, 68);
-      moonGrad.addColorStop(0, '#fffef7');
-      moonGrad.addColorStop(0.55, '#fde047');
-      moonGrad.addColorStop(1, '#f59e0b');
-      ctx.fillStyle = moonGrad;
+      const moonCircle = ctx.createRadialGradient(W / 2 - 40, moonY - 40, 20, W / 2, moonY, 185);
+      moonCircle.addColorStop(0, '#fffef7');
+      moonCircle.addColorStop(0.6, '#fde68a');
+      moonCircle.addColorStop(1, '#f59e0b');
+      ctx.fillStyle = moonCircle;
       ctx.beginPath();
-      ctx.arc(890, 210, 68, 0, Math.PI * 2);
+      ctx.arc(W / 2, moonY, 185, 0, Math.PI * 2);
       ctx.fill();
-      ctx.restore();
 
-      // 5. Ornate Double Golden Frame
-      ctx.strokeStyle = 'rgba(251, 191, 36, 0.75)';
+      // ดวงดาวและโบเก้แสงทอง
+      for (let i = 0; i < 46; i++) {
+        const sx = (i * 193 + 40) % (W - 80) + 40;
+        const sy = 150 + ((i * 83) % 520);
+        ctx.fillStyle = i % 3 === 0 ? 'rgba(254, 240, 138, 0.55)' : 'rgba(255, 255, 255, 0.45)';
+        ctx.beginPath();
+        ctx.arc(sx, sy, 1.5 + (i % 4), 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      // พลุกราฟิกซ้าย-ขวา
+      const fwCenters = [{ x: 185, y: 310, c: '#f472b6' }, { x: 895, y: 290, c: '#fde047' }];
+      fwCenters.forEach(fw => {
+        for (let r = 0; r < 16; r++) {
+          const ang = (Math.PI * 2 * r) / 16;
+          ctx.strokeStyle = fw.c;
+          ctx.globalAlpha = 0.55;
+          ctx.lineWidth = 2.5;
+          ctx.beginPath();
+          ctx.moveTo(fw.x + Math.cos(ang) * 18, fw.y + Math.sin(ang) * 18);
+          ctx.lineTo(fw.x + Math.cos(ang) * 62, fw.y + Math.sin(ang) * 62);
+          ctx.stroke();
+        }
+      });
+      ctx.globalAlpha = 1;
+
+      // โคมลอยประดับซ้าย-ขวา
+      const lanterns = [{ x: 145, y: 465, s: 1 }, { x: 930, y: 440, s: 0.9 }, { x: 245, y: 215, s: 0.7 }, { x: 825, y: 200, s: 0.75 }];
+      lanterns.forEach(lt => {
+        ctx.save();
+        ctx.translate(lt.x, lt.y);
+        ctx.scale(lt.s, lt.s);
+        const lg = ctx.createRadialGradient(0, 5, 2, 0, 0, 26);
+        lg.addColorStop(0, '#fffbeb');
+        lg.addColorStop(0.6, '#fbbf24');
+        lg.addColorStop(1, '#c2410c');
+        ctx.fillStyle = lg;
+        ctx.beginPath();
+        ctx.ellipse(0, 0, 16, 22, 0, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+      });
+
+      // ผิวน้ำและระลอกแสงทองด้านล่างหลังตัวละคร
+      const riverY = 740;
+      const waterGrad = ctx.createLinearGradient(0, riverY, 0, H);
+      waterGrad.addColorStop(0, '#2a1060');
+      waterGrad.addColorStop(0.35, '#160738');
+      waterGrad.addColorStop(1, '#080217');
+      ctx.fillStyle = waterGrad;
+      ctx.fillRect(0, riverY, W, H - riverY);
+
+      for (let w = 0; w < 14; w++) {
+        const wy = riverY + 14 + w * 14;
+        const ww = 280 - w * 12;
+        ctx.fillStyle = `rgba(254, 240, 138, ${(0.28 - w * 0.016).toFixed(3)})`;
+        ctx.fillRect(W / 2 - ww / 2 + Math.sin(w) * 16, wy, ww, 3);
+      }
+
+      // 3. กรอบลายเส้นสีทองทันสมัย
+      ctx.strokeStyle = 'rgba(251, 191, 36, 0.78)';
       ctx.lineWidth = 4;
       drawRoundedRect(ctx, 28, 28, W - 56, H - 56, 36);
       ctx.stroke();
 
-      ctx.strokeStyle = 'rgba(196, 181, 253, 0.35)';
-      ctx.lineWidth = 2;
+      ctx.strokeStyle = 'rgba(196, 181, 253, 0.32)';
+      ctx.lineWidth = 1.8;
       drawRoundedRect(ctx, 42, 42, W - 84, H - 84, 28);
       ctx.stroke();
 
-      // 6. Official Ministry of Culture Logo & Title
+      // 4. ส่วนหัว + โลโก้กระทรวงวัฒนธรรมขนาดพอดี สมดุล (ไม่ใหญ่เกินไป)
       const logoImg = await loadImageSafe(LOGO_URL);
-      ctx.save();
-      ctx.shadowColor = 'rgba(251, 191, 36, 0.55)';
-      ctx.shadowBlur = 22;
+      const headerBoxX = 86;
+      const headerBoxY = 66;
+      const headerBoxW = W - 172;
+      const headerBoxH = 114;
+
+      ctx.fillStyle = 'rgba(19, 6, 46, 0.78)';
+      drawRoundedRect(ctx, headerBoxX, headerBoxY, headerBoxW, headerBoxH, 57);
+      ctx.fill();
+      ctx.strokeStyle = 'rgba(251, 191, 36, 0.55)';
+      ctx.lineWidth = 2;
+      drawRoundedRect(ctx, headerBoxX, headerBoxY, headerBoxW, headerBoxH, 57);
+      ctx.stroke();
+
+      // วงกลมโลโก้ขนาดพอดี (เส้นผ่านศูนย์กลาง 82px)
+      const logoCx = headerBoxX + 66;
+      const logoCy = headerBoxY + headerBoxH / 2;
       ctx.fillStyle = '#ffffff';
       ctx.beginPath();
-      ctx.arc(W / 2, 132, 62, 0, Math.PI * 2);
+      ctx.arc(logoCx, logoCy, 41, 0, Math.PI * 2);
       ctx.fill();
-      ctx.restore();
-
       ctx.strokeStyle = '#fbbf24';
-      ctx.lineWidth = 4;
-      ctx.beginPath();
-      ctx.arc(W / 2, 132, 64, 0, Math.PI * 2);
+      ctx.lineWidth = 2.5;
       ctx.stroke();
 
       if (logoImg) {
-        ctx.drawImage(logoImg, W / 2 - 48, 132 - 48, 96, 96);
-      } else {
-        ctx.fillStyle = '#4c1d95';
-        ctx.font = '700 22px Prompt, sans-serif';
-        ctx.textAlign = 'center';
-        ctx.fillText('สวจ.', W / 2, 140);
+        ctx.drawImage(logoImg, logoCx - 31, logoCy - 31, 62, 62);
       }
 
-      ctx.textAlign = 'center';
+      ctx.textAlign = 'left';
       ctx.fillStyle = '#fde68a';
-      ctx.font = '700 40px Prompt, sans-serif';
-      ctx.fillText('ลอยกระทงไทยๆ ชุดไทยพระราชนิยม', W / 2, 248);
+      ctx.font = '700 32px Prompt, sans-serif';
+      ctx.fillText('ลอยกระทงไทยๆ ชุดไทยพระราชนิยม', headerBoxX + 128, headerBoxY + 54);
 
       ctx.fillStyle = '#e9d5ff';
-      ctx.font = '500 26px Prompt, sans-serif';
-      ctx.fillText('สำนักงานวัฒนธรรมจังหวัดมหาสารคาม', W / 2, 290);
+      ctx.font = '400 22px Prompt, sans-serif';
+      ctx.fillText('สำนักงานวัฒนธรรมจังหวัดมหาสารคาม', headerBoxX + 128, headerBoxY + 88);
 
-      // 7. Characters + Krathong Showcase
-      const platformGlow = ctx.createRadialGradient(W / 2, 665, 20, W / 2, 665, 360);
-      platformGlow.addColorStop(0, 'rgba(251, 191, 36, 0.34)');
-      platformGlow.addColorStop(0.55, 'rgba(139, 92, 246, 0.18)');
-      platformGlow.addColorStop(1, 'rgba(139, 92, 246, 0)');
-      ctx.fillStyle = platformGlow;
-      ctx.beginPath();
-      ctx.arc(W / 2, 665, 360, 0, Math.PI * 2);
+      // 5. แท็กชื่อท่าโพสต์ที่สุ่มได้
+      ctx.save();
+      ctx.fillStyle = 'rgba(124, 58, 237, 0.85)';
+      drawRoundedRect(ctx, W / 2 - 175, 206, 350, 44, 22);
       ctx.fill();
+      ctx.strokeStyle = '#fde047';
+      ctx.lineWidth = 1.8;
+      ctx.stroke();
+      ctx.textAlign = 'center';
+      ctx.fillStyle = '#fef9c3';
+      ctx.font = '600 21px Prompt, sans-serif';
+      ctx.fillText(pose.badge, W / 2, 235);
+      ctx.restore();
+
+      // 6. ตัวละครโพสต์ท่าตามแบบที่สุ่ม + กระทงเคียงคู่
+      drawPoseAccentOnCard(ctx, pose, W / 2, 540);
 
       const chars = (customCharacters && customCharacters.length > 0)
         ? customCharacters
@@ -2727,54 +2807,63 @@ function createFloaterNode(item, xStart, isMine = false, forcedLane = null) {
       );
 
       const numChars = avatarImgs.length;
-      const charW = numChars >= 3 ? 210 : 245;
+      const charW = numChars >= 3 ? 215 : 265;
       const charH = charW * 1.52;
-      const overlap = numChars >= 3 ? 165 : 205;
+      const overlap = numChars >= 3 ? 170 : 215;
       const totalCharsW = charW + (numChars - 1) * overlap;
       const startCharX = (W - totalCharsW) / 2;
-      const charY = 345 + (numChars >= 3 ? 35 : 0);
+      const baseCharY = 310 + pose.yOff + (numChars >= 3 ? 38 : 0);
 
       avatarImgs.forEach((img, i) => {
-        if (img) {
-          ctx.drawImage(img, startCharX + i * overlap, charY, charW, charH);
-        }
+        if (!img) return;
+        const cx = startCharX + i * overlap + charW / 2;
+        const cy = baseCharY + charH / 2;
+        // สลับองศาเอียงให้ดูมีชีวิตชีวาเป็นธรรมชาติเวลาอยู่เป็นคู่หรือกลุ่ม
+        const tiltDeg = pose.tilt * (i % 2 === 0 ? 1 : -1);
+        ctx.save();
+        ctx.translate(cx, cy);
+        ctx.rotate((tiltDeg * Math.PI) / 180);
+        ctx.drawImage(img, -charW / 2, -charH / 2, charW, charH);
+        ctx.restore();
       });
 
+      // วาดกระทงคู่หน้าตัวละครอย่างโดดเด่น
       const krathongImg = await svgToImage(renderKrathongSVG(item.krathongType, '', true));
       if (krathongImg) {
-        ctx.drawImage(krathongImg, W / 2 - 115, 595, 230, 215);
+        const kX = pose.id === 'peace' ? W / 2 + 115 : pose.id === 'ram_thai' ? W / 2 - 115 : W / 2;
+        const kY = pose.id === 'embrace' ? 675 : 695;
+        ctx.save();
+        ctx.shadowColor = 'rgba(254, 240, 138, 0.75)';
+        ctx.shadowBlur = 24;
+        ctx.drawImage(krathongImg, kX - 118, kY - 108, 236, 218);
+        ctx.restore();
       }
 
-      // 8. Wish Card Glass Panel
-      const boxX = 76;
-      const boxY = 825;
-      const boxW = W - 152;
-      const boxH = 405;
+      // 7. กล่องข้อความชื่อ-คำอธิษฐาน
+      const boxX = 72;
+      const boxY = 835;
+      const boxW = W - 144;
+      const boxH = 398;
 
-      ctx.fillStyle = 'rgba(22, 7, 52, 0.9)';
+      ctx.fillStyle = 'rgba(20, 6, 48, 0.90)';
       drawRoundedRect(ctx, boxX, boxY, boxW, boxH, 30);
       ctx.fill();
-
-      ctx.strokeStyle = 'rgba(251, 191, 36, 0.6)';
-      ctx.lineWidth = 2.5;
-      drawRoundedRect(ctx, boxX, boxY, boxW, boxH, 30);
+      ctx.strokeStyle = 'rgba(251, 191, 36, 0.62)';
+      ctx.lineWidth = 2.4;
       ctx.stroke();
 
       ctx.textAlign = 'center';
       ctx.fillStyle = '#fde047';
       ctx.font = '700 38px Prompt, sans-serif';
-      const displayName = (item.name || 'ผู้ร่วมสืบสานประเพณี').substring(0, 38);
-      ctx.fillText(displayName, W / 2, boxY + 66);
+      ctx.fillText((item.name || 'ผู้ร่วมสืบสานประเพณี').substring(0, 38), W / 2, boxY + 64);
 
       ctx.fillStyle = '#d8b4fe';
       ctx.font = '500 22px Prompt, sans-serif';
       const metaText = `${item.mode || 'ลอยคนเดียว'} • ${item.outfits || 'ชุดไทยจักรี'}`;
       const metaLines = wrapThaiText(ctx, metaText, boxW - 80, 2);
-      metaLines.forEach((line, idx) => {
-        ctx.fillText(line, W / 2, boxY + 108 + idx * 30);
-      });
+      metaLines.forEach((line, idx) => ctx.fillText(line, W / 2, boxY + 105 + idx * 30));
 
-      const divY = boxY + 128 + (metaLines.length - 1) * 30;
+      const divY = boxY + 124 + (metaLines.length - 1) * 30;
       ctx.strokeStyle = 'rgba(251, 191, 36, 0.35)';
       ctx.lineWidth = 1.5;
       ctx.beginPath();
@@ -2785,55 +2874,58 @@ function createFloaterNode(item, xStart, isMine = false, forcedLane = null) {
       ctx.fillStyle = '#fffbeb';
       ctx.font = '400 28px Prompt, sans-serif';
       const wishLines = wrapThaiText(ctx, `“${item.wish || 'ขอให้มีความสุขความเจริญตลอดปี'}”`, boxW - 96, 4);
-      const wishStartY = divY + 50;
-      wishLines.forEach((line, idx) => {
-        ctx.fillText(line, W / 2, wishStartY + idx * 42);
-      });
+      wishLines.forEach((line, idx) => ctx.fillText(line, W / 2, divY + 48 + idx * 41));
 
       const kObj = KRATHONGS.find(k => k.id === item.krathongType) || KRATHONGS[0];
       ctx.fillStyle = '#c4b5fd';
       ctx.font = '400 20px Prompt, sans-serif';
       const orderTag = item.orderNo ? `กระทงลำดับที่ #${item.orderNo} • ` : '';
-      ctx.fillText(`${orderTag}${kObj.name} • ${item.timestamp || 'วันเพ็ญเดือนสิบสอง'}`, W / 2, boxY + boxH - 26);
+      ctx.fillText(`${orderTag}${kObj.name} • ${item.timestamp || 'วันเพ็ญเดือนสิบสอง'}`, W / 2, boxY + boxH - 24);
 
-      // 9. Footer Credit
+      // 8. Footer Credit
       ctx.fillStyle = '#e9d5ff';
       ctx.font = '500 22px Prompt, sans-serif';
       ctx.fillText('อุทยาน ไพรวัลย์ นวธ. สวจ.มหาสารคาม : ผู้พัฒนาระบบ', W / 2, H - 56);
 
-      return canvas.toDataURL('image/png');
+      return { dataUrl: canvas.toDataURL('image/png'), pose };
     }
 
-    async function openMemoryCardModal(item, customCharacters = null) {
+    async function openMemoryCardModal(item, customCharacters = null, forcedPose = null) {
       Swal.fire({
-        title: 'กำลังจัดทำภาพการ์ดความทรงจำ...',
-        html: '<p class="text-xs text-purple-200">กำลังประมวลผลชุดไทยพระราชนิยมและโลโก้ลงบนการ์ดความละเอียดสูง</p>',
+        title: 'กำลังออกแบบการ์ดความทรงจำ...',
+        html: '<p class="text-xs text-purple-200">กำลังจัดท่าโพสต์ชุดไทยพระราชนิยมคู่กับกระทงของคุณ</p>',
         allowOutsideClick: false,
         didOpen: () => Swal.showLoading()
       });
 
       try {
-        const dataUrl = await generateMemoryCardDataURL(item, customCharacters);
+        const { dataUrl, pose } = await generateMemoryCardDataURL(item, customCharacters, forcedPose);
         const safeFileName = `LoyKrathong_MSK_${(item.name || 'Memory').replace(/[^\u0E00-\u0E7Fa-zA-Z0-9]/g, '_').substring(0, 24)}.png`;
 
         Swal.fire({
-          title: 'การ์ดภาพเก็บความทรงจำ',
-          width: 480,
+          title: 'การ์ดความทรงจำคืนวันเพ็ญ',
+          width: 490,
           html: `
             <div class="flex flex-col items-center">
+              <span class="mb-2 px-3 py-0.5 rounded-full bg-purple-800/90 border border-amber-300/45 text-[11px] text-amber-200">
+                ท่าโพสต์สุ่ม: ${pose.label}
+              </span>
               <div class="w-full max-w-[330px] rounded-2xl overflow-hidden shadow-2xl border-2 border-amber-300/60 bg-purple-950">
                 <img src="${dataUrl}" alt="การ์ดความทรงจำลอยกระทง" class="w-full h-auto block" />
               </div>
-              <p class="text-[11px] text-purple-200/85 mt-3">
-                กดปุ่มด้านล่างเพื่อบันทึกรูปภาพลงเครื่อง หรือกดค้างที่รูปภาพ (บนมือถือ) เพื่อบันทึก
+              <p class="text-[11px] text-purple-200/85 mt-2.5">
+                กดปุ่ม "สุ่มท่าโพสต์ใหม่" เพื่อเปลี่ยนท่า หรือกดบันทึกรูปลงเครื่องได้เลย
               </p>
             </div>
           `,
+          showDenyButton: true,
           showCancelButton: true,
-          confirmButtonText: '<i class="fa-solid fa-download mr-1.5"></i>บันทึกรูปภาพลงเครื่อง',
-          cancelButtonText: 'ปิดหน้าต่าง',
+          confirmButtonText: '<i class="fa-solid fa-download mr-1.5"></i>บันทึกภาพ',
+          denyButtonText: '<i class="fa-solid fa-dice mr-1.5"></i>สุ่มท่าโพสต์ใหม่',
+          cancelButtonText: 'ปิด',
           confirmButtonColor: '#d97706',
-          cancelButtonColor: '#4c1d95'
+          denyButtonColor: '#7c3aed',
+          cancelButtonColor: '#3b0764'
         }).then(res => {
           if (res.isConfirmed) {
             const link = document.createElement('a');
@@ -2842,24 +2934,14 @@ function createFloaterNode(item, xStart, isMine = false, forcedLane = null) {
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
-
-            Swal.fire({
-              toast: true,
-              position: 'top-end',
-              icon: 'success',
-              title: 'บันทึกการ์ดภาพลงเครื่องแล้ว!',
-              showConfirmButton: false,
-              timer: 2200
-            });
+            Swal.fire({ toast: true, position: 'top-end', icon: 'success', title: 'บันทึกการ์ดภาพลงเครื่องแล้ว!', showConfirmButton: false, timer: 2200 });
+          } else if (res.isDenied) {
+            const nextPose = pickRandomPose(pose.id);
+            openMemoryCardModal(item, customCharacters, nextPose);
           }
         });
       } catch (err) {
-        Swal.fire({
-          icon: 'error',
-          title: 'ไม่สามารถสร้างการ์ดภาพได้',
-          text: err.message || 'กรุณาลองใหม่อีกครั้ง',
-          confirmButtonColor: '#7c3aed'
-        });
+        Swal.fire({ icon: 'error', title: 'ไม่สามารถสร้างการ์ดภาพได้', text: err.message || 'กรุณาลองใหม่อีกครั้ง', confirmButtonColor: '#7c3aed' });
       }
     }
 

@@ -82,60 +82,78 @@
     }
 
     /* =====================================================================
-       MAIN WATERFRONT STAGE WITH PHOTO BACKDROP + DYNAMIC ANIMATION LAYERS
+       SPLIT STAGE: UPPER SKY PHOTO (50%) + LOWER ANIMATED FLOWING RIVER (50%)
        ===================================================================== */
     #river-stage {
       position: relative;
       width: 100%;
-      height: 590px;
+      height: 600px;
       overflow: hidden;
       background-color: #090318;
       border-bottom: 2px solid rgba(251, 191, 36, 0.4);
     }
 
     @media (min-width: 768px) {
-      #river-stage { height: 650px; }
+      #river-stage { height: 660px; }
     }
 
     @media (min-width: 1280px) {
-      #river-stage { height: 700px; }
+      #river-stage { height: 710px; }
     }
 
-    /* Main Temple Reflection Photo Backdrop */
-    .stage-bg-photo {
+    /* 1. UPPER SKY ZONE ONLY (ภาพที่ให้ใช้เฉพาะส่วนท้องฟ้าด้านบน) */
+    .sky-backdrop-zone {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 52%;
+      overflow: hidden;
+      z-index: 1;
+    }
+
+    .stage-sky-photo {
       position: absolute;
       inset: 0;
       width: 100%;
       height: 100%;
       object-fit: cover;
-      object-position: center 46%;
-      z-index: 1;
-      filter: brightness(0.92) contrast(1.06) saturate(1.1);
-      transform: scale(1.02);
-      animation: bgGentleBreath 18s ease-in-out infinite alternate;
+      object-position: center 22%;
+      filter: brightness(0.92) contrast(1.06) saturate(1.12);
+      transform: scale(1.03);
+      animation: skyGentlePan 22s ease-in-out infinite alternate;
     }
 
-    @keyframes bgGentleBreath {
-      0% { transform: scale(1.02) translateY(0); }
-      100% { transform: scale(1.05) translateY(-4px); }
+    @keyframes skyGentlePan {
+      0% { transform: scale(1.03) translateY(0); }
+      100% { transform: scale(1.06) translateY(-4px); }
     }
 
-    /* Atmospheric Night Sky & Deep Water Vignette Blending */
-    .stage-atmosphere {
+    /* Sky Night Blend + Smooth Horizon Fade into River */
+    .sky-atmosphere {
       position: absolute;
       inset: 0;
       z-index: 2;
       pointer-events: none;
-      background:
-        linear-gradient(180deg,
-          rgba(11, 3, 28, 0.62) 0%,
-          rgba(28, 10, 66, 0.22) 26%,
-          rgba(28, 10, 66, 0.05) 50%,
-          rgba(16, 6, 40, 0.25) 78%,
-          rgba(9, 3, 22, 0.72) 100%);
+      background: linear-gradient(180deg,
+        rgba(9, 2, 24, 0.56) 0%,
+        rgba(24, 8, 56, 0.14) 38%,
+        rgba(24, 8, 56, 0.08) 76%,
+        rgba(26, 10, 62, 0.78) 95%,
+        rgba(22, 8, 52, 1) 100%);
     }
 
-    /* Twinkling Stars */
+    /* Twinkling Stars in Upper Sky */
+    #stars-layer {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 46%;
+      pointer-events: none;
+      z-index: 3;
+    }
+
     .star {
       position: absolute;
       background: #ffffff;
@@ -149,10 +167,10 @@
       100% { opacity: 1; transform: scale(1.3); }
     }
 
-    /* Luminous Full Moon Overlay */
+    /* Luminous Full Moon in Upper Sky */
     .moon-wrapper {
       position: absolute;
-      top: 20px;
+      top: 18px;
       right: 6%;
       width: 112px;
       height: 112px;
@@ -162,10 +180,10 @@
 
     @media (min-width: 768px) {
       .moon-wrapper {
-        top: 24px;
+        top: 22px;
         right: 9%;
-        width: 148px;
-        height: 148px;
+        width: 146px;
+        height: 146px;
       }
     }
 
@@ -173,7 +191,7 @@
       position: absolute;
       inset: -48px;
       border-radius: 50%;
-      background: radial-gradient(circle, rgba(254, 240, 138, 0.4) 0%, rgba(251, 191, 36, 0.16) 44%, rgba(168, 85, 247, 0.1) 66%, transparent 78%);
+      background: radial-gradient(circle, rgba(254, 240, 138, 0.42) 0%, rgba(251, 191, 36, 0.16) 44%, rgba(168, 85, 247, 0.1) 66%, transparent 78%);
       animation: moonPulse 5.5s ease-in-out infinite alternate;
     }
 
@@ -201,13 +219,13 @@
       background: radial-gradient(circle, rgba(217, 119, 6, 0.2) 0%, rgba(180, 83, 9, 0.05) 70%, transparent 100%);
     }
 
-    /* Multi-layered Drifting Night Clouds */
+    /* Multi-layered Drifting Night Clouds in Upper Sky */
     .cloud-layer {
       position: absolute;
       top: 0;
       left: 0;
       width: 100%;
-      height: 45%;
+      height: 44%;
       overflow: hidden;
       z-index: 5;
       pointer-events: none;
@@ -228,12 +246,22 @@
       100% { transform: translateX(115vw); opacity: 0; }
     }
 
-    /* Floating Sky Lanterns (โคมลอย) */
-    .sky-lantern {
+    /* Floating Sky Lanterns (โคมลอยขึ้นจากเส้นขอบฟ้า) */
+    #lanterns-layer {
       position: absolute;
-      bottom: 48%;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 52%;
+      overflow: hidden;
       pointer-events: none;
       z-index: 6;
+    }
+
+    .sky-lantern {
+      position: absolute;
+      bottom: -24px;
+      pointer-events: none;
       animation: lanternRise var(--rise-dur, 20s) linear infinite;
       opacity: 0;
     }
@@ -241,72 +269,80 @@
     @keyframes lanternRise {
       0% { transform: translateY(0) translateX(0) scale(0.45) rotate(-3deg); opacity: 0; }
       12% { opacity: 0.92; }
-      50% { transform: translateY(-165px) translateX(28px) scale(0.82) rotate(3deg); opacity: 0.9; }
+      52% { transform: translateY(-165px) translateX(28px) scale(0.82) rotate(3deg); opacity: 0.9; }
       85% { opacity: 0.55; }
-      100% { transform: translateY(-350px) translateX(-18px) scale(0.4) rotate(-2deg); opacity: 0; }
+      100% { transform: translateY(-340px) translateX(-18px) scale(0.4) rotate(-2deg); opacity: 0; }
     }
 
-    /* Animated Shimmering Water Overlay over Photo River */
-    .water-shimmer-overlay {
+    /* 2. LOWER DEDICATED ANIMATED FLOWING RIVER ZONE (สายน้ำไหลเคลื่อนไหว 50% ด้านล่าง) */
+    #animated-river-zone {
       position: absolute;
-      top: 52%;
+      top: 50%;
       left: 0;
       width: 100%;
-      height: 48%;
+      height: 50%;
       z-index: 7;
       overflow: hidden;
+      background: linear-gradient(180deg,
+        #1e0b45 0%,
+        #28105a 12%,
+        #1b0b42 42%,
+        #11062d 76%,
+        #080217 100%);
+    }
+
+    /* Horizon Waterline Mist & Golden Glow */
+    .river-horizon-glow {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 22px;
+      z-index: 3;
+      pointer-events: none;
+      background: linear-gradient(180deg,
+        rgba(251, 191, 36, 0.34) 0%,
+        rgba(167, 139, 250, 0.18) 45%,
+        transparent 100%);
+    }
+
+    /* Canvas for Real-time Flowing Water Currents, Moon Shimmer & Reflections */
+    #river-flow-canvas {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 2;
       pointer-events: none;
     }
 
-    .moon-water-shimmer {
+    /* Subtle Flowing Wave Ribbons (Left -> Right matching Krathong Drift) */
+    .river-wave-ribbon {
       position: absolute;
-      top: 0;
-      right: 4%;
-      width: 160px;
-      height: 85%;
-      background: repeating-linear-gradient(
-        180deg,
-        rgba(254, 240, 138, 0.34) 0px,
-        rgba(251, 191, 36, 0.08) 5px,
-        transparent 12px
-      );
-      clip-path: polygon(32% 0%, 68% 0%, 100% 100%, 0% 100%);
-      filter: blur(4px);
-      mix-blend-mode: screen;
-      animation: shimmerWave 3.5s ease-in-out infinite alternate;
-    }
-
-    @media (min-width: 768px) {
-      .moon-water-shimmer { right: 8%; width: 220px; }
-    }
-
-    @keyframes shimmerWave {
-      0% { transform: scaleX(0.9) skewX(-2deg); opacity: 0.5; }
-      100% { transform: scaleX(1.1) skewX(2deg); opacity: 0.88; }
-    }
-
-    .water-glint {
-      position: absolute;
+      left: -100%;
       width: 200%;
-      height: 14px;
-      left: 0;
-      background: radial-gradient(ellipse at center, rgba(253, 230, 138, 0.16) 0%, rgba(196, 181, 253, 0.12) 45%, transparent 72%);
-      mix-blend-mode: screen;
-      animation: glintSlide 11s linear infinite;
+      height: 24px;
+      z-index: 3;
+      pointer-events: none;
+      opacity: var(--wop, 0.25);
+      background-repeat: repeat-x;
+      background-size: 320px 24px;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='320' height='24' viewBox='0 0 320 24'%3E%3Cpath d='M0,12 Q40,4 80,12 T160,12 T240,12 T320,12' fill='none' stroke='%23c4b5fd' stroke-width='1.5' stroke-opacity='0.5'/%3E%3C/svg%3E");
+      animation: riverRibbonFlow var(--wdur, 16s) linear infinite;
     }
 
-    @keyframes glintSlide {
+    @keyframes riverRibbonFlow {
       0% { transform: translateX(0); }
-      100% { transform: translateX(-50%); }
+      100% { transform: translateX(50%); }
     }
 
     /* River Krathong Layer */
     #krathongs-river-layer {
       position: absolute;
-      top: 52%;
+      top: 50%;
       left: 0;
       width: 100%;
-      height: 44%;
+      height: 46%;
       z-index: 12;
     }
 
@@ -335,8 +371,8 @@
     }
 
     .krathong-label {
-      background: rgba(11, 3, 28, 0.82);
-      border: 1px solid rgba(253, 230, 138, 0.45);
+      background: rgba(11, 3, 28, 0.84);
+      border: 1px solid rgba(253, 230, 138, 0.48);
       color: #fef3c7;
       font-size: 11px;
       padding: 2px 9px;
@@ -416,7 +452,6 @@
       transition: transform 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
     }
 
-    /* Enhanced Bow/Release Posture Animation */
     .pier-characters-stage.releasing-bow {
       transform: translateY(-12px) scale(0.94);
     }
@@ -567,25 +602,23 @@
     </div>
   </header>
 
-  <!-- Main Scenic Waterfront Stage -->
+  <!-- Main Waterfront Stage: Sky Photo (Top 50%) + Animated Flowing River (Bottom 50%) -->
   <section id="river-stage">
-    <!-- Main Photo Backdrop (ฉากวัดสะท้อนน้ำ) -->
-    <img
-      src="https://i.postimg.cc/J0fSQy0Q/Thai-Loy-Krathong-Temple-Reflectionsh.png"
-      alt="ฉากวัดไทยริมน้ำคืนวันเพ็ญลอยกระทง"
-      class="stage-bg-photo"
-    />
 
-    <!-- Atmospheric Night Blend -->
-    <div class="stage-atmosphere"></div>
+    <!-- 1. UPPER SKY PHOTO BACKDROP ONLY (เฉพาะส่วนท้องฟ้าและเส้นขอบฟ้าด้านบน) -->
+    <div class="sky-backdrop-zone">
+      <img
+        src="https://i.postimg.cc/J0fSQy0Q/Thai-Loy-Krathong-Temple-Reflectionsh.png"
+        alt="ฉากท้องฟ้ายามค่ำคืนวันเพ็ญลอยกระทง"
+        class="stage-sky-photo"
+      />
+      <div class="sky-atmosphere"></div>
+    </div>
 
-    <!-- Fireworks Canvas -->
-    <canvas id="fireworks-canvas" class="absolute inset-0 w-full h-full pointer-events-none z-20"></canvas>
+    <!-- Stars Layer (Sky Zone) -->
+    <div id="stars-layer"></div>
 
-    <!-- Stars Layer -->
-    <div id="stars-layer" class="absolute inset-0 pointer-events-none z-3"></div>
-
-    <!-- Luminous Full Moon -->
+    <!-- Luminous Full Moon (Sky Zone) -->
     <div class="moon-wrapper">
       <div class="moon-aura"></div>
       <div class="moon-body">
@@ -596,40 +629,42 @@
       </div>
     </div>
 
-    <!-- Animated Drifting Night Clouds -->
+    <!-- Animated Drifting Night Clouds (Sky Zone) -->
     <div class="cloud-layer">
       <div class="cloud-puff" style="top:14%;width:260px;height:52px;--cdur:44s;animation-delay:-8s;"></div>
       <div class="cloud-puff" style="top:28%;width:340px;height:64px;--cdur:58s;animation-delay:-26s;"></div>
       <div class="cloud-puff" style="top:8%;width:210px;height:44px;--cdur:38s;animation-delay:-18s;"></div>
     </div>
 
-    <!-- Rising Sky Lanterns Layer -->
-    <div id="lanterns-layer" class="absolute inset-0 pointer-events-none z-6"></div>
+    <!-- Rising Sky Lanterns Layer (Sky Zone) -->
+    <div id="lanterns-layer"></div>
 
-    <!-- Shimmering Animated Water Reflections -->
-    <div class="water-shimmer-overlay">
-      <div class="moon-water-shimmer"></div>
-      <div class="water-glint" style="top:16%;animation-duration:12s;"></div>
-      <div class="water-glint" style="top:42%;animation-duration:9s;animation-direction:reverse;"></div>
-      <div class="water-glint" style="top:70%;animation-duration:14s;"></div>
+    <!-- 2. LOWER DEDICATED ANIMATED FLOWING RIVER ZONE (สายน้ำไหลเคลื่อนไหว) -->
+    <div id="animated-river-zone">
+      <div class="river-horizon-glow"></div>
+      <!-- Real-time Flowing Water Canvas (Currents, Ripples, Moonlight & Temple Reflections) -->
+      <canvas id="river-flow-canvas"></canvas>
+      <!-- Layered Perspective Wave Ribbons Flowing Left -> Right -->
+      <div class="river-wave-ribbon" style="top:12%;--wdur:22s;--wop:0.18;"></div>
+      <div class="river-wave-ribbon" style="top:34%;--wdur:16s;--wop:0.24;"></div>
+      <div class="river-wave-ribbon" style="top:58%;--wdur:12s;--wop:0.28;"></div>
+      <div class="river-wave-ribbon" style="top:80%;--wdur:9s;--wop:0.22;"></div>
     </div>
 
-    <!-- Floating Krathongs Layer (New -> Old Loop Queue) -->
+    <!-- Fireworks Canvas -->
+    <canvas id="fireworks-canvas" class="absolute inset-0 w-full h-full pointer-events-none z-20"></canvas>
+
+    <!-- Floating Krathongs Layer (New -> Old Loop Queue on Animated River) -->
     <div id="krathongs-river-layer"></div>
 
     <!-- Realistic Teakwood Pier & Characters at Bottom Center -->
     <div class="realistic-pier-wrap">
-      <!-- Live Characters & Held Krathong -->
       <div id="pier-characters-stage" class="pier-characters-stage">
         <div class="pier-pray-badge mb-1 px-3 py-0.5 rounded-full bg-amber-400/95 text-purple-950 text-[11px] font-bold shadow-lg">
           <i class="fa-solid fa-hands-praying mr-1"></i>ขอขมาพระแม่คงคา...
         </div>
-        <div id="pier-avatars" class="flex items-end justify-center -space-x-3 sm:-space-x-2">
-          <!-- Rendered dynamically -->
-        </div>
-        <div id="pier-krathong-preview" class="pier-krathong-holder w-20 h-18 sm:w-24 sm:h-22">
-          <!-- Rendered dynamically -->
-        </div>
+        <div id="pier-avatars" class="flex items-end justify-center -space-x-3 sm:-space-x-2"></div>
+        <div id="pier-krathong-preview" class="pier-krathong-holder w-20 h-18 sm:w-24 sm:h-22"></div>
       </div>
 
       <!-- Detailed Realistic Perspective Thai Wooden Pier SVG -->
@@ -662,7 +697,7 @@
         <ellipse cx="540" cy="48" rx="390" ry="22" fill="#04010d" opacity="0.72" />
         <ellipse cx="540" cy="42" rx="330" ry="9" fill="none" stroke="#fde68a" stroke-width="1.2" opacity="0.25" />
 
-        <!-- Submerged Pier Wooden Steps (บันไดท่าน้ำลงสู่ผิวน้ำ) -->
+        <!-- Submerged Pier Wooden Steps -->
         <polygon points="365,30 715,30 732,42 348,42" fill="#462214" stroke="#241008" stroke-width="1.5" />
         <polygon points="350,42 730,42 744,52 336,52" fill="#32170d" stroke="#1b0b05" stroke-width="1.2" />
 
@@ -673,38 +708,35 @@
         <rect x="160" y="38" width="760" height="10" rx="2" fill="#82462a" stroke="#2f150b" stroke-width="1.5" />
         <line x1="165" y1="43" x2="915" y2="43" stroke="#fbbf24" stroke-width="1.6" opacity="0.55" />
 
-        <!-- Realistic Teak Plank Seams (Perspective Horizontal) -->
+        <!-- Realistic Teak Plank Seams -->
         <line x1="138" y1="62" x2="942" y2="62" stroke="#220e07" stroke-width="2.2" opacity="0.85" />
         <line x1="106" y1="84" x2="974" y2="84" stroke="#1e0c06" stroke-width="2.4" opacity="0.88" />
         <line x1="70" y1="109" x2="1010" y2="109" stroke="#190a05" stroke-width="2.6" opacity="0.9" />
         <line x1="34" y1="134" x2="1046" y2="134" stroke="#140703" stroke-width="2.8" opacity="0.92" />
 
-        <!-- Perspective Longitudinal Board Joints & Nail Studs -->
         <line x1="295" y1="48" x2="215" y2="155" stroke="#240f08" stroke-width="1.8" opacity="0.65" />
         <line x1="420" y1="48" x2="388" y2="155" stroke="#240f08" stroke-width="1.8" opacity="0.65" />
         <line x1="540" y1="48" x2="540" y2="155" stroke="#240f08" stroke-width="1.8" opacity="0.65" />
         <line x1="660" y1="48" x2="692" y2="155" stroke="#240f08" stroke-width="1.8" opacity="0.65" />
         <line x1="785" y1="48" x2="865" y2="155" stroke="#240f08" stroke-width="1.8" opacity="0.65" />
 
-        <!-- Left Wooden Balustrade / Railing (ราวท่าน้ำฝั่งซ้าย) -->
+        <!-- Left Wooden Balustrade -->
         <line x1="172" y1="16" x2="28" y2="112" stroke="#7c4429" stroke-width="7" stroke-linecap="round" />
         <line x1="172" y1="30" x2="28" y2="128" stroke="#572c18" stroke-width="4" />
-        <!-- Left Baluster Posts -->
         <rect x="158" y="4" width="24" height="48" rx="3" fill="url(#teakSide)" stroke="#240f08" stroke-width="1.4" />
         <path d="M170,-12 Q181,0 170,7 Q159,0 170,-12 Z" fill="url(#goldLotus)" />
         <rect x="102" y="48" width="16" height="44" rx="2" fill="url(#teakSide)" />
         <rect x="46" y="88" width="18" height="52" rx="2" fill="url(#teakSide)" />
 
-        <!-- Right Wooden Balustrade / Railing (ราวท่าน้ำฝั่งขวา) -->
+        <!-- Right Wooden Balustrade -->
         <line x1="908" y1="16" x2="1052" y2="112" stroke="#7c4429" stroke-width="7" stroke-linecap="round" />
         <line x1="908" y1="30" x2="1052" y2="128" stroke="#572c18" stroke-width="4" />
-        <!-- Right Baluster Posts -->
         <rect x="898" y="4" width="24" height="48" rx="3" fill="url(#teakSide)" stroke="#240f08" stroke-width="1.4" />
         <path d="M910,-12 Q921,0 910,7 Q899,0 910,-12 Z" fill="url(#goldLotus)" />
         <rect x="962" y="48" width="16" height="44" rx="2" fill="url(#teakSide)" />
         <rect x="1016" y="88" width="18" height="52" rx="2" fill="url(#teakSide)" />
 
-        <!-- Warm Pier Lanterns on Left & Right Posts -->
+        <!-- Warm Pier Lanterns -->
         <g class="pier-lantern-glow" style="transform-origin: 170px 18px;">
           <circle cx="170" cy="18" r="44" fill="url(#lampHalo)" />
           <rect x="161" y="10" width="18" height="18" rx="4" fill="#fef08a" stroke="#b45309" stroke-width="1.6" />
@@ -716,7 +748,6 @@
           <polygon points="897,10 910,1 923,10" fill="#78350f" />
         </g>
 
-        <!-- Warm Lamp Reflections on Deck -->
         <ellipse cx="195" cy="68" rx="68" ry="18" fill="#fbbf24" opacity="0.14" />
         <ellipse cx="885" cy="68" rx="68" ry="18" fill="#fbbf24" opacity="0.14" />
       </svg>
@@ -802,19 +833,15 @@
             <span class="text-xs text-purple-200/80">แต่ละแบบมีสีผ้าไหมประจำชุดและเปลี่ยนสีเองได้</span>
           </div>
 
-          <!-- Character Slot Tabs -->
           <div id="character-tabs" class="flex flex-wrap gap-2 mb-4"></div>
 
-          <!-- Curated Thai Silk Color Palette (8 Authentic Traditional Tones) -->
           <div class="mb-4">
             <label class="block text-xs text-purple-200 mb-2">ปรับโทนสีผ้าไหมไทย (เลือกได้ 8 เฉดสีมงคล):</label>
             <div id="color-palette" class="flex flex-wrap gap-2"></div>
           </div>
 
-          <!-- 8 Royal Thai Dresses + Male Royal Attire Grid -->
           <div id="outfit-grid" class="grid grid-cols-2 sm:grid-cols-3 gap-2.5"></div>
 
-          <!-- Active Outfit Cultural Note -->
           <div id="outfit-info-banner" class="mt-4 p-3.5 rounded-xl bg-purple-950/80 border border-amber-300/35 text-xs text-purple-100 leading-relaxed flex items-start gap-2.5">
             <i class="fa-solid fa-crown text-amber-300 mt-0.5 text-sm"></i>
             <div id="outfit-info-text"></div>
@@ -938,14 +965,13 @@
      * CONFIGURATION & ASSETS
      *************************************************************************/
     const GAS_WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbx6nBIhPUcM2LcUlaceITNBkwf6z_xGADg4ZgPf8lBt-hSdM1Nx_mrT10W8P1EAY8Rsbg/exec';
-    const SCENE_BG_URL = 'https://i.postimg.cc/J0fSQy0Q/Thai-Loy-Krathong-Temple-Reflectionsh.png';
+    const SKY_BG_URL = 'https://i.postimg.cc/J0fSQy0Q/Thai-Loy-Krathong-Temple-Reflectionsh.png';
     const LOGO_URL = 'https://upload.wikimedia.org/wikipedia/commons/a/a9/Symbol_of_Ministry_of_Culture%2C_Kingdom_of_Thailand.png?utm_source=th.wikipedia.org&utm_campaign=index&utm_content=original';
 
-    // ตัวนับสำหรับ ID ของ SVG Gradient เพื่อไม่ให้ซ้ำกันเวลาวาดหลายตัวละครพร้อมกัน
     let svgUidCounter = 0;
 
     /*************************************************************************
-     * โทนสีผ้าไหมไทย 8 เฉดสีมงคล (ไม่จำกัดเฉพาะสีม่วง)
+     * โทนสีผ้าไหมไทย 8 เฉดสีมงคล
      *************************************************************************/
     const FABRIC_COLORS = [
       { id: 'rose',         name: 'ชมพูกลีบบัว',    hi: '#f472b6', main: '#db2777', dark: '#831843', light: '#fbcfe8', accent: '#fde047', contrast: '#fef08a' },
@@ -959,7 +985,7 @@
     ];
 
     /*************************************************************************
-     * ชุดไทยพระราชนิยม 8 แบบ (ข้อมูลถูกต้องตามกรมส่งเสริมวัฒนธรรม พร้อมสีประจำแบบ)
+     * ชุดไทยพระราชนิยม 8 แบบ + เสื้อไทยพระราชทาน (ชาย)
      *************************************************************************/
     const OUTFITS = [
       {
@@ -1054,7 +1080,6 @@
       }
     ];
 
-    // แบบกระทงรักษ์โลก 6 สไตล์
     const KRATHONGS = [
       { id: 'banana_leaf', name: 'ใบตองดั้งเดิม' },
       { id: 'lotus', name: 'บัวหลวงสีชมพู' },
@@ -1071,7 +1096,6 @@
       'ขอให้สมหวังในสิ่งที่ปรารถนา ชีวิตราบรื่นดั่งสายน้ำใสเย็น เปี่ยมด้วยรอยยิ้ม'
     ];
 
-    // Application State
     const state = {
       mode: 'solo',
       groupSize: 3,
@@ -1090,7 +1114,6 @@
       lastFloatedChars: null
     };
 
-    // Audio Chime Synthesizer
     let audioCtx = null;
     function playChimeSound() {
       if (!state.soundEnabled) return;
@@ -1141,8 +1164,142 @@
     }
 
     /*************************************************************************
+     * REAL-TIME ANIMATED FLOWING RIVER ENGINE (Canvas ในโซนสายน้ำด้านล่าง)
+     * วาดกระแสน้ำไหล ซ้าย->ขวา แสงจันทร์สะท้อน แสงวัดพลิ้วไหว และประกายน้ำ
+     *************************************************************************/
+    const riverCanvas = document.getElementById('river-flow-canvas');
+    const riverCtx = riverCanvas.getContext('2d');
+    let riverStreams = [];
+    let riverGlints = [];
+    let riverTime = 0;
+
+    function initRiverFlowParticles() {
+      const W = riverCanvas.width || 1000;
+      const H = riverCanvas.height || 320;
+      riverStreams = [];
+      riverGlints = [];
+
+      // กระแสน้ำไหล 42 เส้น แบ่งความเร็วและความยาวตามความลึกของ Perspective
+      for (let i = 0; i < 42; i++) {
+        const depth = Math.random(); // 0 = ไกลขอบฟ้า, 1 = ใกล้ท่าน้ำ
+        riverStreams.push({
+          x: Math.random() * W,
+          y: 12 + depth * (H - 22),
+          len: 35 + depth * 125,
+          thickness: 0.8 + depth * 1.9,
+          speed: 0.25 + depth * 0.95,
+          alpha: 0.08 + depth * 0.16,
+          tint: Math.random() > 0.35 ? 'purple' : 'gold',
+          phase: Math.random() * Math.PI * 2
+        });
+      }
+
+      // ประกายแสงระยิบระยับที่ไหลไปตามสายน้ำ
+      for (let i = 0; i < 34; i++) {
+        const depth = Math.random();
+        riverGlints.push({
+          x: Math.random() * W,
+          y: 10 + depth * (H - 28),
+          speed: 0.2 + depth * 0.75,
+          size: 1.1 + depth * 1.8,
+          phase: Math.random() * Math.PI * 2
+        });
+      }
+    }
+
+    function resizeRiverCanvas() {
+      const zone = document.getElementById('animated-river-zone');
+      riverCanvas.width = zone.clientWidth;
+      riverCanvas.height = zone.clientHeight;
+      initRiverFlowParticles();
+    }
+
+    function animateRiverWater() {
+      const W = riverCanvas.width;
+      const H = riverCanvas.height;
+      riverTime += 0.025;
+
+      riverCtx.clearRect(0, 0, W, H);
+
+      // 1. แสงสะท้อนวัด/ขอบฟ้าสีทองอ่อนพลิ้วไหวบนผิวน้ำตอนบน
+      const horizonGlowX = W * 0.48;
+      for (let i = 0; i < 16; i++) {
+        const ratio = i / 16;
+        const y = 6 + ratio * (H * 0.58);
+        const sway = Math.sin(riverTime * 1.3 + i * 0.65) * (10 + ratio * 22);
+        const barW = (W * 0.28) * (1 - ratio * 0.55) + Math.cos(riverTime + i) * 18;
+        const alpha = (1 - ratio) * 0.15;
+        riverCtx.fillStyle = `rgba(251, 191, 36, ${alpha.toFixed(3)})`;
+        riverCtx.beginPath();
+        riverCtx.ellipse(horizonGlowX + sway, y, Math.max(12, barW / 2), 2 + ratio * 2.5, 0, 0, Math.PI * 2);
+        riverCtx.fill();
+      }
+
+      // 2. เงาแสงจันทร์สะท้อนพลิ้วไหวเป็นริ้วน้ำใต้ดวงจันทร์ด้านขวา
+      const moonCenterX = W * (W >= 768 ? 0.85 : 0.86);
+      for (let i = 0; i < 24; i++) {
+        const ratio = i / 24;
+        const y = 8 + ratio * (H * 0.88);
+        const waveShift = Math.sin(riverTime * 1.8 - i * 0.55) * (8 + ratio * 20);
+        const barWidth = (28 + ratio * 115) * (0.75 + 0.25 * Math.sin(riverTime * 2.1 + i));
+        const alpha = (0.36 - ratio * 0.24) * (0.78 + 0.22 * Math.sin(riverTime * 2.5 + i * 0.8));
+
+        const grad = riverCtx.createLinearGradient(
+          moonCenterX + waveShift - barWidth / 2, y,
+          moonCenterX + waveShift + barWidth / 2, y
+        );
+        grad.addColorStop(0, 'rgba(254, 240, 138, 0)');
+        grad.addColorStop(0.5, `rgba(254, 240, 138, ${Math.max(0.02, alpha).toFixed(3)})`);
+        grad.addColorStop(1, 'rgba(254, 240, 138, 0)');
+
+        riverCtx.fillStyle = grad;
+        riverCtx.fillRect(moonCenterX + waveShift - barWidth / 2, y, barWidth, 2.2 + ratio * 3.5);
+      }
+
+      // 3. เส้นกระแสน้ำไหลต่อเนื่องจากซ้าย -> ขวา (ทิศทางเดียวกับกระทง)
+      for (let i = 0; i < riverStreams.length; i++) {
+        const s = riverStreams[i];
+        s.x += s.speed;
+        if (s.x - s.len > W) {
+          s.x = -s.len - Math.random() * 40;
+        }
+        const yRipple = s.y + Math.sin(riverTime * 1.4 + s.phase) * 2.2;
+        const grad = riverCtx.createLinearGradient(s.x, yRipple, s.x + s.len, yRipple);
+        const rgb = s.tint === 'gold' ? '253, 230, 138' : '196, 181, 253';
+        grad.addColorStop(0, `rgba(${rgb}, 0)`);
+        grad.addColorStop(0.5, `rgba(${rgb}, ${s.alpha.toFixed(3)})`);
+        grad.addColorStop(1, `rgba(${rgb}, 0)`);
+
+        riverCtx.strokeStyle = grad;
+        riverCtx.lineWidth = s.thickness;
+        riverCtx.beginPath();
+        riverCtx.moveTo(s.x, yRipple);
+        riverCtx.quadraticCurveTo(
+          s.x + s.len * 0.5,
+          yRipple + Math.sin(riverTime * 2 + s.phase) * 3.2,
+          s.x + s.len,
+          yRipple
+        );
+        riverCtx.stroke();
+      }
+
+      // 4. ประกายน้ำระยิบระยับไหลลอยไปตามกระแสน้ำ
+      for (let i = 0; i < riverGlints.length; i++) {
+        const g = riverGlints[i];
+        g.x += g.speed;
+        if (g.x > W + 10) g.x = -10;
+        const twinkle = 0.25 + 0.75 * Math.abs(Math.sin(riverTime * 2.2 + g.phase));
+        riverCtx.fillStyle = `rgba(254, 249, 195, ${(twinkle * 0.55).toFixed(3)})`;
+        riverCtx.beginPath();
+        riverCtx.ellipse(g.x, g.y, g.size * 2.2, g.size * 0.65, 0, 0, Math.PI * 2);
+        riverCtx.fill();
+      }
+
+      requestAnimationFrame(animateRiverWater);
+    }
+
+    /*************************************************************************
      * DIMENSIONAL SVG RENDERER: ชุดไทยพระราชนิยม 8 แบบ + ชายพระราชทาน
-     * ใช้ Gradient แสงเงา, มิติผ้าไหม, ลวดลายผ้ายกทอง และเครื่องประดับถูกต้อง
      *************************************************************************/
     function renderAvatarSVG(outfitId, colorId, sizeClass = 'w-20 h-32', forCanvas = false) {
       const u = 'av' + (++svgUidCounter);
@@ -1150,7 +1307,6 @@
       const isMale = outfitId === 'male_royal';
       const isFormalCrown = ['chakkraphat', 'siwalai', 'chakri'].includes(outfitId);
 
-      // Unique Gradients for Dimensional Lighting
       const defsSVG = `
         <defs>
           <linearGradient id="${u}_skin" x1="20%" y1="0%" x2="85%" y2="100%">
@@ -1189,14 +1345,11 @@
         </defs>
       `;
 
-      // Head, Hair & Facial Expression with Dimension
       const headSVG = isMale
         ? `
           <ellipse cx="50" cy="27.5" rx="13" ry="14" fill="url(#${u}_skin)" />
-          <!-- Short Royal Groomed Hair -->
           <path d="M36.5,25 C36,12 43,10 50,10 C58,10 64,13 63.5,25 C60,18 55,17 50,17 C45,17 40,19 36.5,25 Z" fill="url(#${u}_hair)" />
           <path d="M42,14 Q50,11 57,15" stroke="#5b4d78" stroke-width="1.2" fill="none" opacity="0.6" />
-          <!-- Eyebrows, Eyes & Warm Smile -->
           <path d="M42.5,24.2 Q45.2,23 47.5,24.2" stroke="#1e152b" stroke-width="1.1" fill="none" />
           <path d="M52.5,24.2 Q54.8,23 57.5,24.2" stroke="#1e152b" stroke-width="1.1" fill="none" />
           <circle cx="45" cy="27.2" r="1.4" fill="#171024" />
@@ -1206,26 +1359,19 @@
           <path d="M46,33.2 Q50,36.2 54,33.2" stroke="#9d4edd" stroke-width="1.3" fill="none" stroke-linecap="round" />
         `
         : `
-          <!-- High Thai Traditional Bun (มวยผม) -->
           <circle cx="50" cy="11" r="7.8" fill="url(#${u}_hair)" />
           <path d="M44.5,9 Q50,6 55.5,9" stroke="#645482" stroke-width="1.1" fill="none" opacity="0.55" />
-          <!-- Gold Hair Ornament / Jasmine Garland -->
           ${isFormalCrown
             ? `<path d="M42.5,12.5 Q50,3.5 57.5,12.5" stroke="url(#${u}_gold)" stroke-width="2.4" fill="none" />
                <polygon points="50,2.5 52.5,7 50,10 47.5,7" fill="url(#${u}_gold)" />`
             : `<path d="M43.5,13 Q50,8 56.5,13" stroke="#fef9c3" stroke-width="2" stroke-dasharray="2.4 1.2" fill="none" />`
           }
-          <!-- Gold Pin (ปิ่นปักผม) -->
           <line x1="55" y1="12" x2="64" y2="7" stroke="url(#${u}_gold)" stroke-width="1.4" stroke-linecap="round" />
           <circle cx="64.5" cy="6.8" r="1.8" fill="#fef08a" />
-          <!-- Face -->
           <ellipse cx="50" cy="27" rx="12.5" ry="13.5" fill="url(#${u}_skin)" />
-          <!-- Hair Framing Face -->
           <path d="M37,26.5 C36.5,13 43,12 50,12 C57,12 63.5,13 63,26.5 C60,20 55,19 50,19 C45,19 40,20 37,26.5 Z" fill="url(#${u}_hair)" />
-          <!-- Traditional Thai Earrings -->
           <circle cx="37" cy="30.5" r="1.6" fill="url(#${u}_gold)" />
           <circle cx="63" cy="30.5" r="1.6" fill="url(#${u}_gold)" />
-          <!-- Brows, Eyes with Catchlight, Soft Blush & Smile -->
           <path d="M42.5,24.2 Q45,23 47.5,24.2" stroke="#241936" stroke-width="1" fill="none" />
           <path d="M52.5,24.2 Q55,23 57.5,24.2" stroke="#241936" stroke-width="1" fill="none" />
           <circle cx="45" cy="27.2" r="1.45" fill="#171024" />
@@ -1240,45 +1386,33 @@
       let bodySVG = '';
 
       if (isMale) {
-        // เสื้อไทยพระราชทาน (ชาย) แขนยาวคอตั้ง กระดุม 5 เม็ด + ผ้าคาดเอวผูกเงื่อนข้างซ้าย
         bodySVG = `
-          <!-- Formal Trousers with Light Shading -->
           <path d="M35,88 L65,88 L63.5,147 L52,147 L50,115 L48,147 L36.5,147 Z" fill="url(#${u}_skirt)" />
           <line x1="42" y1="92" x2="41.5" y2="145" stroke="${col.hi}" stroke-width="1" opacity="0.22" />
           <line x1="58" y1="92" x2="58.5" y2="145" stroke="${col.hi}" stroke-width="1" opacity="0.22" />
-          <!-- Royal Thai Silk Jacket -->
           <path d="M31,45 Q50,39.5 69,45 L75,86 L67,87.5 L62.5,59 L63.5,91 L36.5,91 L37.5,59 L33,87.5 L25,86 Z" fill="url(#${u}_silk)" stroke="${col.dark}" stroke-width="0.6" />
-          <!-- Center Placket & Collar -->
           <rect x="44" y="38.5" width="12" height="6.8" rx="1.8" fill="url(#${u}_silk)" stroke="url(#${u}_gold)" stroke-width="1.1" />
           <line x1="50" y1="45" x2="50" y2="85" stroke="${col.dark}" stroke-width="0.8" opacity="0.45" />
-          <!-- 5 Metallic Buttons -->
           <circle cx="50" cy="50" r="1.4" fill="url(#${u}_gold)" />
           <circle cx="50" cy="57.5" r="1.4" fill="url(#${u}_gold)" />
           <circle cx="50" cy="65" r="1.4" fill="url(#${u}_gold)" />
           <circle cx="50" cy="72.5" r="1.4" fill="url(#${u}_gold)" />
           <circle cx="50" cy="80" r="1.4" fill="url(#${u}_gold)" />
-          <!-- Traditional Waist Sash with Knot on Left -->
           <rect x="36" y="83" width="28" height="6.5" rx="1.8" fill="url(#${u}_gold)" />
           <path d="M59,86 L66,108 L59,107 L56,89 Z" fill="url(#${u}_gold)" />
-          <!-- Hands -->
           <circle cx="29.5" cy="89.5" r="3.8" fill="url(#${u}_skin)" />
           <circle cx="70.5" cy="89.5" r="3.8" fill="url(#${u}_skin)" />
         `;
       } else {
-        // แยกโครงสร้างผ้าซิ่นตามหลักฐานทางวัฒนธรรมทั้ง 8 แบบ
         const isWrapSinh = ['rueanton', 'chitralada', 'amarin'].includes(outfitId);
         const isGoldBrocade = ['amarin', 'boromphiman', 'chakri', 'dusit', 'siwalai', 'chakkraphat'].includes(outfitId);
 
         let skirtSVG = '';
         if (isWrapSinh) {
-          // ซิ่นป้ายข้าง (เรือนต้น, จิตรลดา, อมรินทร์) - ไม่คาดเข็มขัด
           skirtSVG = `
             <path d="M36,80 L64,80 L68.5,147 L31.5,147 Z" fill="url(#${u}_skirt)" />
-            <!-- Soft Silk Highlight Fold -->
             <path d="M44,82 L41,146 L48,146 L49,82 Z" fill="${col.hi}" opacity="0.16" />
-            <!-- Wrap-over Edge Seam (ซิ่นป้ายข้าง) -->
             <line x1="42" y1="80" x2="39.5" y2="147" stroke="${col.light}" stroke-width="1.3" opacity="0.65" />
-            <!-- Woven Hem Border (ตีนจก / เชิงผ้าซิ่น) -->
             <rect x="32" y="133" width="36" height="14" fill="url(#${u}_gold)" opacity="0.92" />
             <line x1="32.5" y1="137" x2="67.5" y2="137" stroke="${col.dark}" stroke-width="1.3" />
             <line x1="32" y1="142.5" x2="68" y2="142.5" stroke="${col.dark}" stroke-width="1" />
@@ -1296,19 +1430,15 @@
             `;
           }
         } else {
-          // ซิ่นยกทองจีบหน้านางมีชายพก (บรมพิมาน, จักรี, ดุสิต, ศิวาลัย, จักรพรรดิ)
           skirtSVG = `
             <path d="M36,79 L64,79 L69.5,147 L30.5,147 Z" fill="url(#${u}_skirt)" />
             ${isGoldBrocade ? `<path d="M36,93 L64,93 M35,107 L65,107 M33.5,121 L66.5,121" stroke="#fde047" stroke-width="1.3" stroke-dasharray="2.5 3" opacity="0.75" />` : ''}
-            <!-- Brocade Hem -->
             <rect x="31" y="135" width="38" height="12" fill="url(#${u}_gold)" opacity="0.95" />
             <line x1="31.5" y1="139" x2="68.5" y2="139" stroke="${col.dark}" stroke-width="1.1" />
-            <!-- 3D Pleated Front Panel (จีบหน้านางมีมิติ) -->
             <polygon points="44.2,80 55.8,80 58,147 42,147" fill="url(#${u}_pleat)" stroke="${col.dark}" stroke-width="0.6" />
             <line x1="47.2" y1="80" x2="46.2" y2="147" stroke="#fef08a" stroke-width="0.9" opacity="0.85" />
             <line x1="50" y1="80" x2="50" y2="147" stroke="#fffbeb" stroke-width="1.1" opacity="0.9" />
             <line x1="52.8" y1="80" x2="53.8" y2="147" stroke="#fef08a" stroke-width="0.9" opacity="0.85" />
-            <!-- ชายพก (Top Fold) -->
             <polygon points="44.5,78 55.5,78 53,90 47,90" fill="url(#${u}_silk)" stroke="url(#${u}_gold)" stroke-width="0.8" />
           `;
         }
@@ -1317,7 +1447,6 @@
         let armsSVG = '';
 
         if (outfitId === 'rueanton') {
-          // 1. เรือนต้น: คอกลมตื้นไม่มีขอบ แขนกระบอกสามส่วน ผ่าหน้า 5 กระดุม แยกชิ้น ไม่คาดเข็มขัด
           armsSVG = `
             <path d="M31.5,70 L28.5,83.5 L34,84.5 L36.5,71.5 Z" fill="url(#${u}_skin)" />
             <path d="M68.5,70 L71.5,83.5 L66,84.5 L63.5,71.5 Z" fill="url(#${u}_skin)" />
@@ -1334,7 +1463,6 @@
             <circle cx="50" cy="80.5" r="1.25" fill="url(#${u}_gold)" />
           `;
         } else if (outfitId === 'chitralada') {
-          // 2. จิตรลดา: คอตั้ง แขนกระบอกยาวจรดข้อมือ ผ่าหน้า 5 กระดุม แยกชิ้น ไม่คาดเข็มขัด
           armsSVG = `
             <circle cx="29.8" cy="85.5" r="3.4" fill="url(#${u}_skin)" />
             <circle cx="70.2" cy="85.5" r="3.4" fill="url(#${u}_skin)" />
@@ -1350,7 +1478,6 @@
             <circle cx="50" cy="81.5" r="1.25" fill="url(#${u}_gold)" />
           `;
         } else if (outfitId === 'amarin') {
-          // 3. อมรินทร์: ทรงเดียวกับจิตรลดา แต่ผ้ายกทองทั้งองค์ + เครื่องประดับหรูหรา ไม่คาดเข็มขัด
           armsSVG = `
             <circle cx="29.8" cy="85.5" r="3.4" fill="url(#${u}_skin)" />
             <circle cx="70.2" cy="85.5" r="3.4" fill="url(#${u}_skin)" />
@@ -1368,7 +1495,6 @@
             <circle cx="50" cy="83.5" r="1.3" fill="#fef08a" />
           `;
         } else if (outfitId === 'boromphiman') {
-          // 4. บรมพิมาน: คอตั้ง แขนยาว ผ่าหลัง (หน้าเรียบไม่มีกระดุม) เย็บติดซิ่นจีบหน้านาง + เข็มขัดไทย
           armsSVG = `
             <circle cx="29.8" cy="85.5" r="3.4" fill="url(#${u}_skin)" />
             <circle cx="70.2" cy="85.5" r="3.4" fill="url(#${u}_skin)" />
@@ -1377,12 +1503,10 @@
             <path d="M34,44 Q50,40 66,44 L73.5,83.5 L66,84.5 L61,57 L63.5,80 L36.5,80 L39,57 L34,84.5 L26.5,83.5 Z" fill="url(#${u}_silk)" stroke="${col.dark}" stroke-width="0.5" />
             <rect x="44.5" y="38.5" width="11" height="6.2" rx="1.8" fill="url(#${u}_silk)" stroke="url(#${u}_gold)" stroke-width="1.1" />
             <path d="M41.5,45 Q50,52 58.5,45" stroke="url(#${u}_gold)" stroke-width="1.9" fill="none" />
-            <!-- Gold Thai Belt -->
             <rect x="35" y="76.5" width="30" height="5.2" rx="2" fill="url(#${u}_gold)" stroke="#78350f" stroke-width="0.7" />
             <circle cx="50" cy="79.1" r="3.2" fill="#fef08a" stroke="#92400e" stroke-width="0.9" />
           `;
         } else if (outfitId === 'chakri') {
-          // 5. จักรี: เปิดไหล่ขวา ห่มสไบเฉียง 1 ชั้นพาดไหล่ซ้ายทิ้งชายยาวด้านหลัง + ซิ่นจีบหน้านาง + เข็มขัดไทย
           armsSVG = `
             <path d="M36,46 L29,82.5 L35,83.5 L40,56 Z" fill="url(#${u}_skin)" />
             <path d="M64,46 L71,82.5 L65,83.5 L60,56 Z" fill="url(#${u}_skin)" />
@@ -1391,19 +1515,15 @@
           `;
           topSVG = `
             <rect x="38" y="45" width="24" height="34" fill="url(#${u}_skin)" />
-            <!-- Flowing Sabai Tail behind Left Shoulder -->
             <path d="M58,44 L75,132 L63,134 L54,54 Z" fill="url(#${u}_silk)" stroke="url(#${u}_gold)" stroke-width="0.7" opacity="0.94" />
-            <!-- Single-Layer Sabai Draped Diagonally -->
             <polygon points="63.5,43 49.5,43 36.5,79.5 63.5,79.5" fill="url(#${u}_silk)" />
             <polygon points="62,43 53,43 36.5,79.5 45,79.5" fill="url(#${u}_gold)" opacity="0.45" />
             <line x1="58" y1="43" x2="41" y2="79.5" stroke="#fef08a" stroke-width="1.3" />
-            <!-- Necklace & Gold Belt -->
             <path d="M40.5,44 Q50,52 59.5,44" stroke="url(#${u}_gold)" stroke-width="2.1" fill="none" />
             <rect x="35" y="76.5" width="30" height="5.2" rx="2" fill="url(#${u}_gold)" stroke="#78350f" stroke-width="0.7" />
             <circle cx="50" cy="79.1" r="3.2" fill="#fef08a" stroke="#92400e" stroke-width="0.9" />
           `;
         } else if (outfitId === 'dusit') {
-          // 6. ดุสิต: แขนกุด คอกลมคว้านกว้าง ผ่าหลัง ปักเลื่อม/ดิ้นทองวิจิตร + ซิ่นจีบหน้านาง + เข็มขัดไทย
           armsSVG = `
             <path d="M36,46 L29,82.5 L35,83.5 L40,56 Z" fill="url(#${u}_skin)" />
             <path d="M64,46 L71,82.5 L65,83.5 L60,56 Z" fill="url(#${u}_skin)" />
@@ -1414,7 +1534,6 @@
             <rect x="38" y="44" width="24" height="15" fill="url(#${u}_skin)" />
             <path d="M37,44 L42,44 Q50,57 58,44 L63,44 L63,79.5 L37,79.5 Z" fill="url(#${u}_silk)" />
             <path d="M41,45 Q50,58 59,45" stroke="#fef08a" stroke-width="1.8" fill="none" />
-            <!-- Sequin & Pearl Embroidery -->
             <circle cx="43" cy="57" r="1.4" fill="#fef08a" />
             <circle cx="50" cy="59.5" r="1.7" fill="#ffffff" />
             <circle cx="57" cy="57" r="1.4" fill="#fef08a" />
@@ -1423,12 +1542,10 @@
             <circle cx="55" cy="65.5" r="1.4" fill="#ffffff" />
             <circle cx="42" cy="72.5" r="1.3" fill="#fef08a" />
             <circle cx="58" cy="72.5" r="1.3" fill="#fef08a" />
-            <!-- Gold Belt -->
             <rect x="35" y="76.5" width="30" height="5.2" rx="2" fill="url(#${u}_gold)" stroke="#78350f" stroke-width="0.7" />
             <circle cx="50" cy="79.1" r="3.2" fill="#fef08a" stroke="#92400e" stroke-width="0.9" />
           `;
         } else if (outfitId === 'siwalai') {
-          // 7. ศิวาลัย: ทรงบรมพิมานแขนยาวคอตั้ง + ห่มสะพัก/สไบปักดิ้นทองทับบ่าซ้าย 1 ชั้น + เข็มขัดไทย
           armsSVG = `
             <circle cx="29.8" cy="85.5" r="3.4" fill="url(#${u}_skin)" />
             <circle cx="70.2" cy="85.5" r="3.4" fill="url(#${u}_skin)" />
@@ -1436,20 +1553,16 @@
           topSVG = `
             <path d="M34,44 Q50,40 66,44 L73.5,83.5 L66,84.5 L61,57 L63.5,80 L36.5,80 L39,57 L34,84.5 L26.5,83.5 Z" fill="url(#${u}_silk)" />
             <rect x="44.5" y="38.5" width="11" height="6.2" rx="1.8" fill="url(#${u}_silk)" stroke="url(#${u}_gold)" stroke-width="1.1" />
-            <!-- Gold Embroidered Over-Shoulder Sabai -->
             <path d="M58,42 L76,140 L65,142 L54,52 Z" fill="url(#${u}_gold)" stroke="#92400e" stroke-width="0.7" opacity="0.95" />
             <polygon points="63.5,42 52.5,42 36.5,80 47.5,80" fill="url(#${u}_gold)" stroke="#92400e" stroke-width="0.7" />
             <line x1="58" y1="42" x2="42" y2="80" stroke="${col.dark}" stroke-width="1.2" stroke-dasharray="2.4 2.4" opacity="0.75" />
-            <!-- Gold Belt -->
             <rect x="35" y="76.5" width="30" height="5.2" rx="2" fill="url(#${u}_gold)" stroke="#78350f" stroke-width="0.7" />
             <circle cx="50" cy="79.1" r="3.2" fill="#fef08a" stroke="#92400e" stroke-width="0.9" />
           `;
         } else if (outfitId === 'chakkraphat') {
-          // 8. จักรพรรดิ: เปิดไหล่ขวา ห่มสไบ 2 ชั้น (ชั้นในอัดจีบรองพื้น + ชั้นนอกสะพักปักดิ้นทอง) + เครื่องประดับเต็มยศครบสำรับ
           armsSVG = `
             <path d="M36,46 L29,82.5 L35,83.5 L40,56 Z" fill="url(#${u}_skin)" />
             <path d="M64,46 L71,82.5 L65,83.5 L60,56 Z" fill="url(#${u}_skin)" />
-            <!-- พาหุรัด / รัดแขนทองคำ -->
             <rect x="32.2" y="57" width="6.8" height="2.8" rx="1" fill="url(#${u}_gold)" />
             <rect x="61" y="57" width="6.8" height="2.8" rx="1" fill="url(#${u}_gold)" />
             <circle cx="31.5" cy="84.5" r="3.4" fill="url(#${u}_skin)" />
@@ -1457,20 +1570,16 @@
           `;
           topSVG = `
             <rect x="38" y="45" width="24" height="34" fill="url(#${u}_skin)" />
-            <!-- สไบชั้นใน: แพรจีบอัดพลีทสีทอง/ครีมตัดสี -->
             <polygon points="63.5,43 45.5,43 36,79.5 63.5,79.5" fill="${col.contrast}" />
             <line x1="49.5" y1="43" x2="38.5" y2="79.5" stroke="#b45309" stroke-width="0.8" opacity="0.65" />
             <line x1="53.5" y1="43" x2="42.5" y2="79.5" stroke="#b45309" stroke-width="0.8" opacity="0.65" />
             <line x1="57.5" y1="43" x2="46.5" y2="79.5" stroke="#b45309" stroke-width="0.8" opacity="0.65" />
-            <!-- สไบชั้นนอก: สะพักปักดิ้นทองลายไทย -->
             <path d="M58,43 L76,142 L63.5,144 L53,52 Z" fill="url(#${u}_silk)" stroke="url(#${u}_gold)" stroke-width="1.1" />
             <polygon points="63.5,43 51.5,43 38,79.5 50.5,79.5" fill="url(#${u}_silk)" stroke="url(#${u}_gold)" stroke-width="1.1" />
             <line x1="57.5" y1="44" x2="44" y2="78" stroke="#fef08a" stroke-width="1.6" stroke-dasharray="2.4 2.2" />
-            <!-- เครื่องประดับเต็มยศ: สร้อยคอทับทรวง + สายสังวาล -->
             <path d="M40,44 Q50,53.5 60,44" stroke="url(#${u}_gold)" stroke-width="2.6" fill="none" />
             <polygon points="50,48 53.5,52.5 50,57 46.5,52.5" fill="url(#${u}_gold)" stroke="#fffbeb" stroke-width="0.7" />
             <line x1="41" y1="46" x2="61.5" y2="76.5" stroke="#fde047" stroke-width="1.6" stroke-dasharray="2.2 1.6" />
-            <!-- เข็มขัดไทยหัวเพชร -->
             <rect x="35" y="76" width="30" height="5.6" rx="2" fill="url(#${u}_gold)" stroke="#78350f" stroke-width="0.8" />
             <circle cx="50" cy="78.8" r="3.4" fill="#fef08a" stroke="#92400e" stroke-width="0.9" />
           `;
@@ -1494,7 +1603,7 @@
     }
 
     /*************************************************************************
-     * SVG RENDERER: กระทง 6 สไตล์ (รองรับทั้งหน้าเว็บและ Canvas การ์ดความทรงจำ)
+     * SVG RENDERER: กระทง 6 สไตล์
      *************************************************************************/
     function renderKrathongSVG(typeId, sizeClass = 'w-16 h-16', forCanvas = false) {
       const palettes = {
@@ -1623,7 +1732,6 @@
     function selectOutfit(outfitId) {
       const outfitObj = OUTFITS.find(o => o.id === outfitId);
       state.characters[state.activeCharIndex].outfitId = outfitId;
-      // ปรับสีเริ่มต้นให้เข้ากับเอกลักษณ์ของชุดนั้นๆ ทันที (ผู้ใช้ยังเปลี่ยนสีเองต่อได้)
       if (outfitObj && outfitObj.defaultColor) {
         state.characters[state.activeCharIndex].colorId = outfitObj.defaultColor;
       }
@@ -1662,7 +1770,6 @@
       const activeChar = state.characters[state.activeCharIndex];
       document.getElementById('outfit-grid').innerHTML = OUTFITS.map(o => {
         const isSelected = activeChar.outfitId === o.id;
-        // แสดงแต่ละชุดด้วยสีประจำชุดของตัวเอง (และใช้สีที่ผู้ใช้เลือกสำหรับชุดที่กำลังเลือกอยู่)
         const previewColor = isSelected ? activeChar.colorId : o.defaultColor;
         return `
           <button
@@ -1737,7 +1844,7 @@
       let starsHtml = '';
       for (let i = 0; i < 65; i++) {
         const left = Math.random() * 100;
-        const top = Math.random() * 42;
+        const top = Math.random() * 90;
         const size = 1.4 + Math.random() * 2.4;
         const dur = 2 + Math.random() * 4;
         starsHtml += `<div class="star" style="left:${left}%;top:${top}%;width:${size}px;height:${size}px;--dur:${dur}s;animation-delay:${Math.random() * 3}s"></div>`;
@@ -1775,10 +1882,11 @@
     const fwCtx = fwCanvas.getContext('2d');
     let fwParticles = [];
 
-    function resizeFireworksCanvas() {
+    function resizeAllCanvases() {
       const stage = document.getElementById('river-stage');
       fwCanvas.width = stage.clientWidth;
       fwCanvas.height = stage.clientHeight;
+      resizeRiverCanvas();
     }
 
     function triggerFireworksBurst(burstCount = 5) {
@@ -1850,12 +1958,11 @@
       const layer = document.getElementById('krathongs-river-layer');
       const lane = forcedLane !== null ? forcedLane : (laneCycle++ % 3);
 
-      // 3 Depth Lanes (perspective scaling)
-      const topPercent = lane === 0 ? 6 + Math.random() * 11
-        : lane === 1 ? 24 + Math.random() * 14
-        : 44 + Math.random() * 13;
+      const topPercent = lane === 0 ? 7 + Math.random() * 11
+        : lane === 1 ? 25 + Math.random() * 14
+        : 45 + Math.random() * 13;
       const scale = lane === 0 ? 0.56 : lane === 1 ? 0.78 : 0.96;
-      const speed = (lane === 0 ? 0.24 : lane === 1 ? 0.38 : 0.52) + Math.random() * 0.08;
+      const speed = (lane === 0 ? 0.25 : lane === 1 ? 0.40 : 0.55) + Math.random() * 0.08;
 
       const el = document.createElement('div');
       el.className = `floating-krathong ${isMine ? 'krathong-mine' : ''}`;
@@ -1876,9 +1983,6 @@
       return { el, x: xStart, speed, scale, item };
     }
 
-    /**
-     * เริ่มต้นสายน้ำ: จัดเรียงกระทงจากใหม่สุดไปเก่าสุดกระจายเต็มสายน้ำ
-     */
     function initOrderedRiverLoop() {
       const layer = document.getElementById('krathongs-river-layer');
       layer.innerHTML = '';
@@ -1896,12 +2000,10 @@
       const initialCount = Math.min(MAX_VISIBLE_KRATHONGS, total);
       const spacing = (stageWidth + 80) / Math.max(initialCount, 1);
 
-      // วางกระทงใหม่สุดอยู่ด้านหน้าเด่นชัด ไล่ลำดับไปยังเก่าสุด
       for (let i = 0; i < initialCount; i++) {
         const item = state.riverItems[loopQueueIndex];
         loopQueueIndex = (loopQueueIndex + 1) % total;
 
-        // กระจายตำแหน่ง X ให้กระทงใหม่สุดอยู่โซนกลาง-ขวา และลำดับถัดไปตามมาเป็นขบวน
         const xPos = stageWidth * 0.78 - (i * spacing) + (Math.random() * 35 - 17);
         const normalizedX = ((xPos % (stageWidth + 140)) + (stageWidth + 140)) % (stageWidth + 140) - 90;
         activeFloaters.push(createFloaterNode(item, normalizedX, false));
@@ -1910,9 +2012,6 @@
       updateLoopBadge();
     }
 
-    /**
-     * เมื่อกระทงลอยพ้นขอบขวา จะดึงกระทงคิวถัดไป (ใหม่ → เก่า วนซ้ำไม่รู้จบ) เข้ามาทางซ้าย
-     */
     function animateRiverLoop() {
       const layer = document.getElementById('krathongs-river-layer');
       const maxWidth = (layer.clientWidth || 1000) + 110;
@@ -1921,7 +2020,6 @@
         const f = activeFloaters[i];
         f.x += f.speed;
         if (f.x > maxWidth) {
-          // ลบโหนดที่ลอยพ้นจอ แล้วแทนที่ด้วยคิวถัดไปในลำดับ ใหม่ -> เก่า
           if (f.el && f.el.parentNode) f.el.parentNode.removeChild(f.el);
           activeFloaters.splice(i, 1);
 
@@ -1969,9 +2067,6 @@
       }
     }
 
-    /**
-     * แอนิเมชันปล่อยกระทง 3 จังหวะสมจริงจากท่าน้ำไม้สัก
-     */
     function playPierReleaseAnimation(newItem) {
       const stage = document.getElementById('river-stage');
       const charStage = document.getElementById('pier-characters-stage');
@@ -1979,7 +2074,6 @@
 
       stage.scrollIntoView({ behavior: 'smooth', block: 'center' });
 
-      // จังหวะที่ 1: โน้มตัวไหว้ขอขมาพระแม่คงคา + ประกายแสงสีทอง
       charStage.classList.add('releasing-bow');
       playChimeSound();
 
@@ -1989,7 +2083,6 @@
       const waterTouchY = stage.clientHeight * 0.72;
       createGoldenSparkles(startX, startY - 12);
 
-      // จังหวะที่ 2: วางกระทงลงแตะผิวน้ำและล่องออกไปกลางแม่น้ำ
       setTimeout(() => {
         pierKrathong.style.opacity = '0';
 
@@ -2012,7 +2105,6 @@
           triggerFireworksBurst(6);
         }, 1050);
 
-        // จังหวะที่ 3: กระทงเข้าสู่สายน้ำ Loop เป็นกระทงไฮไลต์ของผู้เล่น
         setTimeout(() => {
           flying.remove();
           charStage.classList.remove('releasing-bow');
@@ -2052,9 +2144,6 @@
       });
     }
 
-    /**
-     * แปลงข้อความรายชื่อชุดไทยจากฐานข้อมูลกลับเป็นชุดตัวละครสำหรับวาดลงการ์ด
-     */
     function parseOutfitsToCharacters(outfitsStr) {
       const parts = (outfitsStr || 'ชุดไทยจักรี').split(',').map(s => s.trim()).filter(Boolean);
       return parts.slice(0, 4).map(name => {
@@ -2063,9 +2152,6 @@
       });
     }
 
-    /**
-     * ตัดบรรทัดภาษาไทยบน Canvas อย่างสวยงามด้วย Intl.Segmenter
-     */
     function wrapThaiText(ctx, text, maxWidth, maxLines = 4) {
       let tokens = [];
       if (typeof Intl !== 'undefined' && Intl.Segmenter) {
@@ -2089,11 +2175,8 @@
         }
       }
       if (current.trim()) lines.push(current.trim());
+      if (lines.length > maxLines) lines.length = maxLines;
 
-      // ถ้ายาวเกินจำนวนบรรทัดสูงสุด ให้ตัดท้ายและเติม ...
-      if (lines.length > maxLines) {
-        lines.length = maxLines;
-      }
       const lastIdx = lines.length - 1;
       if (lastIdx >= 0 && ctx.measureText(lines[lastIdx]).width > maxWidth) {
         let s = lines[lastIdx];
@@ -2124,59 +2207,93 @@
       const ctx = canvas.getContext('2d');
       const W = 1080;
       const H = 1350;
+      const SKY_H = 620;
       canvas.width = W;
       canvas.height = H;
 
-      // 1. Base Gradient Background
-      const bgGrad = ctx.createLinearGradient(0, 0, 0, H);
-      bgGrad.addColorStop(0, '#0b031d');
-      bgGrad.addColorStop(0.42, '#240b52');
-      bgGrad.addColorStop(0.75, '#19073c');
-      bgGrad.addColorStop(1, '#0c031f');
-      ctx.fillStyle = bgGrad;
+      // 1. Base Sky + Flowing River Gradient
+      const baseGrad = ctx.createLinearGradient(0, 0, 0, H);
+      baseGrad.addColorStop(0, '#0a021a');
+      baseGrad.addColorStop(0.45, '#250c54');
+      baseGrad.addColorStop(0.46, '#230d52');
+      baseGrad.addColorStop(0.75, '#130630');
+      baseGrad.addColorStop(1, '#080217');
+      ctx.fillStyle = baseGrad;
       ctx.fillRect(0, 0, W, H);
 
-      // 2. Photo Scene Backdrop (Safe CORS load with fallback)
-      const bgImg = await loadImageSafe(SCENE_BG_URL);
+      // 2. Sky Photo strictly clipped to Upper Sky Zone (0..SKY_H)
+      const bgImg = await loadImageSafe(SKY_BG_URL);
       if (bgImg) {
-        const imgAspect = bgImg.width / bgImg.height;
-        const boxH = 740;
-        const drawW = Math.max(W, boxH * imgAspect);
-        const drawH = drawW / imgAspect;
         ctx.save();
-        ctx.globalAlpha = 0.85;
-        ctx.drawImage(bgImg, (W - drawW) / 2, 0, drawW, drawH);
+        ctx.beginPath();
+        ctx.rect(0, 0, W, SKY_H);
+        ctx.clip();
+
+        const imgAspect = bgImg.width / bgImg.height;
+        const drawW = Math.max(W, SKY_H * imgAspect);
+        const drawH = drawW / imgAspect;
+        ctx.globalAlpha = 0.88;
+        ctx.drawImage(bgImg, (W - drawW) / 2, -drawH * 0.08, drawW, drawH);
+
+        // Soft fade into horizon line
+        const skyFade = ctx.createLinearGradient(0, 0, 0, SKY_H);
+        skyFade.addColorStop(0, 'rgba(10, 3, 28, 0.68)');
+        skyFade.addColorStop(0.4, 'rgba(20, 7, 48, 0.18)');
+        skyFade.addColorStop(0.84, 'rgba(24, 9, 58, 0.45)');
+        skyFade.addColorStop(1, 'rgba(30, 11, 69, 1)');
+        ctx.globalAlpha = 1;
+        ctx.fillStyle = skyFade;
+        ctx.fillRect(0, 0, W, SKY_H);
         ctx.restore();
       }
 
-      // Vignette & Royal Purple Transition over Photo
-      const fadeGrad = ctx.createLinearGradient(0, 0, 0, H);
-      fadeGrad.addColorStop(0, 'rgba(11, 3, 29, 0.72)');
-      fadeGrad.addColorStop(0.24, 'rgba(24, 7, 56, 0.25)');
-      fadeGrad.addColorStop(0.52, 'rgba(24, 7, 56, 0.45)');
-      fadeGrad.addColorStop(0.68, 'rgba(18, 6, 44, 0.96)');
-      fadeGrad.addColorStop(1, 'rgba(10, 3, 25, 1)');
-      ctx.fillStyle = fadeGrad;
-      ctx.fillRect(0, 0, W, H);
+      // 3. Animated-style River Surface & Moonlight Ripples in Lower Half
+      ctx.save();
+      const riverGlow = ctx.createLinearGradient(0, SKY_H, 0, SKY_H + 55);
+      riverGlow.addColorStop(0, 'rgba(251, 191, 36, 0.32)');
+      riverGlow.addColorStop(1, 'rgba(251, 191, 36, 0)');
+      ctx.fillStyle = riverGlow;
+      ctx.fillRect(0, SKY_H, W, 55);
 
-      // 3. Moon, Stars & Floating Sky Lanterns on Card
+      // Flowing water current streaks
+      for (let i = 0; i < 24; i++) {
+        const y = SKY_H + 22 + i * 18;
+        const x = (i * 173) % (W - 200);
+        const len = 140 + (i % 5) * 45;
+        const g = ctx.createLinearGradient(x, y, x + len, y);
+        g.addColorStop(0, 'rgba(196, 181, 253, 0)');
+        g.addColorStop(0.5, 'rgba(196, 181, 253, 0.22)');
+        g.addColorStop(1, 'rgba(196, 181, 253, 0)');
+        ctx.fillStyle = g;
+        ctx.fillRect(x, y, len, 2.5);
+      }
+
+      // Moonlight reflection ripples on river
+      for (let i = 0; i < 14; i++) {
+        const y = SKY_H + 16 + i * 17;
+        const rw = 60 + i * 10;
+        ctx.fillStyle = `rgba(254, 240, 138, ${(0.28 - i * 0.015).toFixed(3)})`;
+        ctx.fillRect(890 - rw / 2 + Math.sin(i) * 14, y, rw, 3.2);
+      }
+      ctx.restore();
+
+      // 4. Moon & Stars in Upper Sky
       ctx.save();
       for (let i = 0; i < 45; i++) {
         ctx.fillStyle = `rgba(255,255,255,${0.25 + (i % 5) * 0.14})`;
         const sx = (i * 197) % W;
-        const sy = 50 + ((i * 89) % 360);
+        const sy = 50 + ((i * 89) % 340);
         ctx.beginPath();
         ctx.arc(sx, sy, 1.5 + (i % 3), 0, Math.PI * 2);
         ctx.fill();
       }
-      // Full Moon
-      const moonHalo = ctx.createRadialGradient(890, 210, 25, 890, 210, 140);
-      moonHalo.addColorStop(0, 'rgba(254, 240, 138, 0.75)');
+      const moonHalo = ctx.createRadialGradient(890, 210, 25, 890, 210, 145);
+      moonHalo.addColorStop(0, 'rgba(254, 240, 138, 0.78)');
       moonHalo.addColorStop(0.45, 'rgba(251, 191, 36, 0.25)');
       moonHalo.addColorStop(1, 'rgba(251, 191, 36, 0)');
       ctx.fillStyle = moonHalo;
       ctx.beginPath();
-      ctx.arc(890, 210, 140, 0, Math.PI * 2);
+      ctx.arc(890, 210, 145, 0, Math.PI * 2);
       ctx.fill();
 
       const moonGrad = ctx.createRadialGradient(872, 192, 10, 890, 210, 68);
@@ -2189,7 +2306,7 @@
       ctx.fill();
       ctx.restore();
 
-      // 4. Ornate Double Golden Frame
+      // 5. Ornate Double Golden Frame
       ctx.strokeStyle = 'rgba(251, 191, 36, 0.75)';
       ctx.lineWidth = 4;
       drawRoundedRect(ctx, 28, 28, W - 56, H - 56, 36);
@@ -2200,7 +2317,7 @@
       drawRoundedRect(ctx, 42, 42, W - 84, H - 84, 28);
       ctx.stroke();
 
-      // 5. Header with Official Ministry of Culture Logo
+      // 6. Official Ministry of Culture Logo & Title
       const logoImg = await loadImageSafe(LOGO_URL);
       ctx.save();
       ctx.shadowColor = 'rgba(251, 191, 36, 0.55)';
@@ -2220,7 +2337,6 @@
       if (logoImg) {
         ctx.drawImage(logoImg, W / 2 - 48, 132 - 48, 96, 96);
       } else {
-        // Fallback Crest Text if offline
         ctx.fillStyle = '#4c1d95';
         ctx.font = '700 22px Prompt, sans-serif';
         ctx.textAlign = 'center';
@@ -2236,17 +2352,16 @@
       ctx.font = '500 26px Prompt, sans-serif';
       ctx.fillText('สำนักงานวัฒนธรรมจังหวัดมหาสารคาม', W / 2, 290);
 
-      // 6. Glowing Showcase Platform for Characters + Krathong
-      const platformGlow = ctx.createRadialGradient(W / 2, 660, 20, W / 2, 660, 360);
+      // 7. Characters + Krathong Showcase
+      const platformGlow = ctx.createRadialGradient(W / 2, 665, 20, W / 2, 665, 360);
       platformGlow.addColorStop(0, 'rgba(251, 191, 36, 0.34)');
       platformGlow.addColorStop(0.55, 'rgba(139, 92, 246, 0.18)');
       platformGlow.addColorStop(1, 'rgba(139, 92, 246, 0)');
       ctx.fillStyle = platformGlow;
       ctx.beginPath();
-      ctx.arc(W / 2, 660, 360, 0, Math.PI * 2);
+      ctx.arc(W / 2, 665, 360, 0, Math.PI * 2);
       ctx.fill();
 
-      // Render Dressed Avatars onto Canvas
       const chars = (customCharacters && customCharacters.length > 0)
         ? customCharacters
         : parseOutfitsToCharacters(item.outfits);
@@ -2269,19 +2384,18 @@
         }
       });
 
-      // Render Selected Krathong in Foreground Center
       const krathongImg = await svgToImage(renderKrathongSVG(item.krathongType, '', true));
       if (krathongImg) {
         ctx.drawImage(krathongImg, W / 2 - 115, 595, 230, 215);
       }
 
-      // 7. Wish Card Glass Panel
+      // 8. Wish Card Glass Panel
       const boxX = 76;
       const boxY = 825;
       const boxW = W - 152;
       const boxH = 405;
 
-      ctx.fillStyle = 'rgba(24, 8, 56, 0.88)';
+      ctx.fillStyle = 'rgba(22, 7, 52, 0.9)';
       drawRoundedRect(ctx, boxX, boxY, boxW, boxH, 30);
       ctx.fill();
 
@@ -2290,14 +2404,12 @@
       drawRoundedRect(ctx, boxX, boxY, boxW, boxH, 30);
       ctx.stroke();
 
-      // Floater Name
       ctx.textAlign = 'center';
       ctx.fillStyle = '#fde047';
       ctx.font = '700 38px Prompt, sans-serif';
       const displayName = (item.name || 'ผู้ร่วมสืบสานประเพณี').substring(0, 38);
       ctx.fillText(displayName, W / 2, boxY + 66);
 
-      // Mode & Outfits Badge
       ctx.fillStyle = '#d8b4fe';
       ctx.font = '500 22px Prompt, sans-serif';
       const metaText = `${item.mode || 'ลอยคนเดียว'} • ${item.outfits || 'ชุดไทยจักรี'}`;
@@ -2306,7 +2418,6 @@
         ctx.fillText(line, W / 2, boxY + 108 + idx * 30);
       });
 
-      // Divider Line
       const divY = boxY + 128 + (metaLines.length - 1) * 30;
       ctx.strokeStyle = 'rgba(251, 191, 36, 0.35)';
       ctx.lineWidth = 1.5;
@@ -2315,7 +2426,6 @@
       ctx.lineTo(boxX + boxW - 90, divY);
       ctx.stroke();
 
-      // Wish Text (Thai Word Wrapped)
       ctx.fillStyle = '#fffbeb';
       ctx.font = '400 28px Prompt, sans-serif';
       const wishLines = wrapThaiText(ctx, `“${item.wish || 'ขอให้มีความสุขความเจริญตลอดปี'}”`, boxW - 96, 4);
@@ -2324,14 +2434,13 @@
         ctx.fillText(line, W / 2, wishStartY + idx * 42);
       });
 
-      // Krathong Style & Timestamp
       const kObj = KRATHONGS.find(k => k.id === item.krathongType) || KRATHONGS[0];
       ctx.fillStyle = '#c4b5fd';
       ctx.font = '400 20px Prompt, sans-serif';
       const orderTag = item.orderNo ? `กระทงลำดับที่ #${item.orderNo} • ` : '';
       ctx.fillText(`${orderTag}${kObj.name} • ${item.timestamp || 'วันเพ็ญเดือนสิบสอง'}`, W / 2, boxY + boxH - 26);
 
-      // 8. Footer Credit
+      // 9. Footer Credit
       ctx.fillStyle = '#e9d5ff';
       ctx.font = '500 22px Prompt, sans-serif';
       ctx.fillText('อุทยาน ไพรวัลย์ นวธ. สวจ.มหาสารคาม : ผู้พัฒนาระบบ', W / 2, H - 56);
@@ -2398,9 +2507,6 @@
       }
     }
 
-    /**
-     * ปุ่มสร้างการ์ดภาพความทรงจำจากข้อมูลที่กำลังแต่งตัวอยู่ หรือกระทงล่าสุดที่เพิ่งลอย
-     */
     function previewCurrentMemoryCard() {
       const inputName = document.getElementById('input-name').value.trim();
       const inputWish = document.getElementById('input-wish').value.trim();
@@ -2436,7 +2542,7 @@
     }
 
     /*************************************************************************
-     * MODALS: VIEW WISH & 8 ROYAL THAI DRESSES KNOWLEDGE GUIDE
+     * MODALS: VIEW WISH & 8 ROYAL THAI DRESSES GUIDE
      *************************************************************************/
     function showWishModal(item) {
       const krathongObj = KRATHONGS.find(k => k.id === item.krathongType) || KRATHONGS[0];
@@ -2548,7 +2654,6 @@
         const res = await fetch(`${GAS_WEB_APP_URL}?t=${Date.now()}`);
         const json = await res.json();
         if (json.status === 'success') {
-          // ข้อมูลจาก GAS เรียงใหม่สุด (Index 0) -> เก่าสุดเรียบร้อยแล้ว
           state.riverItems = json.data || [];
           state.totalCount = json.total || state.riverItems.length;
           document.getElementById('total-count').textContent = state.totalCount.toLocaleString();
@@ -2632,7 +2737,6 @@
         state.lastFloatedItem = savedItem;
         state.lastFloatedChars = snapshotChars;
 
-        // เพิ่มไว้หัวคิว (Index 0) เพื่อให้ระบบลอยวน ใหม่ -> เก่า เริ่มต้นจากใบนี้
         state.riverItems.unshift(savedItem);
         loopQueueIndex = Math.min(1, state.riverItems.length - 1);
 
@@ -2640,7 +2744,6 @@
         updateRecentWishesUI(state.riverItems);
         updateLoopBadge();
 
-        // เล่นแอนิเมชัน 3 จังหวะปล่อยกระทงลงน้ำ
         playPierReleaseAnimation(savedItem);
         document.getElementById('input-wish').value = '';
 
@@ -2688,10 +2791,11 @@
     /*************************************************************************
      * INITIALIZATION
      *************************************************************************/
-    window.addEventListener('resize', resizeFireworksCanvas);
+    window.addEventListener('resize', resizeAllCanvases);
     window.addEventListener('DOMContentLoaded', () => {
       initSkyEffects();
-      resizeFireworksCanvas();
+      resizeAllCanvases();
+      animateRiverWater();
       animateFireworks();
       animateRiverLoop();
 

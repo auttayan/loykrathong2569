@@ -538,6 +538,85 @@
     }
     .swal2-title { color: #fde68a !important; }
     .swal2-html-container { color: #e9d5ff !important; }
+
+    /* === [เพิ่มใหม่] 3D Launch Trail, Heart Badge & Live Chat === */
+    .launching-krathong-3d {
+      position: absolute;
+      z-index: 32;
+      pointer-events: none;
+      will-change: transform, left, top;
+      filter: drop-shadow(0 12px 24px rgba(253, 224, 71, 0.9));
+    }
+
+    .launch-wake-ring {
+      position: absolute;
+      border-radius: 50%;
+      border: 1.5px solid rgba(253, 230, 138, 0.72);
+      pointer-events: none;
+      z-index: 18;
+      animation: wakeFade 1.2s ease-out forwards;
+    }
+
+    @keyframes wakeFade {
+      0% { width: 16px; height: 6px; opacity: 0.9; transform: translate(-50%, -50%) scale(0.7); }
+      100% { width: 96px; height: 28px; opacity: 0; transform: translate(-50%, -50%) scale(1.4); }
+    }
+
+    .krathong-heart-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      margin-left: 5px;
+      padding: 0 5px;
+      border-radius: 999px;
+      background: rgba(225, 29, 72, 0.88);
+      color: #fff1f2;
+      font-size: 10px;
+      font-weight: 600;
+    }
+
+    @keyframes heartPop {
+      0% { transform: scale(1); }
+      45% { transform: scale(1.45); }
+      100% { transform: scale(1); }
+    }
+    .heart-pop {
+      animation: heartPop 0.42s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    /* Collapsible Live Chat Widget */
+    .chat-fab {
+      position: fixed;
+      bottom: 18px;
+      right: 18px;
+      z-index: 48;
+      box-shadow: 0 10px 28px rgba(109, 40, 217, 0.65);
+    }
+
+    .chat-drawer {
+      position: fixed;
+      bottom: 76px;
+      right: 18px;
+      width: calc(100vw - 36px);
+      max-width: 360px;
+      height: 430px;
+      max-height: 70vh;
+      z-index: 49;
+      display: flex;
+      flex-direction: column;
+      border-radius: 1.25rem;
+      overflow: hidden;
+      opacity: 0;
+      transform: translateY(20px) scale(0.95);
+      pointer-events: none;
+      transition: all 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .chat-drawer.open {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+      pointer-events: auto;
+    }
   </style>
 </head>
 <body class="flex flex-col min-h-screen">
@@ -564,12 +643,18 @@
         </div>
       </div>
 
-      <div class="flex items-center gap-2 flex-shrink-0">
-        <div class="px-3 py-1.5 rounded-full bg-purple-900/80 border border-amber-300/45 text-xs sm:text-sm flex items-center gap-1.5">
-          <i class="fa-solid fa-fire-flame-curved text-amber-400"></i>
-          <span class="hidden sm:inline text-purple-200">ลอยแล้ว</span>
-          <span id="total-count" class="font-bold text-amber-300">0</span>
-          <span class="text-purple-200 text-xs">กระทง</span>
+<div class="px-3 py-1.5 rounded-full bg-purple-900/80 border border-amber-300/45 text-xs sm:text-sm flex items-center gap-2">
+          <span class="flex items-center gap-1" title="จำนวนกระทงที่ลอยแล้ว">
+            <i class="fa-solid fa-fire-flame-curved text-amber-400"></i>
+            <span id="total-count" class="font-bold text-amber-300">0</span>
+            <span class="hidden sm:inline text-purple-200 text-xs">กระทง</span>
+          </span>
+          <span class="text-purple-400/50">|</span>
+          <span class="flex items-center gap-1" title="ยอดผู้ร่วมลอยทั้งหมด">
+            <i class="fa-solid fa-users text-pink-300"></i>
+            <span id="total-people-count" class="font-bold text-pink-200">0</span>
+            <span class="hidden sm:inline text-purple-200 text-xs">คน</span>
+          </span>
         </div>
 
         <button
@@ -957,6 +1042,68 @@
     </p>
   </footer>
 
+<!-- ห้องแชทสดแบบเปิดและซ่อนได้ -->
+  <button
+    id="chat-toggle-btn"
+    onclick="toggleLiveChat()"
+    class="chat-fab px-4 py-3 rounded-full bg-gradient-to-r from-purple-600 via-fuchsia-600 to-purple-700 hover:from-purple-500 hover:to-fuchsia-500 text-white font-semibold text-xs sm:text-sm border border-amber-300/60 flex items-center gap-2 transition active:scale-95"
+  >
+    <i class="fa-solid fa-comments text-amber-300 text-base"></i>
+    <span>แชทสดท่าน้ำ</span>
+    <span id="chat-unread-badge" class="hidden px-1.5 py-0.5 text-[10px] rounded-full bg-rose-500 text-white font-bold">0</span>
+  </button>
+
+  <aside id="live-chat-drawer" class="chat-drawer glass-panel border border-amber-300/35">
+    <div class="px-4 py-3 bg-gradient-to-r from-purple-900/95 to-fuchsia-900/90 border-b border-purple-400/25 flex items-center justify-between">
+      <div class="flex items-center gap-2">
+        <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
+        <div>
+          <div class="text-xs sm:text-sm font-bold text-amber-200">ห้องแชทสดริมท่าน้ำ</div>
+          <div class="text-[10px] text-purple-200/80">ทักทายและร่วมอนุรักษ์ประเพณีไทย</div>
+        </div>
+      </div>
+      <div class="flex items-center gap-1.5">
+        <button onclick="fetchLiveChatOnly()" class="w-7 h-7 rounded-full bg-purple-800/80 hover:bg-purple-700 text-amber-200 text-xs flex items-center justify-center" title="รีเฟรชแชท">
+          <i class="fa-solid fa-rotate"></i>
+        </button>
+        <button onclick="toggleLiveChat(false)" class="w-7 h-7 rounded-full bg-purple-800/80 hover:bg-rose-600 text-purple-100 text-xs flex items-center justify-center" title="ซ่อนห้องแชท">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+    </div>
+
+    <div id="chat-messages" class="flex-1 overflow-y-auto p-3 space-y-2.5 bg-purple-950/55">
+      <p class="text-[11px] text-purple-300/70 text-center py-6">กำลังเชื่อมต่อห้องแชทสด...</p>
+    </div>
+
+    <form onsubmit="handleChatSubmit(event)" class="p-2.5 bg-purple-950/90 border-t border-purple-400/20 space-y-2">
+      <input
+        type="text"
+        id="chat-sender-input"
+        maxlength="35"
+        placeholder="ชื่อเล่นของคุณ (เว้นว่างจะใช้ชื่อผู้ลอย)"
+        class="w-full px-3 py-1.5 rounded-lg bg-purple-900/75 border border-purple-400/30 text-xs text-white placeholder-purple-300/55 focus:outline-none focus:border-amber-300"
+      />
+      <div class="flex gap-1.5">
+        <input
+          type="text"
+          id="chat-message-input"
+          maxlength="180"
+          required
+          placeholder="พิมพ์ข้อความทักทาย..."
+          class="flex-1 px-3 py-2 rounded-xl bg-purple-900/80 border border-purple-400/35 text-xs text-white placeholder-purple-300/55 focus:outline-none focus:border-amber-300"
+        />
+        <button
+          type="submit"
+          id="chat-send-btn"
+          class="px-3.5 py-2 rounded-xl bg-gradient-to-r from-amber-400 to-yellow-500 hover:from-amber-300 hover:to-yellow-400 text-purple-950 font-bold text-xs flex items-center justify-center transition"
+        >
+          <i class="fa-solid fa-paper-plane"></i>
+        </button>
+      </div>
+    </form>
+  </aside>
+  
   <!-- Hidden High-Res Canvas for Memory Card Generation -->
   <canvas id="memory-card-canvas" width="1080" height="1350" class="hidden"></canvas>
 
@@ -1080,13 +1227,17 @@
       }
     ];
 
+// แบบกระทง 9 สไตล์ รูปทรงเฉพาะตัว
     const KRATHONGS = [
-      { id: 'banana_leaf', name: 'ใบตองดั้งเดิม' },
-      { id: 'lotus', name: 'บัวหลวงสีชมพู' },
-      { id: 'royal_purple', name: 'กระทงม่วงวิจิตร' },
-      { id: 'bread', name: 'ขนมปังรักษ์โลก' },
-      { id: 'coconut', name: 'กะลามะพร้าว' },
-      { id: 'golden_naga', name: 'สุวรรณนาคา' }
+      { id: 'banana_leaf',  name: 'ใบตองกลีบผกา' },
+      { id: 'lotus',        name: 'บัวหลวงชมพู' },
+      { id: 'royal_purple', name: 'ม่วงวิจิตรทอง' },
+      { id: 'swan',         name: 'หงส์สุวรรณ' },
+      { id: 'bread_turtle', name: 'ขนมปังเต่าน้อย' },
+      { id: 'coconut',      name: 'กะลาสายประทีป' },
+      { id: 'ice_lotus',    name: 'น้ำแข็งบุปผา' },
+      { id: 'golden_naga',  name: 'สุวรรณนาคา' },
+      { id: 'flower_dome',  name: 'พุ่มมาลาดาวเรือง' }
     ];
 
     const SAMPLE_WISHES = [
@@ -1605,40 +1756,158 @@
     /*************************************************************************
      * SVG RENDERER: กระทง 6 สไตล์
      *************************************************************************/
-    function renderKrathongSVG(typeId, sizeClass = 'w-16 h-16', forCanvas = false) {
-      const palettes = {
-        banana_leaf: { base: '#15803d', petal1: '#22c55e', petal2: '#86efac', flower: '#f59e0b', center: '#fef08a' },
-        lotus:       { base: '#9d174d', petal1: '#ec4899', petal2: '#fbcfe8', flower: '#fde047', center: '#f97316' },
-        royal_purple:{ base: '#4c1d95', petal1: '#8b5cf6', petal2: '#ddd6fe', flower: '#fbbf24', center: '#fef08a' },
-        bread:       { base: '#92400e', petal1: '#d97706', petal2: '#fde68a', flower: '#f43f5e', center: '#fef08a' },
-        coconut:     { base: '#451a03', petal1: '#78350f', petal2: '#b45309', flower: '#fef3c7', center: '#f59e0b' },
-        golden_naga: { base: '#78350f', petal1: '#f59e0b', petal2: '#fef08a', flower: '#a855f7', center: '#fef9c3' }
-      };
-      const p = palettes[typeId] || palettes.lotus;
+function renderKrathongSVG(typeId, sizeClass = 'w-16 h-16', forCanvas = false) {
+      const uid = 'kr' + (++svgUidCounter);
       const svgTag = forCanvas
-        ? `<svg xmlns="http://www.w3.org/2000/svg" width="240" height="224" viewBox="0 0 120 112">`
+        ? `<svg xmlns="http://www.w3.org/2000/svg" width="260" height="240" viewBox="0 0 120 112">`
         : `<svg class="${sizeClass}" viewBox="0 0 120 112">`;
 
-      return `
-        ${svgTag}
-          <circle cx="60" cy="30" r="26" fill="#fde047" opacity="0.28" />
-          <line x1="51" y1="62" x2="46" y2="25" stroke="#a16207" stroke-width="2" />
-          <line x1="60" y1="62" x2="60" y2="21" stroke="#a16207" stroke-width="2" />
-          <line x1="69" y1="62" x2="74" y2="25" stroke="#a16207" stroke-width="2" />
-          <circle cx="46" cy="25" r="2" fill="#fb7185" />
-          <circle cx="60" cy="21" r="2" fill="#fb7185" />
-          <circle cx="74" cy="25" r="2" fill="#fb7185" />
-          <rect x="56.5" y="34" width="7" height="30" rx="2" fill="#fef08a" stroke="#d97706" stroke-width="0.8" />
-          <g class="candle-flame">
-            <path d="M60,13 Q67,25 60,34 Q53,25 60,13 Z" fill="#f97316" />
-            <path d="M60,19 Q64,27 60,33 Q56,27 60,19 Z" fill="#fef9c3" />
-          </g>
-          <circle cx="38" cy="66" r="7" fill="${p.flower}" />
-          <circle cx="38" cy="66" r="3" fill="${p.center}" />
-          <circle cx="82" cy="66" r="7" fill="${p.flower}" />
-          <circle cx="82" cy="66" r="3" fill="${p.center}" />
-          <circle cx="60" cy="68" r="8.2" fill="${p.flower}" />
-          <circle cx="60" cy="68" r="3.6" fill="${p.center}" />
+      // ส่วนธูป 3 ดอก + เทียน + เปลวไฟกลางกระทง
+      const candleUnit = `
+        <circle cx="60" cy="29" r="24" fill="#fde047" opacity="0.26" />
+        <line x1="51" y1="62" x2="46" y2="25" stroke="#a16207" stroke-width="1.9" />
+        <line x1="60" y1="62" x2="60" y2="21" stroke="#a16207" stroke-width="1.9" />
+        <line x1="69" y1="62" x2="74" y2="25" stroke="#a16207" stroke-width="1.9" />
+        <circle cx="46" cy="25" r="1.9" fill="#fb7185" />
+        <circle cx="60" cy="21" r="1.9" fill="#fb7185" />
+        <circle cx="74" cy="25" r="1.9" fill="#fb7185" />
+        <rect x="56.5" y="34" width="7" height="28" rx="2" fill="#fef08a" stroke="#d97706" stroke-width="0.8" />
+        <g class="candle-flame">
+          <path d="M60,13 Q67,24 60,34 Q53,24 60,13 Z" fill="#f97316" />
+          <path d="M60,19 Q64,26 60,33 Q56,26 60,19 Z" fill="#fef9c3" />
+        </g>
+      `;
+
+      let body = '';
+
+      if (typeId === 'lotus') {
+        // บัวหลวงกลีบโค้งซ้อนหลายชั้น
+        body = `
+          ${candleUnit}
+          <path d="M22,78 C16,56 32,46 46,72 Z" fill="#fbcfe8" stroke="#be185d" stroke-width="0.8"/>
+          <path d="M98,78 C104,56 88,46 74,72 Z" fill="#fbcfe8" stroke="#be185d" stroke-width="0.8"/>
+          <path d="M40,76 C44,44 76,44 80,76 Z" fill="#f9a8d4" stroke="#be185d" stroke-width="0.8"/>
+          <path d="M16,80 C24,58 46,60 54,82 Z" fill="#ec4899" stroke="#9d174d" stroke-width="0.9"/>
+          <path d="M104,80 C96,58 74,60 66,82 Z" fill="#ec4899" stroke="#9d174d" stroke-width="0.9"/>
+          <path d="M44,84 C48,58 72,58 76,84 Z" fill="#f472b6" stroke="#9d174d" stroke-width="0.9"/>
+          <ellipse cx="60" cy="87" rx="44" ry="10" fill="#15803d" stroke="#065f46" stroke-width="1"/>
+          <ellipse cx="60" cy="99" rx="36" ry="5" fill="#f472b6" opacity="0.25"/>
+        `;
+      } else if (typeId === 'swan') {
+        // กระทงหงส์สุวรรณ
+        body = `
+          <defs>
+            <linearGradient id="${uid}_sw" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#fffbeb"/><stop offset="50%" stop-color="#fbbf24"/><stop offset="100%" stop-color="#b45309"/>
+            </linearGradient>
+          </defs>
+          ${candleUnit}
+          <!-- คอและหัวหงส์ด้านซ้าย -->
+          <path d="M30,78 C14,68 12,40 24,30 C30,25 36,30 33,36 C28,36 24,42 26,56 C28,66 36,72 42,74 Z" fill="url(#${uid}_sw)" stroke="#78350f" stroke-width="0.9"/>
+          <polygon points="15,34 22,31 21,37" fill="#ef4444"/>
+          <circle cx="25" cy="32" r="1.3" fill="#1e1b2e"/>
+          <!-- ปีกและหางหงส์ -->
+          <path d="M34,76 Q62,56 96,68 Q84,84 62,88 Q42,88 34,76 Z" fill="#fef3c7" stroke="#d97706" stroke-width="1"/>
+          <path d="M84,68 Q104,54 108,44 Q102,64 90,76 Z" fill="url(#${uid}_sw)" stroke="#92400e" stroke-width="0.8"/>
+          <path d="M24,78 Q60,98 98,78 L90,91 Q60,104 32,91 Z" fill="url(#${uid}_sw)"/>
+          <ellipse cx="60" cy="100" rx="38" ry="5" fill="#fde047" opacity="0.28"/>
+        `;
+      } else if (typeId === 'bread_turtle') {
+        // กระทงขนมปังเต่าน้อยรักษ์โลก
+        body = `
+          ${candleUnit}
+          <!-- หัวและขาเต่า -->
+          <circle cx="20" cy="76" r="11" fill="#d97706" stroke="#78350f" stroke-width="1"/>
+          <circle cx="17" cy="73" r="1.8" fill="#1c1917"/>
+          <path d="M13,79 Q17,82 21,79" stroke="#78350f" stroke-width="1.2" fill="none"/>
+          <ellipse cx="38" cy="91" rx="9" ry="5" fill="#b45309"/>
+          <ellipse cx="82" cy="91" rx="9" ry="5" fill="#b45309"/>
+          <polygon points="96,80 108,77 100,86" fill="#b45309"/>
+          <!-- กระดองขนมปัง -->
+          <path d="M26,82 C28,50 92,50 96,82 Z" fill="#f59e0b" stroke="#92400e" stroke-width="1.2"/>
+          <path d="M42,58 L54,68 L48,80 M78,58 L66,68 L72,80 M54,68 L66,68" stroke="#fef3c7" stroke-width="1.6" fill="none" opacity="0.75"/>
+          <path d="M24,82 Q60,96 98,82 L93,90 Q60,102 29,90 Z" fill="#92400e"/>
+          <ellipse cx="60" cy="100" rx="38" ry="5" fill="#fde68a" opacity="0.22"/>
+        `;
+      } else if (typeId === 'coconut') {
+        // กะลามะพร้าวสายประทีป
+        body = `
+          ${candleUnit}
+          <circle cx="42" cy="68" r="6" fill="#fef3c7"/><circle cx="78" cy="68" r="6" fill="#fef3c7"/>
+          <circle cx="60" cy="66" r="7" fill="#fbbf24"/>
+          <!-- ถ้วยกะลามะพร้าวขัดมัน -->
+          <path d="M20,68 Q60,78 100,68 C98,94 78,100 60,100 C42,100 22,94 20,68 Z" fill="#5c2d16" stroke="#291208" stroke-width="1.2"/>
+          <ellipse cx="60" cy="68" rx="40" ry="8" fill="#7c3f21" stroke="#3b1a0c" stroke-width="1"/>
+          <path d="M30,80 Q60,90 90,80" stroke="#fbbf24" stroke-width="1.6" stroke-dasharray="4 3" fill="none"/>
+          <ellipse cx="60" cy="102" rx="34" ry="4.5" fill="#fbbf24" opacity="0.25"/>
+        `;
+      } else if (typeId === 'ice_lotus') {
+        // กระทงน้ำแข็งใสฝังดอกไม้
+        body = `
+          <defs>
+            <linearGradient id="${uid}_ice" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#e0f2fe" stop-opacity="0.92"/>
+              <stop offset="50%" stop-color="#7dd3fc" stop-opacity="0.75"/>
+              <stop offset="100%" stop-color="#0284c7" stop-opacity="0.88"/>
+            </linearGradient>
+          </defs>
+          ${candleUnit}
+          <!-- เกล็ดน้ำแข็งด้านหลัง -->
+          <polygon points="22,74 34,54 46,74" fill="#bae6fd" opacity="0.78" stroke="#ffffff" stroke-width="0.9"/>
+          <polygon points="74,74 86,54 98,74" fill="#bae6fd" opacity="0.78" stroke="#ffffff" stroke-width="0.9"/>
+          <!-- ดอกไม้แช่แข็งด้านใน -->
+          <circle cx="42" cy="76" r="6.5" fill="#f472b6"/><circle cx="60" cy="78" r="7" fill="#fde047"/><circle cx="78" cy="76" r="6.5" fill="#a78bfa"/>
+          <!-- แท่นน้ำแข็งผลึกใส -->
+          <path d="M18,72 L30,92 L90,92 L102,72 Q60,84 18,72 Z" fill="url(#${uid}_ice)" stroke="#e0f2fe" stroke-width="1.2"/>
+          <line x1="34" y1="78" x2="42" y2="88" stroke="#ffffff" stroke-width="1.6" opacity="0.8"/>
+          <line x1="78" y1="78" x2="72" y2="88" stroke="#ffffff" stroke-width="1.6" opacity="0.8"/>
+          <ellipse cx="60" cy="99" rx="36" ry="5" fill="#7dd3fc" opacity="0.3"/>
+        `;
+      } else if (typeId === 'golden_naga') {
+        // สุวรรณนาคาอีสาน
+        body = `
+          <defs>
+            <linearGradient id="${uid}_ng" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#fef08a"/><stop offset="55%" stop-color="#f59e0b"/><stop offset="100%" stop-color="#78350f"/>
+            </linearGradient>
+          </defs>
+          ${candleUnit}
+          <!-- เศียรพญานาคคู่ซ้ายขวา -->
+          <path d="M24,78 C10,64 10,44 22,36 L26,44 L19,49 C22,58 28,66 36,72 Z" fill="url(#${uid}_ng)" stroke="#78350f" stroke-width="0.9"/>
+          <path d="M96,78 C110,64 110,44 98,36 L94,44 L101,49 C98,58 92,66 84,72 Z" fill="url(#${uid}_ng)" stroke="#78350f" stroke-width="0.9"/>
+          <circle cx="19" cy="46" r="1.5" fill="#ef4444"/><circle cx="101" cy="46" r="1.5" fill="#ef4444"/>
+          <!-- กลีบลายกนกทอง -->
+          <polygon points="34,76 48,52 60,76" fill="#fbbf24" stroke="#78350f" stroke-width="0.9"/>
+          <polygon points="60,76 72,52 86,76" fill="#fbbf24" stroke="#78350f" stroke-width="0.9"/>
+          <circle cx="60" cy="68" r="7" fill="#a855f7" stroke="#fef08a" stroke-width="1.2"/>
+          <path d="M18,76 Q60,96 102,76 L94,91 Q60,104 26,91 Z" fill="url(#${uid}_ng)"/>
+          <ellipse cx="60" cy="100" rx="38" ry="5" fill="#fde047" opacity="0.28"/>
+        `;
+      } else if (typeId === 'flower_dome') {
+        // พุ่มมาลาดาวเรือง-มะลิ
+        body = `
+          ${candleUnit}
+          <!-- พุ่มดอกไม้แน่นฟู -->
+          <circle cx="32" cy="70" r="9" fill="#f59e0b"/><circle cx="88" cy="70" r="9" fill="#f59e0b"/>
+          <circle cx="46" cy="64" r="9.5" fill="#fbbf24"/><circle cx="74" cy="64" r="9.5" fill="#fbbf24"/>
+          <circle cx="60" cy="62" r="10" fill="#fde047"/>
+          <!-- มาลัยดอกมะลิคล้องฐาน -->
+          <path d="M22,77 Q40,86 60,78 Q80,86 98,77" stroke="#fffbeb" stroke-width="4" stroke-dasharray="4 3" fill="none" stroke-linecap="round"/>
+          <path d="M20,76 Q60,96 100,76 L92,91 Q60,103 28,91 Z" fill="#166534" stroke="#14532d" stroke-width="1"/>
+          <ellipse cx="60" cy="100" rx="36" ry="5" fill="#fde047" opacity="0.25"/>
+        `;
+      } else {
+        // ใบตองกลีบผกา (banana_leaf) & ม่วงวิจิตรทอง (royal_purple)
+        const isPurple = typeId === 'royal_purple';
+        const p = isPurple
+          ? { base: '#4c1d95', petal1: '#8b5cf6', petal2: '#ddd6fe', flower: '#fbbf24', center: '#fef08a' }
+          : { base: '#15803d', petal1: '#22c55e', petal2: '#86efac', flower: '#f59e0b', center: '#fef08a' };
+
+        body = `
+          ${candleUnit}
+          <circle cx="38" cy="66" r="7" fill="${p.flower}" /><circle cx="38" cy="66" r="3" fill="${p.center}" />
+          <circle cx="82" cy="66" r="7" fill="${p.flower}" /><circle cx="82" cy="66" r="3" fill="${p.center}" />
+          <circle cx="60" cy="68" r="8.2" fill="${p.flower}" /><circle cx="60" cy="68" r="3.6" fill="${p.center}" />
           <polygon points="24,74 36,52 48,74" fill="${p.petal2}" />
           <polygon points="48,74 60,50 72,74" fill="${p.petal2}" />
           <polygon points="72,74 84,52 96,74" fill="${p.petal2}" />
@@ -1648,8 +1917,10 @@
           <polygon points="78,76 92,55 106,76" fill="${p.petal1}" stroke="${p.base}" stroke-width="1" />
           <path d="M18,76 Q60,96 102,76 L94,90 Q60,104 26,90 Z" fill="${p.base}" />
           <ellipse cx="60" cy="100" rx="36" ry="6" fill="#fde68a" opacity="0.24" />
-        </svg>
-      `;
+        `;
+      }
+
+      return `${svgTag}${body}</svg>`;
     }
 
     /*************************************************************************
@@ -1889,51 +2160,81 @@
       resizeRiverCanvas();
     }
 
-    function triggerFireworksBurst(burstCount = 5) {
+function triggerFireworksBurst(burstCount = 5) {
       const colors = ['#fde047', '#f472b6', '#c084fc', '#38bdf8', '#fb923c', '#ffffff'];
       for (let b = 0; b < burstCount; b++) {
         setTimeout(() => {
-          const cx = fwCanvas.width * (0.15 + Math.random() * 0.7);
-          const cy = fwCanvas.height * (0.08 + Math.random() * 0.28);
+          const cx = fwCanvas.width * (0.14 + Math.random() * 0.72);
+          // จุดพลุทั้งบนท้องฟ้าและเหนือระดับผิวน้ำ
+          const cy = fwCanvas.height * (0.12 + Math.random() * 0.30);
           const color = colors[Math.floor(Math.random() * colors.length)];
-          for (let i = 0; i < 42; i++) {
-            const angle = (Math.PI * 2 * i) / 42 + Math.random() * 0.14;
-            const speed = 1.6 + Math.random() * 4.2;
+          const particleCount = 36 + Math.floor(Math.random() * 16);
+          for (let i = 0; i < particleCount; i++) {
+            const angle = (Math.PI * 2 * i) / particleCount + Math.random() * 0.14;
+            const speed = 1.4 + Math.random() * 4.0;
             fwParticles.push({
               x: cx, y: cy,
               vx: Math.cos(angle) * speed,
               vy: Math.sin(angle) * speed,
               alpha: 1,
               color: color,
-              radius: 1.8 + Math.random() * 2.1
+              radius: 1.7 + Math.random() * 2.0
             });
           }
-        }, b * 310);
+        }, b * 320);
       }
+    }
+
+    // จุดพลุประดับบรรยากาศเหนือผิวน้ำอัตโนมัติเป็นระยะ
+    function startAmbientWaterFireworks() {
+      setInterval(() => {
+        if (!document.hidden && fwParticles.length < 70) {
+          triggerFireworksBurst(1 + Math.floor(Math.random() * 2));
+        }
+      }, 4200);
     }
 
     function animateFireworks() {
       fwCtx.clearRect(0, 0, fwCanvas.width, fwCanvas.height);
+      const horizonY = fwCanvas.height * 0.50;
+      const nowWave = Date.now() * 0.006;
+
       for (let i = fwParticles.length - 1; i >= 0; i--) {
         const p = fwParticles[i];
         p.x += p.vx;
         p.y += p.vy;
-        p.vy += 0.045;
-        p.alpha -= 0.015;
+        p.vy += 0.042;
+        p.vx *= 0.992;
+        p.alpha -= 0.014;
         if (p.alpha <= 0) {
           fwParticles.splice(i, 1);
           continue;
         }
+
+        // 1. วาดประกายพลุบนท้องฟ้าเหนือผิวน้ำ
         fwCtx.globalAlpha = p.alpha;
         fwCtx.fillStyle = p.color;
         fwCtx.beginPath();
         fwCtx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
         fwCtx.fill();
+
+        // 2. วาดแสงพลุสะท้อนพริ้วไหวบนผิวน้ำด้านล่าง
+        if (p.y < horizonY) {
+          const reflectY = horizonY + (horizonY - p.y) * 0.58;
+          if (reflectY < fwCanvas.height - 40) {
+            const rippleOffset = Math.sin(nowWave + reflectY * 0.09) * 7;
+            fwCtx.globalAlpha = p.alpha * 0.36;
+            fwCtx.fillStyle = p.color;
+            fwCtx.beginPath();
+            fwCtx.ellipse(p.x + rippleOffset, reflectY, p.radius * 3.2, p.radius * 0.8, 0, 0, Math.PI * 2);
+            fwCtx.fill();
+          }
+        }
       }
       fwCtx.globalAlpha = 1;
       requestAnimationFrame(animateFireworks);
     }
-
+    
     /*************************************************************************
      * DETERMINISTIC NEWEST -> OLDEST LOOP ENGINE FOR RIVER KRATHONGS
      *************************************************************************/
@@ -1954,7 +2255,7 @@
       el.innerHTML = `<i class="fa-solid fa-arrows-rotate text-amber-300 text-[10px]"></i><span>ลอยวนใหม่→เก่า (คิวที่ ${displayIdx}/${total})</span>`;
     }
 
-    function createFloaterNode(item, xStart, isMine = false, forcedLane = null) {
+function createFloaterNode(item, xStart, isMine = false, forcedLane = null) {
       const layer = document.getElementById('krathongs-river-layer');
       const lane = forcedLane !== null ? forcedLane : (laneCycle++ % 3);
 
@@ -1963,16 +2264,23 @@
         : 45 + Math.random() * 13;
       const scale = lane === 0 ? 0.56 : lane === 1 ? 0.78 : 0.96;
       const speed = (lane === 0 ? 0.25 : lane === 1 ? 0.40 : 0.55) + Math.random() * 0.08;
+      const likes = Number(item.likes) || 0;
 
       const el = document.createElement('div');
       el.className = `floating-krathong ${isMine ? 'krathong-mine' : ''}`;
+      el.dataset.id = item.id;
       el.style.top = `${topPercent}%`;
       el.style.left = `${xStart}px`;
       el.style.zIndex = isMine ? 23 : 8 + lane * 4;
       el.style.transform = `scale(${scale})`;
       el.innerHTML = `
         <div class="krathong-bob flex flex-col items-center" style="--bob-dur:${2.6 + Math.random() * 1.4}s">
-          <div class="krathong-label">${escapeHtml(item.name)}</div>
+          <div class="krathong-label">
+            <span>${escapeHtml(item.name)}</span>
+            <span class="krathong-heart-badge ${likes > 0 ? '' : 'hidden'}" data-heart-count="${item.id}">
+              <i class="fa-solid fa-heart text-[9px]"></i> ${likes}
+            </span>
+          </div>
           ${renderKrathongSVG(item.krathongType, 'w-16 h-15')}
         </div>
       `;
@@ -2067,59 +2375,107 @@
       }
     }
 
-    function playPierReleaseAnimation(newItem) {
+ function playPierReleaseAnimation(newItem) {
       const stage = document.getElementById('river-stage');
       const charStage = document.getElementById('pier-characters-stage');
       const pierKrathong = document.getElementById('pier-krathong-preview');
 
       stage.scrollIntoView({ behavior: 'smooth', block: 'center' });
 
+      // จังหวะ 1: โน้มตัวไหว้ขอขมาพระแม่คงคา
       charStage.classList.add('releasing-bow');
       playChimeSound();
 
       const startX = stage.clientWidth / 2;
-      const startY = stage.clientHeight - 75;
-      const waterTouchX = stage.clientWidth / 2;
-      const waterTouchY = stage.clientHeight * 0.72;
+      const startY = stage.clientHeight - 78;
+      const touchX = startX + 26;
+      const touchY = stage.clientHeight * 0.72;
+      const glideEndX = Math.min(stage.clientWidth - 90, startX + 125);
+      const glideEndY = stage.clientHeight * 0.68;
+
       createGoldenSparkles(startX, startY - 12);
 
       setTimeout(() => {
         pierKrathong.style.opacity = '0';
 
         const flying = document.createElement('div');
-        flying.className = 'launching-krathong';
-        flying.style.left = `${startX}px`;
-        flying.style.top = `${startY}px`;
+        flying.className = 'launching-krathong-3d';
         flying.innerHTML = renderKrathongSVG(newItem.krathongType, 'w-24 h-22');
         stage.appendChild(flying);
 
-        requestAnimationFrame(() => {
-          flying.style.left = `${waterTouchX + 35}px`;
-          flying.style.top = `${waterTouchY}px`;
-          flying.style.transform = 'translate(-50%, -50%) scale(0.76)';
-        });
+        const totalDuration = 1850;
+        const startTime = performance.now();
+        let splashTriggered = false;
+        let lastWakeTime = 0;
 
-        setTimeout(() => {
-          createWaterRipple(waterTouchX + 35, waterTouchY + 22);
-          createGoldenSparkles(waterTouchX + 35, waterTouchY);
-          triggerFireworksBurst(6);
-        }, 1050);
+        function step3D(now) {
+          const elapsed = now - startTime;
+          const t = Math.min(1, elapsed / totalDuration);
 
-        setTimeout(() => {
-          flying.remove();
-          charStage.classList.remove('releasing-bow');
-          pierKrathong.style.opacity = '1';
+          let x, y, scale, tiltX, rotZ;
 
-          const floater = createFloaterNode(newItem, waterTouchX - 10, true, 2);
-          activeFloaters.push(floater);
-          if (activeFloaters.length > MAX_VISIBLE_KRATHONGS + 2) {
-            const removed = activeFloaters.shift();
-            if (removed && removed.el && removed.el.parentNode) {
-              removed.el.parentNode.removeChild(removed.el);
+          if (t < 0.55) {
+            // ช่วงแรก: ยกกระทงโค้ง 3 มิติลงแตะผิวน้ำ
+            const p = t / 0.55;
+            const ease = 1 - Math.pow(1 - p, 3);
+            const arcLift = Math.sin(p * Math.PI) * 44;
+            x = startX + (touchX - startX) * ease;
+            y = startY + (touchY - startY) * ease - arcLift;
+            scale = 1.25 - 0.37 * ease;
+            tiltX = 28 * (1 - p);
+            rotZ = Math.sin(p * Math.PI) * 5;
+          } else {
+            // ช่วงที่สอง: แตะผิวน้ำเกิดคลื่นกระจายแล้วล่องเฉียงเข้าสู่ระยะลึก
+            if (!splashTriggered) {
+              splashTriggered = true;
+              createWaterRipple(touchX, touchY + 18);
+              createGoldenSparkles(touchX, touchY);
+              triggerFireworksBurst(5);
+            }
+            const p = (t - 0.55) / 0.45;
+            const ease = 1 - Math.pow(1 - p, 2);
+            x = touchX + (glideEndX - touchX) * ease;
+            y = touchY + (glideEndY - touchY) * ease + Math.sin(p * Math.PI * 3) * 3;
+            scale = 0.88 - 0.14 * ease;
+            tiltX = 0;
+            rotZ = Math.sin(p * Math.PI * 2) * 3;
+
+            // สร้างคลื่นน้ำตามหลังกระทง (Water Wake)
+            if (now - lastWakeTime > 170) {
+              lastWakeTime = now;
+              const wake = document.createElement('div');
+              wake.className = 'launch-wake-ring';
+              wake.style.left = `${x - 8}px`;
+              wake.style.top = `${y + 20}px`;
+              stage.appendChild(wake);
+              setTimeout(() => wake.remove(), 1250);
             }
           }
-        }, 1680);
-      }, 450);
+
+          flying.style.left = `${x}px`;
+          flying.style.top = `${y}px`;
+          flying.style.transform = `translate(-50%, -50%) perspective(650px) rotateX(${tiltX}deg) rotate(${rotZ}deg) scale(${scale})`;
+
+          if (t < 1) {
+            requestAnimationFrame(step3D);
+          } else {
+            flying.remove();
+            charStage.classList.remove('releasing-bow');
+            pierKrathong.style.opacity = '1';
+
+            const floater = createFloaterNode(newItem, glideEndX - 36, true, 1);
+            activeFloaters.push(floater);
+            if (activeFloaters.length > MAX_VISIBLE_KRATHONGS + 2) {
+              const removed = activeFloaters.shift();
+              if (removed && removed.el && removed.el.parentNode) {
+                removed.el.parentNode.removeChild(removed.el);
+              }
+            }
+          }
+        }
+
+        requestAnimationFrame(step3D);
+      }, 420);
     }
 
     /*************************************************************************
@@ -2544,14 +2900,84 @@
     /*************************************************************************
      * MODALS: VIEW WISH & 8 ROYAL THAI DRESSES GUIDE
      *************************************************************************/
+   /*************************************************************************
+     * ระบบกดหัวใจให้กระทง + หน้าต่างอ่านคำอธิษฐาน
+     *************************************************************************/
+    const LIKED_STORAGE_KEY = 'msk_loy_liked_ids_v1';
+
+    function getLikedIds() {
+      try { return JSON.parse(localStorage.getItem(LIKED_STORAGE_KEY) || '[]'); }
+      catch (e) { return []; }
+    }
+
+    function isKrathongLiked(id) {
+      return getLikedIds().includes(String(id));
+    }
+
+    async function sendHeartToKrathong(id, event) {
+      if (event) event.stopPropagation();
+      const strId = String(id);
+      if (isKrathongLiked(strId)) {
+        Swal.fire({ toast: true, position: 'top-end', icon: 'info', title: 'คุณส่งหัวใจให้กระทงนี้แล้ว ❤️', showConfirmButton: false, timer: 1600 });
+        return;
+      }
+
+      const liked = getLikedIds();
+      liked.push(strId);
+      localStorage.setItem(LIKED_STORAGE_KEY, JSON.stringify(liked));
+
+      // อัปเดตตัวเลขทันที (Optimistic UI)
+      const target = state.riverItems.find(x => String(x.id) === strId);
+      let updatedLikes = 1;
+      if (target) {
+        target.likes = (Number(target.likes) || 0) + 1;
+        updatedLikes = target.likes;
+      }
+
+      // อัปเดต badge บนกระทงที่กำลังลอยในแม่น้ำ
+      document.querySelectorAll(`[data-heart-count="${strId}"]`).forEach(el => {
+        el.classList.remove('hidden');
+        el.innerHTML = `<i class="fa-solid fa-heart text-[9px]"></i> ${updatedLikes}`;
+        el.classList.add('heart-pop');
+      });
+
+      // อัปเดตปุ่มหัวใจใน Modal (ถ้าเปิดอยู่)
+      const modalBtn = document.getElementById(`modal-like-btn-${strId}`);
+      if (modalBtn) {
+        modalBtn.className = 'mt-3 px-4 py-1.5 rounded-full bg-rose-600 text-white text-xs font-semibold flex items-center gap-1.5 heart-pop';
+        modalBtn.innerHTML = `<i class="fa-solid fa-heart"></i> ส่งหัวใจแล้ว (${updatedLikes})`;
+      }
+
+      updateRecentWishesUI(state.riverItems);
+
+      try {
+        const res = await fetch(GAS_WEB_APP_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify({ action: 'like', id: strId })
+        });
+        const json = await res.json();
+        if (json.status === 'success' && target) {
+          target.likes = json.likes;
+          document.querySelectorAll(`[data-heart-count="${strId}"]`).forEach(el => {
+            el.innerHTML = `<i class="fa-solid fa-heart text-[9px]"></i> ${json.likes}`;
+          });
+          updateRecentWishesUI(state.riverItems);
+        }
+      } catch (e) {}
+    }
+
     function showWishModal(item) {
       const krathongObj = KRATHONGS.find(k => k.id === item.krathongType) || KRATHONGS[0];
+      const liked = isKrathongLiked(item.id);
+      const likeCount = Number(item.likes) || 0;
+
       Swal.fire({
         title: `กระทงของ ${escapeHtml(item.name)}`,
         html: `
           <div class="flex flex-col items-center">
             <div class="mb-2">${renderKrathongSVG(item.krathongType, 'w-24 h-22')}</div>
-            <div class="flex flex-wrap justify-center gap-1.5 mb-3">
+            <div class="flex flex-wrap justify-center gap-1.5 mb-2.5">
               <span class="text-xs px-2.5 py-1 rounded-full bg-purple-700/75 border border-purple-300/30 text-purple-100">
                 ${escapeHtml(item.mode)}
               </span>
@@ -2566,7 +2992,16 @@
             <div class="w-full p-3.5 rounded-xl bg-purple-950/85 border border-amber-300/35 text-sm text-amber-100 leading-relaxed">
               “${escapeHtml(item.wish)}”
             </div>
-            <p class="text-[11px] text-purple-300/75 mt-3">
+            <button
+              id="modal-like-btn-${item.id}"
+              type="button"
+              onclick="sendHeartToKrathong('${item.id}')"
+              class="mt-3 px-4 py-1.5 rounded-full ${liked ? 'bg-rose-600 text-white' : 'bg-rose-500/25 hover:bg-rose-600 text-rose-200 hover:text-white border border-rose-400/50'} text-xs font-semibold flex items-center gap-1.5 transition"
+            >
+              <i class="fa-solid fa-heart"></i>
+              <span>${liked ? 'ส่งหัวใจแล้ว' : 'กดหัวใจให้กระทงนี้'} (${likeCount})</span>
+            </button>
+            <p class="text-[11px] text-purple-300/75 mt-2.5">
               <i class="fa-regular fa-clock mr-1"></i>ลอยเมื่อ ${escapeHtml(item.timestamp || 'เมื่อสักครู่')}
             </p>
           </div>
@@ -2577,9 +3012,7 @@
         confirmButtonColor: '#d97706',
         cancelButtonColor: '#5b21b6'
       }).then(res => {
-        if (res.isConfirmed) {
-          openMemoryCardModal(item, null);
-        }
+        if (res.isConfirmed) openMemoryCardModal(item, null);
       });
     }
 
@@ -2604,9 +3037,7 @@
           <p class="text-xs text-purple-200 mb-3">
             มรดกภูมิปัญญาทางวัฒนธรรมของชาติ ตามพระราชดำริในสมเด็จพระนางเจ้าสิริกิติ์ พระบรมราชินีนาถ พระบรมราชชนนีพันปีหลวง
           </p>
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 max-h-[58vh] overflow-y-auto pr-1">
-            ${listHtml}
-          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 max-h-[58vh] overflow-y-auto pr-1">${listHtml}</div>
         `,
         confirmButtonText: 'ปิดหน้าต่าง',
         confirmButtonColor: '#7c3aed'
@@ -2614,7 +3045,99 @@
     }
 
     /*************************************************************************
-     * DATA LAYER: GOOGLE APPS SCRIPT API (เรียงใหม่ไปเก่า)
+     * ระบบห้องแชทสดเปิด-ซ่อนได้ (Live Chat)
+     *************************************************************************/
+    let isChatOpen = false;
+    let lastChatCount = 0;
+
+    function toggleLiveChat(forceState = null) {
+      const drawer = document.getElementById('live-chat-drawer');
+      isChatOpen = forceState !== null ? forceState : !isChatOpen;
+      drawer.classList.toggle('open', isChatOpen);
+
+      if (isChatOpen) {
+        const badge = document.getElementById('chat-unread-badge');
+        badge.classList.add('hidden');
+        badge.textContent = '0';
+        const box = document.getElementById('chat-messages');
+        box.scrollTop = box.scrollHeight;
+      }
+    }
+
+    function renderChatMessages(messages) {
+      const box = document.getElementById('chat-messages');
+      if (!messages || messages.length === 0) {
+        box.innerHTML = '<p class="text-[11px] text-purple-300/70 text-center py-6">ยังไม่มีข้อความ ทักทายเพื่อนร่วมท่าน้ำเป็นคนแรกเลย!</p>';
+        return;
+      }
+
+      if (!isChatOpen && lastChatCount > 0 && messages.length > lastChatCount) {
+        const diff = messages.length - lastChatCount;
+        const badge = document.getElementById('chat-unread-badge');
+        badge.textContent = diff > 9 ? '9+' : String(diff);
+        badge.classList.remove('hidden');
+      }
+      lastChatCount = messages.length;
+
+      box.innerHTML = messages.map(m => `
+        <div class="p-2.5 rounded-xl bg-purple-900/65 border border-purple-400/20">
+          <div class="flex items-center justify-between gap-2 mb-0.5">
+            <span class="text-[11px] font-semibold text-amber-300 truncate">${escapeHtml(m.sender)}</span>
+            <span class="text-[9px] text-purple-300/70">${escapeHtml(m.timestamp)}</span>
+          </div>
+          <p class="text-xs text-purple-50 leading-relaxed break-words">${escapeHtml(m.message)}</p>
+        </div>
+      `).join('');
+
+      box.scrollTop = box.scrollHeight;
+    }
+
+    async function fetchLiveChatOnly() {
+      try {
+        const res = await fetch(`${GAS_WEB_APP_URL}?action=chat&t=${Date.now()}`);
+        const json = await res.json();
+        if (json.status === 'success') {
+          renderChatMessages(json.chat || []);
+        }
+      } catch (e) {}
+    }
+
+    async function handleChatSubmit(e) {
+      e.preventDefault();
+      const msgInput = document.getElementById('chat-message-input');
+      const senderInput = document.getElementById('chat-sender-input');
+      const sendBtn = document.getElementById('chat-send-btn');
+
+      const message = msgInput.value.trim();
+      const fallbackName = document.getElementById('input-name').value.trim();
+      const sender = senderInput.value.trim() || fallbackName || 'ชาวสารคาม';
+
+      if (!message) return;
+
+      sendBtn.disabled = true;
+      sendBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
+
+      try {
+        const res = await fetch(GAS_WEB_APP_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify({ action: 'chat', sender, message })
+        });
+        const json = await res.json();
+        if (json.status === 'success') {
+          msgInput.value = '';
+          await fetchLiveChatOnly();
+        }
+      } catch (err) {
+        Swal.fire({ toast: true, position: 'top-end', icon: 'error', title: 'ส่งข้อความไม่สำเร็จ', showConfirmButton: false, timer: 1800 });
+      } finally {
+        sendBtn.disabled = false;
+        sendBtn.innerHTML = '<i class="fa-solid fa-paper-plane"></i>';
+      }
+    }
+
+    /*************************************************************************
+     * DATA LAYER: GOOGLE APPS SCRIPT API (พร้อมยอดผู้ร่วมลอย + ปุ่มหัวใจในรายการ)
      *************************************************************************/
     function updateRecentWishesUI(items) {
       const list = document.getElementById('recent-wishes-list');
@@ -2623,26 +3146,40 @@
         return;
       }
 
-      list.innerHTML = items.slice(0, 20).map((item, idx) => `
-        <div
-          onclick="showWishModal(state.riverItems[${idx}])"
-          class="p-2.5 rounded-xl bg-purple-950/65 hover:bg-purple-800/60 border border-purple-400/20 cursor-pointer transition flex items-start gap-2.5"
-        >
-          <div class="w-10 h-10 flex-shrink-0 flex items-center justify-center">
-            ${renderKrathongSVG(item.krathongType, 'w-10 h-9')}
-          </div>
-          <div class="min-w-0 flex-1">
-            <div class="flex items-center justify-between gap-2">
-              <span class="text-xs font-semibold text-amber-200 truncate">${escapeHtml(item.name)}</span>
-              <span class="text-[10px] text-purple-300/75 flex-shrink-0">${escapeHtml(item.timestamp)}</span>
+      list.innerHTML = items.slice(0, 20).map((item, idx) => {
+        const liked = isKrathongLiked(item.id);
+        const likes = Number(item.likes) || 0;
+        return `
+          <div
+            onclick="showWishModal(state.riverItems[${idx}])"
+            class="p-2.5 rounded-xl bg-purple-950/65 hover:bg-purple-800/60 border border-purple-400/20 cursor-pointer transition flex items-start gap-2.5"
+          >
+            <div class="w-10 h-10 flex-shrink-0 flex items-center justify-center">
+              ${renderKrathongSVG(item.krathongType, 'w-10 h-9')}
             </div>
-            <p class="text-[11px] text-purple-100/90 line-clamp-2 mt-0.5">“${escapeHtml(item.wish)}”</p>
-            <div class="text-[10px] text-purple-300/80 mt-1 truncate">
-              ${escapeHtml(item.mode)} • ${escapeHtml(item.outfits)}
+            <div class="min-w-0 flex-1">
+              <div class="flex items-center justify-between gap-2">
+                <span class="text-xs font-semibold text-amber-200 truncate">${escapeHtml(item.name)}</span>
+                <span class="text-[10px] text-purple-300/75 flex-shrink-0">${escapeHtml(item.timestamp)}</span>
+              </div>
+              <p class="text-[11px] text-purple-100/90 line-clamp-2 mt-0.5">“${escapeHtml(item.wish)}”</p>
+              <div class="flex items-center justify-between gap-2 mt-1.5">
+                <span class="text-[10px] text-purple-300/80 truncate">${escapeHtml(item.mode)} • ${escapeHtml(item.outfits)}</span>
+                <button
+                  type="button"
+                  onclick="sendHeartToKrathong('${item.id}', event)"
+                  class="flex-shrink-0 px-2 py-0.5 rounded-full text-[10px] font-semibold flex items-center gap-1 transition ${
+                    liked ? 'bg-rose-600 text-white' : 'bg-rose-500/20 hover:bg-rose-600 text-rose-200 hover:text-white border border-rose-400/40'
+                  }"
+                >
+                  <i class="fa-solid fa-heart text-[9px]"></i>
+                  <span>${likes}</span>
+                </button>
+              </div>
             </div>
           </div>
-        </div>
-      `).join('');
+        `;
+      }).join('');
     }
 
     async function loadKrathongsFromGAS(showToast = false) {
@@ -2656,22 +3193,19 @@
         if (json.status === 'success') {
           state.riverItems = json.data || [];
           state.totalCount = json.total || state.riverItems.length;
+          const totalPeople = json.totalPeople || state.totalCount;
+
           document.getElementById('total-count').textContent = state.totalCount.toLocaleString();
+          document.getElementById('total-people-count').textContent = totalPeople.toLocaleString();
           badge.textContent = 'เชื่อมต่อ Google Sheets แล้ว';
           badge.className = 'text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-200 border border-emerald-400/30';
 
           initOrderedRiverLoop();
           updateRecentWishesUI(state.riverItems);
+          if (json.chat) renderChatMessages(json.chat);
 
           if (showToast) {
-            Swal.fire({
-              toast: true,
-              position: 'top-end',
-              icon: 'success',
-              title: 'อัปเดตกระทงในสายน้ำแล้ว',
-              showConfirmButton: false,
-              timer: 1800
-            });
+            Swal.fire({ toast: true, position: 'top-end', icon: 'success', title: 'อัปเดตสายน้ำและห้องแชทแล้ว', showConfirmButton: false, timer: 1800 });
           }
         } else {
           throw new Error(json.message || 'ไม่สามารถโหลดข้อมูลได้');
@@ -2692,12 +3226,7 @@
       const wish = document.getElementById('input-wish').value.trim();
 
       if (!name || !wish) {
-        Swal.fire({
-          icon: 'warning',
-          title: 'กรุณากรอกข้อมูลให้ครบถ้วน',
-          text: 'โปรดระบุชื่อผู้ลอยและคำอธิษฐานก่อนปล่อยกระทงลงน้ำ',
-          confirmButtonColor: '#7c3aed'
-        });
+        Swal.fire({ icon: 'warning', title: 'กรุณากรอกข้อมูลให้ครบถ้วน', text: 'โปรดระบุชื่อผู้ลอยและคำอธิษฐานก่อนปล่อยกระทงลงน้ำ', confirmButtonColor: '#7c3aed' });
         return;
       }
 
@@ -2709,8 +3238,10 @@
       }).join(', ');
 
       const payload = {
+        action: 'float',
         name: name,
         mode: getModeLabelThai(),
+        peopleCount: count,
         outfits: chosenOutfits,
         krathongType: state.selectedKrathong,
         wish: wish
@@ -2741,6 +3272,9 @@
         loopQueueIndex = Math.min(1, state.riverItems.length - 1);
 
         document.getElementById('total-count').textContent = state.totalCount.toLocaleString();
+        if (result.totalPeople) {
+          document.getElementById('total-people-count').textContent = Number(result.totalPeople).toLocaleString();
+        }
         updateRecentWishesUI(state.riverItems);
         updateLoopBadge();
 
@@ -2759,29 +3293,22 @@
                   “${escapeHtml(savedItem.wish)}”
                 </div>
                 <p class="text-[11px] text-purple-300 mt-3">
-                  สามารถกดสร้างและบันทึก <strong>การ์ดภาพความทรงจำพร้อมโลโก้</strong> เก็บไว้แชร์ได้เลย!
+                  รับ <strong>การ์ดความทรงจำพร้อมท่าโพสต์สุ่มและโลโก้</strong> เก็บไว้แชร์ได้เลย!
                 </p>
               </div>
             `,
             showCancelButton: true,
-            confirmButtonText: '<i class="fa-solid fa-camera-retro mr-1.5"></i>รับการ์ดภาพความทรงจำ',
+            confirmButtonText: '<i class="fa-solid fa-camera-retro mr-1.5"></i>รับการ์ดความทรงจำ',
             cancelButtonText: 'ชมกระทงในสายน้ำ',
             confirmButtonColor: '#d97706',
             cancelButtonColor: '#6d28d9'
           }).then(res => {
-            if (res.isConfirmed) {
-              openMemoryCardModal(savedItem, snapshotChars);
-            }
+            if (res.isConfirmed) openMemoryCardModal(savedItem, snapshotChars);
           });
-        }, 2100);
+        }, 2350);
 
       } catch (err) {
-        Swal.fire({
-          icon: 'error',
-          title: 'เกิดข้อผิดพลาดในการบันทึก',
-          text: err.message || 'กรุณาตรวจสอบสิทธิ์การเข้าถึง (Anyone) ของ Google Apps Script Web App',
-          confirmButtonColor: '#7c3aed'
-        });
+        Swal.fire({ icon: 'error', title: 'เกิดข้อผิดพลาดในการบันทึก', text: err.message || 'กรุณาตรวจสอบสิทธิ์ Web App', confirmButtonColor: '#7c3aed' });
       } finally {
         btn.disabled = false;
         btn.innerHTML = '<i class="fa-solid fa-sparkles"></i> <span>ปล่อยกระทงลงน้ำ</span>';
@@ -2797,6 +3324,7 @@
       resizeAllCanvases();
       animateRiverWater();
       animateFireworks();
+      startAmbientWaterFireworks();
       animateRiverLoop();
 
       renderCharacterTabs();
@@ -2806,6 +3334,11 @@
       renderPierPreview();
 
       loadKrathongsFromGAS(false);
+
+      // อัปเดตห้องแชทสดอัตโนมัติทุก 12 วินาที
+      setInterval(() => {
+        if (!document.hidden) fetchLiveChatOnly();
+      }, 12000);
     });
   </script>
 </body>
